@@ -5,11 +5,11 @@ import { FollowingInput } from './types/Following.input';
 
 @Resolver(() => Following)
 export class FollowingsResolver {
-  constructor(private followingFollowingsService: FollowingsService) {}
+  constructor(private followingsService: FollowingsService) {}
 
   @Query(() => [Following])
   followings(): Promise<Following[]> {
-    return this.followingFollowingsService.followings();
+    return this.followingsService.followings();
   }
 
   // relation
@@ -18,7 +18,7 @@ export class FollowingsResolver {
     @Args('type') type: string,
     @Args('followingInput') followingInput: FollowingInput,
   ): Promise<string> {
-    return this.followingFollowingsService.editFollowing({
+    return this.followingsService.editFollowing({
       type,
       followingInput,
     });

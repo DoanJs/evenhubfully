@@ -53,4 +53,9 @@ export class UsersResolver {
   followings(@Parent() user: User): Promise<User[]> {
     return this.usersService.followings(user.UserID);
   }
+
+  @ResolveField(() => [User])
+  followers(@Parent() user: User): Promise<User[]> {
+    return this.usersService.followers(user.UserID);
+  }
 }

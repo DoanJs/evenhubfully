@@ -8,4 +8,5 @@ export interface UserModel {
   isChangePassword: number;
 
   followings?: [UserModel]
+  followers?: [UserModel]
 }

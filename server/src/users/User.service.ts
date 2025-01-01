@@ -91,4 +91,21 @@ export class UsersService {
     }
     return result;
   }
+
+  async followers(UserID: number): Promise<User[]> {
+    const data = await this.userRepository.query(`
+      select * from Followers where userId = ${UserID}
+      `);
+    let result: any;
+    if (data) {
+      const response = data.map(async (follower: any) => {
+        const result = await this.userRepository.query(
+          `select * from Users where UserID = ${follower.friendId}`,
+        );
+        return result[0];
+      });
+      result = await Promise.all(response);
+    }
+    return result;
+  }
 }

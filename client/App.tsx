@@ -14,6 +14,7 @@ import { jwtDecode, JwtPayload } from "jwt-decode";
 import React, { useEffect, useState } from "react";
 import client from "./src/graphqlClient";
 import {
+  followersVar,
   followEventsVar,
   followingsVar,
   tokenVar,
@@ -56,6 +57,12 @@ const App = () => {
             FCMToken
           }
           followings {
+            UserID
+            PhotoUrl
+            Username
+            Email
+          }
+          followers {
             UserID
             PhotoUrl
             Username
@@ -115,6 +122,7 @@ const App = () => {
       userVar(user);
       followEventsVar(user.followEvents);
       followingsVar(user.followings);
+      followersVar(user.followers)
     };
     Data_user && setUser(Data_user.user);
   }, [Data_user]);

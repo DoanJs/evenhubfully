@@ -26,6 +26,7 @@ import { appInfo } from "../../constants/appInfos";
 import { fontFamilies } from "../../constants/fontFamilies";
 import {
   currentLocationVar,
+  followersVar,
   followEventsVar,
   followingsVar,
   userVar,
@@ -42,6 +43,7 @@ const EventDetail = ({ navigation, route }: any) => {
   const { item }: { item: EventModel } = route.params;
   const followEvents = useReactiveVar(followEventsVar);
   const followings = useReactiveVar(followingsVar);
+  const followers = useReactiveVar(followersVar);
   const user = useReactiveVar(userVar);
   const currentLocation = useReactiveVar(currentLocationVar);
   const [editFollowEvent] = useMutation(
@@ -87,7 +89,7 @@ const EventDetail = ({ navigation, route }: any) => {
         },
         {
           query: gql`
-            query ($email: String!) {
+            query user($email: String!) {
               user(email: $email) {
                 UserID
                 Username
@@ -156,12 +158,18 @@ const EventDetail = ({ navigation, route }: any) => {
       refetchQueries: [
         {
           query: gql`
-            query ($userId: Float!) {
+            query getUserId($userId: Float!) {
               getUserId(userId: $userId) {
                 UserID
                 Email
                 PhotoUrl
                 followings {
+                  UserID
+                  PhotoUrl
+                  Username
+                  Email
+                }
+                followers {
                   UserID
                   PhotoUrl
                   Username
@@ -213,17 +221,22 @@ const EventDetail = ({ navigation, route }: any) => {
 
   const handleFollowing = (author: UserModel) => {
     setIsvisible(true);
-    const arr = [...followings];
     let type: "insert" | "delete" = "delete";
-    const index = arr.findIndex((item: any) => item.UserID === author.UserID);
+    const arrFollowing = [...followings];
+    const arrFollower = [...followers];
+
+    const index = arrFollowing.findIndex((item: any) => item.UserID === author.UserID);
     if (index === -1) {
-      arr.push(author);
+      arrFollowing.push(author);
+      arrFollower.push(author)
       type = "insert";
     } else {
-      arr.splice(index, 1);
+      arrFollowing.splice(index, 1);
+      arrFollower.splice(index, 1);
     }
 
-    followingsVar(arr);
+    followingsVar(arrFollowing);
+    followersVar(arrFollower)
     editFollowing({
       variables: {
         type,

@@ -30,17 +30,23 @@ export class FollowingsService {
         await this.followingRepository.query(`
       delete from Followings where userId = ${userId} and friendId =${friendId}
       `);
+        await this.followingRepository.query(`
+      delete from Followers where userId = ${friendId} and friendId =${userId}
+      `);
       } else {
         await this.followingRepository.query(`
       insert into Followings (userId, friendId) values (${userId}, ${friendId})
       `);
+        await this.followingRepository.query(`
+      insert into Followers (userId, friendId) values (${friendId}, ${userId})
+      `);
       }
 
       return type === 'insert'
-        ? 'Update following completed !'
-        : 'Delete following completed !';
+        ? 'Update following/follower completed !'
+        : 'Delete following/follower completed !';
     } catch (error) {
-      throw new UnauthorizedException('Delete/update follower error !');
+      throw new UnauthorizedException('Delete/update following/follower error !');
     }
   }
 }

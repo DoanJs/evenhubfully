@@ -12,6 +12,7 @@ import { FCMTokenModule } from './fcmtokens/FCMToken.module';
 import { PositionModule } from './positions/Position.module';
 import { UsersModule } from './users';
 import { FollowingModule } from './followings/Following.module';
+import { FollowerModule } from './followers/Follower.module';
 
 @Module({
   imports: [
@@ -38,7 +39,8 @@ import { FollowingModule } from './followings/Following.module';
     EventModule,
     PositionModule,
     FCMTokenModule,
-    FollowingModule
+    FollowingModule,
+    FollowerModule
     // DataLoaderModule
   ],
   controllers: [AppController],

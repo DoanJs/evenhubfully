@@ -10,6 +10,7 @@ export const userVar: ReactiveVar<UserModel | undefined> = makeVar<
 export const followEventsVar: ReactiveVar<EventModel[]> = makeVar<EventModel[]>(
   []
 );
+export const followersVar: ReactiveVar<UserModel[]> = makeVar<UserModel[]>([]);
 export const followingsVar: ReactiveVar<UserModel[]> = makeVar<UserModel[]>([]);
 export const currentLocationVar: ReactiveVar<AddressModel | undefined> =
   makeVar<AddressModel | undefined>(undefined);

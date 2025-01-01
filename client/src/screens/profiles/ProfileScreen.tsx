@@ -20,12 +20,18 @@ const ProfileScreen = ({ route }: any) => {
   const [user, setUser] = useState<UserModel>();
   const { data: data_user } = useQuery(
     gql`
-      query ($userId: Float!) {
+      query getUserId($userId: Float!) {
         getUserId(userId: $userId) {
           UserID
           Email
           PhotoUrl
           followings {
+            UserID
+            PhotoUrl
+            Username
+            Email
+          }
+          followers {
             UserID
             PhotoUrl
             Username
@@ -63,7 +69,11 @@ const ProfileScreen = ({ route }: any) => {
             <SpaceComponent height={16} />
             <RowComponent>
               <View style={[globalStyles.center, { flex: 1 }]}>
-                <TextComponent title text={`${user.followings?.length}`} size={20} />
+                <TextComponent
+                  title
+                  text={`${user.followings?.length}`}
+                  size={20}
+                />
                 <TextComponent text="Following" />
               </View>
               <View
@@ -75,7 +85,11 @@ const ProfileScreen = ({ route }: any) => {
                 }}
               />
               <View style={[globalStyles.center, { flex: 1 }]}>
-                <TextComponent title text="400" size={20} />
+                <TextComponent
+                  title
+                  text={`${user.followers?.length}`}
+                  size={20}
+                />
                 <TextComponent text="Followers" />
               </View>
             </RowComponent>
