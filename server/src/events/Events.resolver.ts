@@ -25,8 +25,7 @@ export class EventsResolver {
   }
 
   @Query(() => [Event])
-  events_upcoming(
-  ): Promise<Event[]> {
+  events_upcoming(): Promise<Event[]> {
     return this.eventsService.events_upcoming();
   }
 
@@ -37,31 +36,30 @@ export class EventsResolver {
     return this.eventsService.events_nearby(paramsInput);
   }
 
-  @Mutation((returns) => Event)
+  @Mutation(() => Event)
   createEvent(
     @Args('eventinput', { type: () => EventInput }) eventinput: EventInput,
   ): Promise<Event> {
     return this.eventsService.createEvent(eventinput);
   }
 
-
   // relation
-  @ResolveField((returns) => User)
+  @ResolveField(() => User)
   author(@Parent() event: Event): Promise<User> {
     return this.eventsService.author(event);
   }
 
-  @ResolveField((returns) => [User])
+  @ResolveField(() => [User])
   users(@Parent() event: Event): Promise<User[]> {
     return this.eventsService.users(event);
   }
 
-  @ResolveField((returns) => Position)
+  @ResolveField(() => Position)
   position(@Parent() event: Event): Promise<Position> {
     return this.eventsService.position(event);
   }
 
-  @ResolveField((returns) => [User])
+  @ResolveField(() => [User])
   followers(@Parent() event: Event): Promise<User[]> {
     return this.eventsService.followers(event);
   }

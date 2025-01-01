@@ -26,12 +26,13 @@ import { appInfo } from "../../constants/appInfos";
 import { fontFamilies } from "../../constants/fontFamilies";
 import {
   currentLocationVar,
-  followersVar,
+  followEventsVar,
   followingsVar,
   userVar,
 } from "../../graphqlClient/cache";
 import { LoadingModal } from "../../modals";
 import { EventModel } from "../../models/EventModel";
+import { UserModel } from "../../models/UserModel";
 import { globalStyles } from "../../styles/gloabalStyles";
 import { DateTime } from "../../utils/DateTime";
 
@@ -39,14 +40,17 @@ const EventDetail = ({ navigation, route }: any) => {
   // const navigation: NavigationProp<RootStackParamList> = useNavigation();
   const [isvisible, setIsvisible] = useState<boolean>(false);
   const { item }: { item: EventModel } = route.params;
-  const followers = useReactiveVar(followersVar);
+  const followEvents = useReactiveVar(followEventsVar);
   const followings = useReactiveVar(followingsVar);
   const user = useReactiveVar(userVar);
   const currentLocation = useReactiveVar(currentLocationVar);
-  const [editFollower] = useMutation(
+  const [editFollowEvent] = useMutation(
     gql`
-      mutation EditEventFollower($eventFollowerInput: EventFollowerInput!) {
-        editEventFollower(eventFollowerInput: $eventFollowerInput)
+      mutation editFollowEvent(
+        $type: String!
+        $followEventInput: FollowEventInput!
+      ) {
+        editFollowEvent(type: $type, followEventInput: $followEventInput)
       }
     `,
     {
@@ -90,14 +94,14 @@ const EventDetail = ({ navigation, route }: any) => {
                 Password
                 Email
                 PhotoUrl
-                user_followers {
+                followEvents {
                   EventID
                 }
               }
             }
           `,
           variables: {
-            email: user.Email,
+            email: user?.Email,
           },
         },
         {
@@ -142,14 +146,45 @@ const EventDetail = ({ navigation, route }: any) => {
       ],
     }
   );
+  const [editFollowing] = useMutation(
+    gql`
+      mutation EditFollowing($type: String!, $followingInput: FollowingInput!) {
+        editFollowing(type: $type, followingInput: $followingInput)
+      }
+    `,
+    {
+      refetchQueries: [
+        {
+          query: gql`
+            query ($userId: Float!) {
+              getUserId(userId: $userId) {
+                UserID
+                Email
+                PhotoUrl
+                followings {
+                  UserID
+                  PhotoUrl
+                  Username
+                  Email
+                }
+              }
+            }
+          `,
+          variables: {
+            userId: user?.UserID,
+          },
+        },
+      ],
+    }
+  );
 
-  const handleFollower = () => {
+  const handleFollowEvent = () => {
     setIsvisible(true);
 
     const arr: any = [];
     let type: "insert" | "delete" = "delete";
 
-    const index = followers.findIndex(
+    const index = followEvents.findIndex(
       (follower) => follower.EventID === item.EventID
     );
     if (index === -1) {
@@ -159,12 +194,12 @@ const EventDetail = ({ navigation, route }: any) => {
       arr.splice(index, 1);
     }
 
-    followersVar(arr);
-    editFollower({
+    followEventsVar(arr);
+    editFollowEvent({
       variables: {
-        eventFollowerInput: {
-          type,
-          UserID: user.UserID,
+        type,
+        followEventInput: {
+          UserID: user?.UserID,
           EventID: item.EventID,
         },
       },
@@ -176,21 +211,33 @@ const EventDetail = ({ navigation, route }: any) => {
       });
   };
 
-  const checkFollowing = (autherId: number) => {
-    const index = followings.findIndex(
-      (following: any) => following.UserID === autherId
-    );
-    return index !== -1;
-  };
-
-  const handleFollowing = (autherId: number) => {
+  const handleFollowing = (author: UserModel) => {
+    setIsvisible(true);
     const arr = [...followings];
-    const index = arr.findIndex((item: any) => item.UserID === autherId);
+    let type: "insert" | "delete" = "delete";
+    const index = arr.findIndex((item: any) => item.UserID === author.UserID);
     if (index === -1) {
-      console.log("them moi");
+      arr.push(author);
+      type = "insert";
     } else {
-      console.log("xoa");
+      arr.splice(index, 1);
     }
+
+    followingsVar(arr);
+    editFollowing({
+      variables: {
+        type,
+        followingInput: {
+          userId: user?.UserID,
+          friendId: author?.UserID,
+        },
+      },
+    })
+      .then(() => setIsvisible(false))
+      .catch((err) => {
+        console.log(err);
+        setIsvisible(false);
+      });
   };
 
   return (
@@ -228,9 +275,9 @@ const EventDetail = ({ navigation, route }: any) => {
                 color={appColor.white}
               />
             </RowComponent>
-            {item.author.UserID !== user.UserID && (
+            {item.author.UserID !== user?.UserID && (
               <CardComponent
-                onPress={handleFollower}
+                onPress={handleFollowEvent}
                 styles={[
                   globalStyles.noSpaceCard,
                   {
@@ -245,8 +292,8 @@ const EventDetail = ({ navigation, route }: any) => {
                 <MaterialIcons
                   name="bookmark"
                   color={
-                    followers &&
-                    followers.filter(
+                    followEvents &&
+                    followEvents.filter(
                       (follower: any) => follower.EventID === item.EventID
                     ).length > 0
                       ? appColor.danger2
@@ -438,9 +485,9 @@ const EventDetail = ({ navigation, route }: any) => {
                   <TextComponent size={16} text={item.author.Username} title />
                   <TextComponent size={14} text={item.author.Email} />
                 </View>
-                {user.UserID !== item.author.UserID && (
+                {user?.UserID !== item.author.UserID && (
                   <CardComponent
-                    onPress={() => handleFollowing(item.author.UserID)}
+                    onPress={() => handleFollowing(item.author)}
                     styles={[
                       globalStyles.noSpaceCard,
                       {
@@ -454,8 +501,11 @@ const EventDetail = ({ navigation, route }: any) => {
                   >
                     <TextComponent
                       text={
-                        checkFollowing(item.author.UserID)
-                          ? "unFollow"
+                        followings.findIndex(
+                          (following: any) =>
+                            following.UserID === item.author.UserID
+                        ) !== -1
+                          ? "UnFollow"
                           : "Follow"
                       }
                       color={appColor.primary}

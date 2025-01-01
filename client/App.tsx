@@ -14,7 +14,7 @@ import { jwtDecode, JwtPayload } from "jwt-decode";
 import React, { useEffect, useState } from "react";
 import client from "./src/graphqlClient";
 import {
-  followersVar,
+  followEventsVar,
   followingsVar,
   tokenVar,
   userVar,
@@ -49,7 +49,7 @@ const App = () => {
           Password
           Email
           PhotoUrl
-          user_followers {
+          followEvents {
             EventID
           }
           fcmTokens {
@@ -88,7 +88,7 @@ const App = () => {
                 Password
                 Email
                 PhotoUrl
-                user_followers {
+                followEvents {
                   EventID
                 }
                 fcmTokens {
@@ -113,7 +113,7 @@ const App = () => {
     const setUser = async (user: any) => {
       await AsyncStorage.setItem("user", user ? JSON.stringify(user) : "");
       userVar(user);
-      followersVar(user.user_followers);
+      followEventsVar(user.followEvents);
       followingsVar(user.followings);
     };
     Data_user && setUser(Data_user.user);

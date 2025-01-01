@@ -1,10 +1,7 @@
 import { Field, InputType } from '@nestjs/graphql';
 
 @InputType()
-export class EventFollowerInput {
-  @Field({ nullable: true })
-  type?: 'insert' | 'delete';
-
+export class FollowEventInput {
   @Field({ nullable: true })
   UserID?: number;
 

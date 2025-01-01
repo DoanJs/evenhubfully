@@ -17,6 +17,6 @@ export class UserInput {
   @Field({ nullable: true })
   isChangePassword?: number;
 
-  @Field((types) => [Event], { nullable: true })
-  user_followers?: [Event];
+  @Field(() => [Event], { nullable: true })
+  followEvents?: [Event];
 }

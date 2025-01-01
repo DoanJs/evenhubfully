@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FCMToken } from 'src/fcmtokens/FCMToken.model';
 import { Repository } from 'typeorm';
 import { User } from '.';
-import { EventFollowerInput } from './type/event_follower.input';
+import { FollowEventInput } from './type/followEvent.input';
 
 @Injectable()
 export class UsersService {
@@ -30,10 +30,14 @@ export class UsersService {
     return data[0];
   }
 
-  async editEventFollower(
-    eventFollowerInput: EventFollowerInput,
-  ): Promise<String> {
-    const { type, UserID, EventID } = eventFollowerInput;
+  async editFollowEvent({
+    type,
+    followEventInput,
+  }: {
+    type: string;
+    followEventInput: FollowEventInput;
+  }): Promise<string> {
+    const { UserID, EventID } = followEventInput;
     try {
       if (type === 'delete') {
         await this.userRepository.query(`
@@ -54,13 +58,15 @@ export class UsersService {
   }
 
   // relation
-  async user_followers(UserID: number): Promise<Event[]> {
-    return this.userRepository.query(`
-  select Events.* from Events 
-    inner join Events_Followers 
-    on Events.EventID = Events_Followers.EventID 
-    where Events_Followers.UserID = ${UserID}
-  `);
+  async followEvents(UserID: number): Promise<Event[]> {
+    return this.userRepository.query(
+      `
+      select Events.* from Events 
+        inner join Events_Followers 
+        on Events.EventID = Events_Followers.EventID 
+        where Events_Followers.UserID = ${UserID}
+  `,
+    );
   }
 
   async fcmTokens(UserID: number): Promise<FCMToken[]> {

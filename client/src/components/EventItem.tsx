@@ -9,9 +9,10 @@ import { appInfo } from "../constants/appInfos";
 import { fontFamilies } from "../constants/fontFamilies";
 import {
   currentLocationVar,
-  followersVar,
+  followEventsVar,
   userVar,
 } from "../graphqlClient/cache";
+import { LoadingModal } from "../modals";
 import { EventModel } from "../models/EventModel";
 import { globalStyles } from "../styles/gloabalStyles";
 import { RootStackParamList } from "../types/route";
@@ -21,7 +22,6 @@ import CardComponent from "./CardComponent";
 import RowComponent from "./RowComponent";
 import SpaceComponent from "./SpaceComponent";
 import TextComponent from "./TextComponent";
-import { LoadingModal } from "../modals";
 
 interface Props {
   item: EventModel;
@@ -31,13 +31,16 @@ const EventItem = (props: Props) => {
   const { item, type } = props;
   const navigation: NavigationProp<RootStackParamList> = useNavigation();
   const [isvisible, setIsvisible] = useState<boolean>(false);
-  const followers = useReactiveVar(followersVar);
+  const followEvents = useReactiveVar(followEventsVar);
   const user = useReactiveVar(userVar);
   const currentLocation = useReactiveVar(currentLocationVar);
-  const [editFollower] = useMutation(
+  const [editFollowEvent] = useMutation(
     gql`
-      mutation EditEventFollower($eventFollowerInput: EventFollowerInput!) {
-        editEventFollower(eventFollowerInput: $eventFollowerInput)
+      mutation editFollowEvent(
+        $type: String!
+        $followEventInput: FollowEventInput!
+      ) {
+        editFollowEvent(type: $type, followEventInput: $followEventInput)
       }
     `,
     {
@@ -90,7 +93,6 @@ const EventItem = (props: Props) => {
           variables: {
             email: user?.Email,
           },
-          
         },
         {
           query: gql`
@@ -141,7 +143,7 @@ const EventItem = (props: Props) => {
     const arr: any = [];
     let type: "insert" | "delete" = "delete";
 
-    const index = followers.findIndex(
+    const index = followEvents.findIndex(
       (follower) => follower.EventID === item.EventID
     );
     if (index === -1) {
@@ -151,13 +153,13 @@ const EventItem = (props: Props) => {
       arr.splice(index, 1);
     }
 
-    followersVar(arr);
+    followEventsVar(arr);
 
-    editFollower({
+    editFollowEvent({
       variables: {
-        eventFollowerInput: {
-          type,
-          UserID: user.UserID,
+        type,
+        followEventInput: {
+          UserID: user?.UserID,
           EventID: item.EventID,
         },
       },
@@ -205,7 +207,7 @@ const EventItem = (props: Props) => {
               color={appColor.danger2}
             />
           </CardComponent>
-          {item.author.UserID !== user.UserID && (
+          {item.author.UserID !== user?.UserID && (
             <CardComponent
               styles={[globalStyles.noSpaceCard]}
               color="#ffffffb3"
@@ -214,7 +216,7 @@ const EventItem = (props: Props) => {
               <MaterialIcons
                 name="bookmark"
                 color={
-                  followers.filter(
+                  followEvents.filter(
                     (follower: any) => follower.EventID === item.EventID
                   ).length > 0
                     ? appColor.danger2

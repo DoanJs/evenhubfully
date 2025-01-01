@@ -54,5 +54,5 @@ export class User {
 
   @ManyToMany(() => Event, (event) => event.followers)
   @Field(() => [Event], { nullable: true })
-  user_followers: [Event];
+  followEvents: [Event];
 }

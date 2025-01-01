@@ -8,7 +8,7 @@ import {
 } from '@nestjs/graphql';
 import { FCMToken } from 'src/fcmtokens/FCMToken.model';
 import { User, UsersService } from '.';
-import { EventFollowerInput } from './type/event_follower.input';
+import { FollowEventInput } from './type/followEvent.input';
 
 @Resolver(() => User)
 export class UsersResolver {
@@ -29,27 +29,27 @@ export class UsersResolver {
     return this.usersService.user(email);
   }
 
-  @Mutation((returns) => String)
-  editEventFollower(
-    @Args('eventFollowerInput')
-    eventFollowerInput: EventFollowerInput,
-  ): Promise<String> {
-    return this.usersService.editEventFollower(eventFollowerInput);
+  @Mutation(() => String)
+  editFollowEvent(
+    @Args('type') type: string,
+    @Args('followEventInput') followEventInput: FollowEventInput,
+  ): Promise<string> {
+    return this.usersService.editFollowEvent({ followEventInput, type });
   }
 
   // relation
 
-  @ResolveField((returns) => [Event])
-  user_followers(@Parent() user: User): Promise<Event[]> {
-    return this.usersService.user_followers(user.UserID);
+  @ResolveField(() => [Event])
+  followEvents(@Parent() user: User): Promise<Event[]> {
+    return this.usersService.followEvents(user.UserID);
   }
 
-  @ResolveField((returns) => [FCMToken])
+  @ResolveField(() => [FCMToken])
   fcmTokens(@Parent() user: User): Promise<FCMToken[]> {
     return this.usersService.fcmTokens(user.UserID);
   }
 
-  @ResolveField((returns) => [User])
+  @ResolveField(() => [User])
   followings(@Parent() user: User): Promise<User[]> {
     return this.usersService.followings(user.UserID);
   }

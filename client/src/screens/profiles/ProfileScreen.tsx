@@ -16,7 +16,7 @@ import { userVar } from "../../graphqlClient/cache";
 
 const ProfileScreen = ({ route }: any) => {
   const userAsync = useReactiveVar(userVar);
-  const userId = route.params?.userId ?? userAsync.UserID;
+  const userId = route.params?.userId ?? userAsync?.UserID;
   const [user, setUser] = useState<UserModel>();
   const { data: data_user } = useQuery(
     gql`

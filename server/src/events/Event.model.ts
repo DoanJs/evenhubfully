@@ -86,7 +86,7 @@ export class Event {
     name: 'authorId',
     foreignKeyConstraintName: 'FK_authorId_Events',
   })
-  @Field((types) => User, { nullable: true })
+  @Field(() => User, { nullable: true })
   author: User;
 
   // many-to-many
@@ -105,10 +105,10 @@ export class Event {
       foreignKeyConstraintName: 'FK_UserID_Events_Users',
     },
   })
-  @Field((types) => [User], { nullable: true })
+  @Field(() => [User], { nullable: true })
   users: [User];
 
-  @ManyToMany(() => User, (user) => user.user_followers, {
+  @ManyToMany(() => User, (user) => user.followEvents, {
     cascade: true,
     eager: true,
   })
@@ -123,6 +123,6 @@ export class Event {
       foreignKeyConstraintName: 'FK_UserID_Events_Followers',
     },
   })
-  @Field((types) => [User], { nullable: true })
+  @Field(() => [User], { nullable: true })
   followers: [User];
 }
