@@ -1,10 +1,10 @@
 import { Field, InputType } from '@nestjs/graphql';
 
 @InputType()
-export class FollowerInput {
+export class FollowInput {
   @Field({ nullable: true })
-  userId?: number;
+  followingId?: number;
 
   @Field({ nullable: true })
-  friendId?: number;
+  followerId?: number;
 }

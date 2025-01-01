@@ -10,9 +10,9 @@ import {
   TextComponent,
 } from "../../components";
 import { appColor } from "../../constants/appColor";
+import { userVar } from "../../graphqlClient/cache";
 import { UserModel } from "../../models/UserModel";
 import { globalStyles } from "../../styles/gloabalStyles";
-import { userVar } from "../../graphqlClient/cache";
 
 const ProfileScreen = ({ route }: any) => {
   const userAsync = useReactiveVar(userVar);

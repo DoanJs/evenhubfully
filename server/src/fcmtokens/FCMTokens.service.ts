@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ParamsInput } from 'src/utils/type/Params.input';
+import { ParamsInput } from 'src/utils/types/Params.input';
 import { Repository } from 'typeorm';
 import { FCMToken } from './FCMToken.model';
 

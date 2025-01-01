@@ -1,9 +1,9 @@
-import { Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Controller, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { AuthsService } from '.';
 import { LoginAuthGuard } from './Login.Guard';
-import { AccessTokenType } from './types/accessTokenType';
 import { RegisterAuthGuard } from './Register.Guard';
+import { AccessTokenType } from './types/accessTokenType';
 
 @Controller()
 export class AuthsController {

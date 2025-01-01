@@ -148,10 +148,10 @@ const EventDetail = ({ navigation, route }: any) => {
       ],
     }
   );
-  const [editFollowing] = useMutation(
+  const [editFollow] = useMutation(
     gql`
-      mutation EditFollowing($type: String!, $followingInput: FollowingInput!) {
-        editFollowing(type: $type, followingInput: $followingInput)
+      mutation EditFollow($type: String!, $followInput: FollowInput!) {
+        editFollow(type: $type, followInput: $followInput)
       }
     `,
     {
@@ -219,7 +219,7 @@ const EventDetail = ({ navigation, route }: any) => {
       });
   };
 
-  const handleFollowing = (author: UserModel) => {
+  const handleFollow = (author: UserModel) => {
     setIsvisible(true);
     let type: "insert" | "delete" = "delete";
     const arrFollowing = [...followings];
@@ -237,12 +237,12 @@ const EventDetail = ({ navigation, route }: any) => {
 
     followingsVar(arrFollowing);
     followersVar(arrFollower)
-    editFollowing({
+    editFollow({
       variables: {
         type,
-        followingInput: {
-          userId: user?.UserID,
-          friendId: author?.UserID,
+        followInput: {
+          followingId: user?.UserID,
+          followerId: author?.UserID,
         },
       },
     })
@@ -500,13 +500,13 @@ const EventDetail = ({ navigation, route }: any) => {
                 </View>
                 {user?.UserID !== item.author.UserID && (
                   <CardComponent
-                    onPress={() => handleFollowing(item.author)}
+                    onPress={() => handleFollow(item.author)}
                     styles={[
                       globalStyles.noSpaceCard,
                       {
                         marginVertical: 10,
                         marginHorizontal: 10,
-                        width: 60,
+                        width: 70,
                         height: 28,
                       },
                     ]}

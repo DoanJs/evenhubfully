@@ -8,11 +8,12 @@ import {
   Resolver,
 } from '@nestjs/graphql';
 import { GraphQLGuard } from 'src/auth/GraphQL.Guard';
-import { Event, EventsService } from './';
 import { EventInput } from './type/event.input';
-import { User } from 'src/users';
 import { Position } from 'src/positions/Position.model';
-import { ParamsInput } from 'src/utils/type/Params.input';
+import { ParamsInput } from 'src/utils/types/Params.input';
+import { User } from 'src/users/User.model';
+import { EventsService } from './Events.service';
+import { Event } from 'src/events/Event.model';
 
 @Resolver(() => Event)
 @UseGuards(GraphQLGuard)

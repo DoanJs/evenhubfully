@@ -2,12 +2,12 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as Crypto from 'crypto-js';
-import { User } from 'src/users';
-import { Repository } from 'typeorm';
-import { AccessTokenType } from './types/accessTokenType';
 import { Request, Response } from 'express';
 import { JwtPayload } from 'jsonwebtoken';
 import * as nodemailer from 'nodemailer';
+import { User } from 'src/users/User.model';
+import { Repository } from 'typeorm';
+import { AccessTokenType } from './types/accessTokenType';
 
 interface configMailer {
   code: number;

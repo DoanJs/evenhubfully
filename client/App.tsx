@@ -11,7 +11,7 @@ import { useFonts } from "expo-font";
 import * as Notifications from "expo-notifications";
 import * as SplashSScreen from "expo-splash-screen";
 import { jwtDecode, JwtPayload } from "jwt-decode";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import client from "./src/graphqlClient";
 import {
   followersVar,
@@ -114,6 +114,9 @@ const App = () => {
   const [loaded, error] = useFonts({
     AirbnbCereal_W_Bd: require("./assets/fonts/AirbnbCereal_W_Bd.otf"),
   });
+  
+  const notificationListener = useRef<Notifications.EventSubscription>();
+  const responseListener = useRef<Notifications.EventSubscription>();
 
   // Khi F5 app va k di qua LoginScreen
   useEffect(() => {
@@ -140,13 +143,14 @@ const App = () => {
     //     // setChannels(value ?? []);
     //   });
     // }
-    // notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-    //   setNotification(notification);
-    // });
+    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+      // setNotification(notification);
+      console.log(notification)
+    });
 
-    // responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-    //   console.log(response);
-    // });
+    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+      console.log(response);
+    });
 
     // return () => {
     //   notificationListener.current &&

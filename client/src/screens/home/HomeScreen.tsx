@@ -192,11 +192,10 @@ const HomeScreen = () => {
       <View
         style={{
           backgroundColor: appColor.primary,
-          height: 182,
+          height: Platform.OS === "android" ? 154 : 192,
           borderBottomLeftRadius: 40,
           borderBottomRightRadius: 40,
-          paddingTop:
-            Platform.OS === "android" ? Number(StatusBar.currentHeight) : 52,
+          paddingTop: Platform.OS === "android" ? 16 : 52, //Number(StatusBar.currentHeight)
           // paddingHorizontal: 16,
         }}
       >
@@ -231,9 +230,10 @@ const HomeScreen = () => {
               color="#524ce0"
               size={36}
               onPress={async () =>
-                await HandleNotification.sendPushNotification(
-                  "ExponentPushToken[aItaukCHenOmipmx8F7orA]"
-                )
+                await HandleNotification.sendPushNotification({
+                  expoPushToken: "ExponentPushToken[upbG_wKguchuFU-UW_jVEK]",
+                })
+                // await HandleNotification.schedulePushNotification()
               }
             >
               <View>
@@ -318,7 +318,7 @@ const HomeScreen = () => {
         <SectionComponent styles={{ paddingHorizontal: 0 }}>
           <TabBarComponent onPress={() => {}} title="Upcoming Events" />
           {events.length > 0 ? (
-            <FlatList 
+            <FlatList
               horizontal
               showsHorizontalScrollIndicator={false}
               data={events}

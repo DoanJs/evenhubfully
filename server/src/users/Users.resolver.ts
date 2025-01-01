@@ -7,8 +7,9 @@ import {
   Resolver,
 } from '@nestjs/graphql';
 import { FCMToken } from 'src/fcmtokens/FCMToken.model';
-import { User, UsersService } from '.';
 import { FollowEventInput } from './type/followEvent.input';
+import { User } from './User.model';
+import { UsersService } from './User.service';
 
 @Resolver(() => User)
 export class UsersResolver {

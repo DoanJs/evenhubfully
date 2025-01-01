@@ -1,7 +1,7 @@
 import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { GraphQLGuard } from 'src/auth/GraphQL.Guard';
-import { ParamsInput } from 'src/utils/type/Params.input';
+import { ParamsInput } from 'src/utils/types/Params.input';
 import { FCMToken } from './FCMToken.model';
 import { FCMTokensService } from './FCMTokens.service';
 

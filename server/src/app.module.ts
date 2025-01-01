@@ -9,10 +9,10 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth';
 import { EventModule } from './events/Event.module';
 import { FCMTokenModule } from './fcmtokens/FCMToken.module';
+import { FollowModule } from './follows/Follow.module';
 import { PositionModule } from './positions/Position.module';
-import { UsersModule } from './users';
-import { FollowingModule } from './followings/Following.module';
-import { FollowerModule } from './followers/Follower.module';
+import { UsersModule } from './users/Users.module';
+import { DataLoaderModule } from './dataloader/Dataloader.module';
 
 @Module({
   imports: [
@@ -39,9 +39,8 @@ import { FollowerModule } from './followers/Follower.module';
     EventModule,
     PositionModule,
     FCMTokenModule,
-    FollowingModule,
-    FollowerModule
-    // DataLoaderModule
+    FollowModule,
+    DataLoaderModule,
   ],
   controllers: [AppController],
   providers: [AppService],

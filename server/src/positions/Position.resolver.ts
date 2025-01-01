@@ -3,7 +3,7 @@ import { Args, Query, Resolver } from '@nestjs/graphql';
 import { GraphQLGuard } from 'src/auth/GraphQL.Guard';
 import { Position } from './Position.model';
 import { PositionsService } from './Position.service';
-import { ParamsInput } from 'src/utils/type/Params.input';
+import { ParamsInput } from 'src/utils/types/Params.input';
 
 @Resolver(() => Position)
 @UseGuards(GraphQLGuard)

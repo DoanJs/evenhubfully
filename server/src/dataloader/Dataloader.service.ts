@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as DataLoader from 'dataloader';
-import { User } from 'src/users';
+import { User } from 'src/users/User.model';
 import { Repository } from 'typeorm';
 
 @Injectable()

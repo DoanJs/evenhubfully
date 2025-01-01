@@ -1,17 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import * as DataLoader from 'dataloader';
 import { Position } from 'src/positions/Position.model';
-import { User } from 'src/users';
-import { ParamsInput } from 'src/utils/type/Params.input';
+import { User } from 'src/users/User.model';
+import { ParamsInput } from 'src/utils/types/Params.input';
 import { Repository } from 'typeorm';
-import { Event } from './';
+import { Event } from 'src/events/Event.model';
 import { EventInput } from './type/event.input';
+import { DataLoaderService } from 'src/dataloader/Dataloader.service';
 
 @Injectable()
 export class EventsService {
   constructor(
     @InjectRepository(Event)
     private eventRepository: Repository<Event>,
+    private dataloaderService: DataLoaderService,
   ) {}
 
   toRoad(val: number) {
@@ -117,12 +120,7 @@ export class EventsService {
   // relation
   async author(event: any): Promise<User> {
     if (event.authorId) {
-      const result = await this.eventRepository.query(
-        `select * from Users where UserID = ${event.authorId}`,
-      );
-      return result[0];
-    } else {
-      return null;
+      return this.dataloaderService.loaderUser.load(event.authorId);
     }
   }
 
@@ -130,14 +128,10 @@ export class EventsService {
     const usersEvent = await this.eventRepository.query(
       `select * from Events_Users where EventID = ${event.EventID}`,
     );
-    const response = usersEvent.map(async (position: any) => {
-      const result = await this.eventRepository.query(
-        `select * from Users where UserID = ${position.UserID}`,
-      );
-      return result[0];
-    });
-    const result = await Promise.all(response);
-    return result;
+    const resultLoader = usersEvent.map((obj: any) =>
+      this.dataloaderService.loaderUser.load(obj.UserID),
+    );
+    return await Promise.all(resultLoader);
   }
 
   async position(event: any): Promise<Position> {

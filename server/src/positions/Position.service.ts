@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Position } from './Position.model';
-import { ParamsInput } from 'src/utils/type/Params.input';
+import { ParamsInput } from 'src/utils/types/Params.input';
 
 @Injectable()
 export class PositionsService {
@@ -38,31 +38,31 @@ export class PositionsService {
     return r * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
   }
 
- async  positions(paramsInput: ParamsInput): Promise<Position[]> {
+  async positions(paramsInput: ParamsInput): Promise<Position[]> {
     const { skip, take, data } = paramsInput;
     const result = await this.positionRepository.find({
       skip: skip ?? 0,
       take,
     });
 
-    const items = []
-    if(result.length > 0) {
-      result.forEach(position => {
+    const items = [];
+    if (result.length > 0) {
+      result.forEach((position) => {
         const eventDistance = this.calcDistanceLocation({
           currentLat: data.lat,
           currentLong: data.long,
           addressLat: position.lat,
-          addressLong: position.lng
-        })
+          addressLong: position.lng,
+        });
 
-        console.log(eventDistance)
-        if(eventDistance < data.distance){
-          items.push(position)
+        console.log(eventDistance);
+        if (eventDistance < data.distance) {
+          items.push(position);
         }
-      })
+      });
     }
 
-    console.log(items.length)
+    console.log(items.length);
     return this.positionRepository.query('select * from Positions');
   }
 

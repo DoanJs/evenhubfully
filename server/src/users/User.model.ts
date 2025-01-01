@@ -1,8 +1,7 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Event } from 'src/events';
+import { Event } from 'src/events/Event.model';
 import { FCMToken } from 'src/fcmtokens/FCMToken.model';
-import { Follower } from 'src/followers/Follower.model';
-import { Following } from 'src/followings/Following.model';
+import { Follow } from 'src/follows/Follow.model';
 import {
   Column,
   Entity,
@@ -46,11 +45,11 @@ export class User {
   @OneToMany(() => FCMToken, (fcmtoken) => fcmtoken.user)
   fcmTokens: [FCMToken];
 
-  @OneToMany(() => Following, (following) => following.following_user)
-  followings: [Following];
+  @OneToMany(() => Follow, (follow) => follow.following_user)
+  followings: [Follow];
 
-  @OneToMany(() => Follower, (follower) => follower.follower_user)
-  followers: [Follower];
+  @OneToMany(() => Follow, (follow) => follow.follower_user)
+  followers: [Follow];
 
   // many-to-many
   @ManyToMany(() => Event, (event) => event.users)

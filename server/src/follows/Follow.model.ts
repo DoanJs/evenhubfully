@@ -1,5 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { User } from 'src/users';
+import { User } from 'src/users/User.model';
 import {
   Column,
   Entity,
@@ -8,16 +8,12 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-@Entity({ name: 'Followings' })
+@Entity({ name: 'Follows' })
 @ObjectType()
-export class Following {
-  @PrimaryGeneratedColumn({ primaryKeyConstraintName: 'PK_FollowingID' })
+export class Follow {
+  @PrimaryGeneratedColumn({ primaryKeyConstraintName: 'PK_FollowID' })
   @Field()
-  FollowingID: number;
-
-  @Column({ type: 'int', nullable: true })
-  @Field({ nullable: true })
-  friendId: number;
+  FollowID: number;
 
   @Column({
     type: 'date',
@@ -40,9 +36,19 @@ export class Following {
     eager: true,
   })
   @JoinColumn({
-    name: 'userId',
-    foreignKeyConstraintName: 'FK_userId_Followings',
+    name: 'followingId',
+    foreignKeyConstraintName: 'FK_followingId_Follows',
   })
   following_user: User;
+
+  @ManyToOne(() => User, (user) => user.followers, {
+    cascade: true,
+    eager: true,
+  })
+  @JoinColumn({
+    name: 'followerId',
+    foreignKeyConstraintName: 'FK_followerId_Follows',
+  })
+  follower_user: User;
   // many-to-many
 }
