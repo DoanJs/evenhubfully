@@ -231,7 +231,7 @@ const HomeScreen = () => {
               size={36}
               onPress={async () =>
                 await HandleNotification.sendPushNotification({
-                  expoPushToken: "ExponentPushToken[upbG_wKguchuFU-UW_jVEK]",
+                  expoPushToken: "ExponentPushToken[aItaukCHenOmipmx8F7orA]",
                 })
                 // await HandleNotification.schedulePushNotification()
               }

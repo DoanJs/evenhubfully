@@ -13,6 +13,8 @@ import { appColor } from "../../constants/appColor";
 import { userVar } from "../../graphqlClient/cache";
 import { UserModel } from "../../models/UserModel";
 import { globalStyles } from "../../styles/gloabalStyles";
+import AboutProfile from "./components/AboutProfile";
+import EditProfile from "./components/EditProfile";
 
 const ProfileScreen = ({ route }: any) => {
   const userAsync = useReactiveVar(userVar);
@@ -48,6 +50,7 @@ const ProfileScreen = ({ route }: any) => {
     }
   );
 
+  
   useEffect(() => {
     data_user && setUser(data_user.getUserId);
   }, [data_user]);
@@ -94,6 +97,12 @@ const ProfileScreen = ({ route }: any) => {
               </View>
             </RowComponent>
           </SectionComponent>
+
+          {userAsync?.UserID !== route.params?.userId ? (
+            <AboutProfile />
+          ) : (
+            <EditProfile profile={user}/>
+          )}
         </>
       ) : (
         <TextComponent text="Profile not found !" />
