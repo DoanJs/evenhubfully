@@ -1,0 +1,20 @@
+query getUserId($userId: Float!) {
+  getUserId(userId: $userId) {
+    UserID
+    Username
+    Email
+    PhotoUrl
+    followings {
+      UserID
+      PhotoUrl
+      Username
+      Email
+    }
+    followers {
+      UserID
+      PhotoUrl
+      Username
+      Email
+    }
+  }
+}

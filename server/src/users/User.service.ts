@@ -1,10 +1,11 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { DataLoaderService } from 'src/dataloader/Dataloader.service';
 import { FCMToken } from 'src/fcmtokens/FCMToken.model';
 import { Repository } from 'typeorm';
 import { FollowEventInput } from './type/followEvent.input';
+import { UserInput } from './type/user.input';
 import { User } from './User.model';
-import { DataLoaderService } from 'src/dataloader/Dataloader.service';
 
 @Injectable()
 export class UsersService {
@@ -30,6 +31,22 @@ export class UsersService {
       `select * from Users where Email = '${email}'`,
     );
     return data[0];
+  }
+
+  async editUser({
+    userId,
+    userInput,
+  }: {
+    userId: number;
+    userInput: UserInput;
+  }): Promise<User> {
+    await this.userRepository.query(
+      `update Users set Username = '${userInput.Username}', PhotoUrl = '${userInput.PhotoUrl}' where UserID = ${userId}`,
+    );
+    const result = await this.userRepository.query(
+      `select * from Users where UserID = ${userId}`,
+    );
+    return result[0];
   }
 
   async editFollowEvent({

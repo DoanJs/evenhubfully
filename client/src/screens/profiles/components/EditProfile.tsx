@@ -9,6 +9,7 @@ import {
 } from "../../../components";
 import { useNavigation } from "@react-navigation/native";
 import { UserModel } from "../../../models/UserModel";
+import { appColor } from "../../../constants/appColor";
 
 interface Props {
   profile: UserModel
@@ -22,9 +23,14 @@ const EditProfile = (props: Props) => {
     <SectionComponent>
       <RowComponent justify="center">
         <ButtonComponent
+        styles={{
+          width: "60%",
+          backgroundColor: appColor.white,
+          borderWidth: 1, borderColor: appColor.gray2
+        }}
           text="Edit Profile"
           onPress={() => navigation.navigate("EditProfileScreen", {profile})}
-          type="link"
+          type="primary" textColor={appColor.primary} 
         />
       </RowComponent>
       <TextComponent text="About" title size={18} />

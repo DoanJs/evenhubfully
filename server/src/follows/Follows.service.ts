@@ -15,7 +15,7 @@ export class FollowsService {
     return this.followRepository.query('select * from Follows');
   }
 
-   async editFollow({
+  async editFollow({
     type,
     followInput,
   }: {
@@ -42,5 +42,5 @@ export class FollowsService {
     }
   }
 
-   // relation
+  // relation
 }

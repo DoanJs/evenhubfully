@@ -10,6 +10,7 @@ import { FCMToken } from 'src/fcmtokens/FCMToken.model';
 import { FollowEventInput } from './type/followEvent.input';
 import { User } from './User.model';
 import { UsersService } from './User.service';
+import { UserInput } from './type/user.input';
 
 @Resolver(() => User)
 export class UsersResolver {
@@ -28,6 +29,14 @@ export class UsersResolver {
   @Query(() => User)
   user(@Args('email') email: string): Promise<User> {
     return this.usersService.user(email);
+  }
+
+  @Mutation(() => User)
+  editUser(
+    @Args('userId') userId: number,
+    @Args('userInput') userInput: UserInput,
+  ): Promise<User> {
+    return this.usersService.editUser({ userInput, userId });
   }
 
   @Mutation(() => String)

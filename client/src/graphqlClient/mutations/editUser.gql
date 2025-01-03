@@ -1,0 +1,10 @@
+mutation EditUser($userId: Float!, $userInput: UserInput!) {
+  editUser(userId: $userId, userInput: $userInput) {
+    UserID
+    Username
+    Email
+    Password
+    PhotoUrl
+    isChangePassword
+  }
+}

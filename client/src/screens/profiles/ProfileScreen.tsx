@@ -1,6 +1,6 @@
 import { gql, useQuery, useReactiveVar } from "@apollo/client";
 import React, { useEffect, useState } from "react";
-import { View } from "react-native";
+import { ActivityIndicator, View } from "react-native";
 import {
   AvatarComponent,
   ContainerComponent,
@@ -15,44 +15,21 @@ import { UserModel } from "../../models/UserModel";
 import { globalStyles } from "../../styles/gloabalStyles";
 import AboutProfile from "./components/AboutProfile";
 import EditProfile from "./components/EditProfile";
+import { GetUserIdDocument } from "../../gql/graphql";
 
 const ProfileScreen = ({ route }: any) => {
   const userAsync = useReactiveVar(userVar);
   const userId = route.params?.userId ?? userAsync?.UserID;
   const [user, setUser] = useState<UserModel>();
-  const { data: data_user } = useQuery(
-    gql`
-      query getUserId($userId: Float!) {
-        getUserId(userId: $userId) {
-          UserID
-          Email
-          PhotoUrl
-          followings {
-            UserID
-            PhotoUrl
-            Username
-            Email
-          }
-          followers {
-            UserID
-            PhotoUrl
-            Username
-            Email
-          }
-        }
-      }
-    `,
-    {
-      variables: {
-        userId,
-      },
-      skip: !userId,
-    }
-  );
+  const { data: data_user } = useQuery(GetUserIdDocument, {
+    variables: {
+      userId,
+    },
+    skip: !userId,
+  });
 
-  
   useEffect(() => {
-    data_user && setUser(data_user.getUserId);
+    data_user && setUser(data_user.getUserId as UserModel);
   }, [data_user]);
 
   return (
@@ -98,14 +75,15 @@ const ProfileScreen = ({ route }: any) => {
             </RowComponent>
           </SectionComponent>
 
-          {userAsync?.UserID !== route.params?.userId ? (
+          {route.params?.userId &&
+          userAsync?.UserID !== route.params?.userId ? (
             <AboutProfile />
           ) : (
-            <EditProfile profile={user}/>
+            <EditProfile profile={user} />
           )}
         </>
       ) : (
-        <TextComponent text="Profile not found !" />
+        <ActivityIndicator />
       )}
     </ContainerComponent>
   );

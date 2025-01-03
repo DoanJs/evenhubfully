@@ -102,7 +102,7 @@ const DrawerCustom = ({ navigation }: any) => {
           params: {
             screen: "ProfileScreen",
             params: {
-              userId: user.UserID
+              userId: user.UserID,
             },
           },
         });
@@ -117,11 +117,11 @@ const DrawerCustom = ({ navigation }: any) => {
     <View style={[localStyles.container]}>
       <AvatarComponent
         onPress={() => handleNavigation("MyProfile")}
-        name={user?.Username ?? user?.Email}
+        name={user?.Username ?? (user?.Email as string)}
         photoURL={user?.PhotoUrl}
         size={56}
       />
-      <TextComponent text={user?.Username ?? user?.Email} />
+      <TextComponent text={user?.Username ?? (user?.Email as string)} />
 
       <FlatList
         showsVerticalScrollIndicator={false}

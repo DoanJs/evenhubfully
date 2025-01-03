@@ -1,4 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql';
+import { EventInput } from 'src/events/type/event.input';
 
 @InputType()
 export class UserInput {
@@ -17,6 +18,6 @@ export class UserInput {
   @Field({ nullable: true })
   isChangePassword?: number;
 
-  @Field(() => [Event], { nullable: true })
-  followEvents?: [Event];
+  @Field(() => [EventInput], { nullable: true })
+  followEvents?: [EventInput];
 }
