@@ -16,5 +16,11 @@ query getUserId($userId: Float!) {
       Username
       Email
     }
+    interests {
+      CategoryID
+      title
+      label
+      color
+    }
   }
 }

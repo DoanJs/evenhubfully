@@ -1,0 +1,10 @@
+query Categories {
+  categories {
+    CategoryID
+    createAt
+    updateAt
+    title
+    color
+    label
+  }
+}

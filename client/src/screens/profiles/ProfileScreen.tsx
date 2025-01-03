@@ -29,7 +29,9 @@ const ProfileScreen = ({ route }: any) => {
   });
 
   useEffect(() => {
-    data_user && setUser(data_user.getUserId as UserModel);
+    if (data_user) {
+      setUser(data_user.getUserId as UserModel);
+    }
   }, [data_user]);
 
   return (

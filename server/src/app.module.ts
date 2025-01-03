@@ -13,6 +13,7 @@ import { FollowModule } from './follows/Follow.module';
 import { PositionModule } from './positions/Position.module';
 import { UsersModule } from './users/Users.module';
 import { DataLoaderModule } from './dataloader/Dataloader.module';
+import { CategoryModule } from './categories/Category.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { DataLoaderModule } from './dataloader/Dataloader.module';
     PositionModule,
     FCMTokenModule,
     FollowModule,
+    CategoryModule,
     DataLoaderModule,
   ],
   controllers: [AppController],

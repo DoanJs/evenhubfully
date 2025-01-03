@@ -11,6 +11,8 @@ import { FollowEventInput } from './type/followEvent.input';
 import { User } from './User.model';
 import { UsersService } from './User.service';
 import { UserInput } from './type/user.input';
+import { UserCategoryInput } from './type/userCategory.input';
+import { Category } from 'src/categories/Category.model';
 
 @Resolver(() => User)
 export class UsersResolver {
@@ -47,6 +49,15 @@ export class UsersResolver {
     return this.usersService.editFollowEvent({ followEventInput, type });
   }
 
+  @Mutation(() => String)
+  editInterests(
+    @Args('userId') userId: number,
+    @Args('interests', { type: () => [UserCategoryInput] })
+    interests: [UserCategoryInput],
+  ): Promise<string> {
+    return this.usersService.editInterests({ interests, userId });
+  }
+
   // relation
 
   @ResolveField(() => [Event])
@@ -67,5 +78,10 @@ export class UsersResolver {
   @ResolveField(() => [User])
   followers(@Parent() user: User): Promise<User[]> {
     return this.usersService.followers(user.UserID);
+  }
+
+  @ResolveField(() => [Category])
+  interests(@Parent() user: User): Promise<User[]> {
+    return this.usersService.interests(user.UserID);
   }
 }

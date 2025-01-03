@@ -1,0 +1,10 @@
+mutation CreateCategory($categoryInput: CategoryInput!) {
+  createCategory(categoryInput: $categoryInput) {
+    CategoryID
+    createAt
+    updateAt
+    title
+    color
+    label
+  }
+}

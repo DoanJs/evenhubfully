@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { FollowEventInput } from './type/followEvent.input';
 import { UserInput } from './type/user.input';
 import { User } from './User.model';
+import { UserCategoryInput } from './type/userCategory.input';
 
 @Injectable()
 export class UsersService {
@@ -76,6 +77,26 @@ export class UsersService {
     }
   }
 
+  async editInterests({
+    userId,
+    interests,
+  }: {
+    userId: number;
+    interests: UserCategoryInput[];
+  }): Promise<string> {
+    await this.userRepository.query(
+      `delete from Categories_Users where UserID = ${userId}`,
+    );
+
+    const result = interests.map(async (item) => {
+      await this.userRepository.query(
+        `insert into Categories_Users (UserID, CategoryID) values (${item.UserID}, ${item.CategoryID})`,
+      );
+    });
+    await Promise.resolve(result);
+    return 'Update interests compelte !';
+  }
+
   // relation
   async followEvents(UserID: number): Promise<Event[]> {
     return this.userRepository.query(
@@ -120,5 +141,15 @@ export class UsersService {
       result = await Promise.all(resultLoader);
     }
     return result;
+  }
+
+  async interests(UserID: number): Promise<User[]> {
+    return this.userRepository.query(
+      `select Categories.* from Categories 
+        inner join Categories_Users 
+        on Categories.CategoryID = Categories_Users.CategoryID 
+        where Categories_Users.UserID = ${UserID}
+  `,
+    );
   }
 }

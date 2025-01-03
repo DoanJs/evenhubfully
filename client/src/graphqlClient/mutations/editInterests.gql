@@ -1,0 +1,6 @@
+mutation EditInterests ($userId: Float!, $interests: [UserCategoryInput!]!){
+  editInterests(
+    userId: $userId
+    interests: $interests
+  )
+}

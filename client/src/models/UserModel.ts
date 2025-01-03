@@ -1,3 +1,5 @@
+import { CategoryModel } from "./CategoryModel";
+
 export interface UserModel {
   __typename: string;
   UserID: number;
@@ -9,4 +11,5 @@ export interface UserModel {
 
   followings?: [UserModel]
   followers?: [UserModel]
+  interests?: [CategoryModel]
 }

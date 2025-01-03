@@ -1,4 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
+import { Category } from 'src/categories/Category.model';
 import { Event } from 'src/events/Event.model';
 import { FCMToken } from 'src/fcmtokens/FCMToken.model';
 import { Follow } from 'src/follows/Follow.model';
@@ -58,4 +59,8 @@ export class User {
   @ManyToMany(() => Event, (event) => event.followers)
   @Field(() => [Event], { nullable: true })
   followEvents: [Event];
+
+  @ManyToMany(() => Category, (category) => category.users)
+  @Field(() => [Category], { nullable: true })
+  interests: [Category];
 }

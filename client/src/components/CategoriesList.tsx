@@ -6,17 +6,12 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { appColor } from "../constants/appColor";
 import TagComponent from "./TagComponent";
 import { globalStyles } from "../styles/gloabalStyles";
+import { Category } from "../models/CategoryModel";
 
 interface Props {
   isFill?: boolean;
 }
 
-interface Category {
-  icon: ReactNode;
-  color: string;
-  label: string;
-  key: string;
-}
 const CategoriesList = (props: Props) => {
   const { isFill } = props;
   const categories: Category[] = [
