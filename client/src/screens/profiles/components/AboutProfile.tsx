@@ -103,7 +103,7 @@ const AboutProfile = (props: Props) => {
     let content: ReactNode = <></>;
     switch (key) {
       case "about":
-        content = <TextComponent text="about" />;
+        content = <TextComponent text={author.about} />;
         break;
       case "event":
         content = <TextComponent text="event" />;
@@ -180,6 +180,7 @@ const AboutProfile = (props: Props) => {
                 borderBottomColor:
                   tabSelected === item.key ? appColor.primary : appColor.gray,
                 paddingBottom: 8,
+                marginBottom: 12
               }}
             >
               <TextComponent

@@ -3,7 +3,6 @@ import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { Location } from "iconsax-react-native";
 import React, { useState } from "react";
 import { ImageBackground } from "react-native";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { appColor } from "../constants/appColor";
 import { appInfo } from "../constants/appInfos";
 import { fontFamilies } from "../constants/fontFamilies";
@@ -22,6 +21,7 @@ import CardComponent from "./CardComponent";
 import RowComponent from "./RowComponent";
 import SpaceComponent from "./SpaceComponent";
 import TextComponent from "./TextComponent";
+import { MaterialIcons } from "@expo/vector-icons";
 
 interface Props {
   item: EventModel;

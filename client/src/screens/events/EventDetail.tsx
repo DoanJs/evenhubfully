@@ -9,7 +9,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-// import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import arrowRight from "../../assets/images/arrowRight.png";
 import {
   AvatarGroup,
@@ -38,6 +37,7 @@ import { UserModel } from "../../models/UserModel";
 import { globalStyles } from "../../styles/gloabalStyles";
 import { DateTime } from "../../utils/DateTime";
 import MaterialIcons from "@expo/vector-icons/build/MaterialIcons";
+import ModalInvite from "../../models/ModalInvite";
 
 const EventDetail = ({ navigation, route }: any) => {
   // const navigation: NavigationProp<RootStackParamList> = useNavigation();
@@ -48,6 +48,7 @@ const EventDetail = ({ navigation, route }: any) => {
   const followers = useReactiveVar(followersVar);
   const user = useReactiveVar(userVar);
   const currentLocation = useReactiveVar(currentLocationVar);
+  const [isVisibleModalInvite, setisVisibleModalInvite] = useState(false);
   const [editFollowEvent] = useMutation(
     gql`
       mutation editFollowEvent(
@@ -336,6 +337,7 @@ const EventDetail = ({ navigation, route }: any) => {
                 >
                   <AvatarGroup size={36} zIndex={5} users={item.users} />
                   <TouchableOpacity
+                    onPress={() => setisVisibleModalInvite(true)}
                     style={[
                       globalStyles.button,
                       {
@@ -353,6 +355,7 @@ const EventDetail = ({ navigation, route }: any) => {
             ) : (
               <View style={{ alignItems: "center", borderRadius: 100 }}>
                 <ButtonComponent
+                  onPress={() => setisVisibleModalInvite(true)}
                   styles={{ borderRadius: 100 }}
                   text="Invite"
                   type="primary"
@@ -471,7 +474,10 @@ const EventDetail = ({ navigation, route }: any) => {
                   }}
                 >
                   <TextComponent size={16} text={item.author.Username} title />
-                  <TextComponent size={14} text={item.author.Email} />
+                  <TextComponent
+                    size={14}
+                    text={item.author.type ? item.author.type : "Personal"}
+                  />
                 </View>
                 {user?.UserID !== item.author.UserID && (
                   <CardComponent
@@ -532,6 +538,11 @@ const EventDetail = ({ navigation, route }: any) => {
         />
       </LinearGradient>
       <LoadingModal visible={isVisible} />
+
+      <ModalInvite
+        visible={isVisibleModalInvite}
+        onClose={() => setisVisibleModalInvite(false)}
+      />
     </View>
   );
 };

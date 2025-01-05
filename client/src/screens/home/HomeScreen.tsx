@@ -1,6 +1,7 @@
-import { gql, useQuery, useReactiveVar } from "@apollo/client";
+import { useQuery, useReactiveVar } from "@apollo/client";
+import { MaterialIcons } from "@expo/vector-icons";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import * as Location from "expo-location";
 import {
@@ -19,7 +20,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Invite from "../../assets/images/invite.png";
 import {
   CategoriesList,
@@ -36,6 +36,10 @@ import {
 import { appColor } from "../../constants/appColor";
 import { appInfo } from "../../constants/appInfos";
 import { fontFamilies } from "../../constants/fontFamilies";
+import {
+  Events_NearbyDocument,
+  Events_UpcomingDocument,
+} from "../../gql/graphql";
 import { currentLocationVar } from "../../graphqlClient/cache";
 import { EventModel } from "../../models/EventModel";
 import { globalStyles } from "../../styles/gloabalStyles";
@@ -48,40 +52,7 @@ const HomeScreen = () => {
   const [events, setEvents] = useState<EventModel[]>([]);
   const [events_nearby, setEvents_nearby] = useState<EventModel[]>([]);
   const { data: data_events_nearby, loading: loading_events_nearby } = useQuery(
-    gql`
-      query Events_nearby($paramsInput: ParamsInput!) {
-        events_nearby(paramsInput: $paramsInput) {
-          EventID
-          title
-          description
-          locationTitle
-          locationAddress
-          imageUrl
-          price
-          category
-          date
-          startAt
-          endAt
-          position {
-            lat
-            lng
-          }
-          followers {
-            UserID
-          }
-          users {
-            UserID
-            PhotoUrl
-          }
-          author {
-            UserID
-            Email
-            Username
-            PhotoUrl
-          }
-        }
-      }
-    `,
+    Events_NearbyDocument,
     {
       variables: {
         paramsInput: {
@@ -98,42 +69,7 @@ const HomeScreen = () => {
     data: data_events_upcoming,
     loading: loading_events_upcoming,
     error,
-  } = useQuery(
-    gql`
-      query Events_upcoming {
-        events_upcoming {
-          EventID
-          title
-          description
-          locationTitle
-          locationAddress
-          imageUrl
-          price
-          category
-          date
-          startAt
-          endAt
-          position {
-            lat
-            lng
-          }
-          followers {
-            UserID
-          }
-          users {
-            UserID
-            PhotoUrl
-          }
-          author {
-            UserID
-            Email
-            Username
-            PhotoUrl
-          }
-        }
-      }
-    `
-  );
+  } = useQuery(Events_UpcomingDocument);
 
   useEffect(() => {
     const reverseGeoCode = async ({
@@ -229,10 +165,11 @@ const HomeScreen = () => {
             <CircleComponent
               color="#524ce0"
               size={36}
-              onPress={async () =>
-                await HandleNotification.sendPushNotification({
-                  expoPushToken: "ExponentPushToken[aItaukCHenOmipmx8F7orA]",
-                })
+              onPress={
+                async () =>
+                  await HandleNotification.sendPushNotification({
+                    expoPushToken: "ExponentPushToken[aItaukCHenOmipmx8F7orA]",
+                  })
                 // await HandleNotification.schedulePushNotification()
               }
             >

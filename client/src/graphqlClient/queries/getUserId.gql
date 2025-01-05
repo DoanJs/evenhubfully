@@ -4,6 +4,7 @@ query getUserId($userId: Float!) {
     Username
     Email
     PhotoUrl
+    about
     followings {
       UserID
       PhotoUrl

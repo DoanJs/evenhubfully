@@ -34,6 +34,14 @@ export class User {
   @Field({ nullable: true })
   PhotoUrl: string;
 
+  @Column({ type: 'nvarchar', length: 'max', nullable: true })
+  @Field({ nullable: true })
+  about: string;
+
+  @Column({ type: 'nvarchar', length: 20, default: 'Personal', nullable: true })
+  @Field({ nullable: true })
+  type: string;
+
   @Column({ type: 'int', nullable: true })
   @Field({ nullable: true })
   isChangePassword: number;

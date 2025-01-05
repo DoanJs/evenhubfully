@@ -8,8 +8,10 @@ export interface UserModel {
   Password: string;
   PhotoUrl: string;
   isChangePassword: number;
+  about: string;
+  type: "Organizer" | "Personal" | undefined;
 
-  followings?: [UserModel]
-  followers?: [UserModel]
-  interests?: [CategoryModel]
+  followings?: [UserModel];
+  followers?: [UserModel];
+  interests?: [CategoryModel];
 }
