@@ -13,17 +13,17 @@ import { UserModel } from "../../../models/UserModel";
 import { appColor } from "../../../constants/appColor";
 import { Edit2 } from "iconsax-react-native";
 import ModalSelectCategories from "../../../models/ModalSelectCategories";
+import { globalStyles } from "../../../styles/gloabalStyles";
 
 interface Props {
   profile: UserModel;
 }
 
 const EditProfile = (props: Props) => {
-  const navigation: any = useNavigation();
   const { profile } = props;
+  const navigation: any = useNavigation();
   const [isVisibleModalCategory, setisVisibleModalCategory] = useState(false);
 
-  
   return (
     <SectionComponent>
       <RowComponent justify="center">
@@ -46,10 +46,13 @@ const EditProfile = (props: Props) => {
       <>
         <RowComponent>
           <TextComponent flex={1} text="Interests" title size={18} />
-          <RowComponent onPress={() => setisVisibleModalCategory(true)}>
-            <Edit2 scale={18} color={appColor.text} />
+          <RowComponent
+            styles={[globalStyles.tag, { backgroundColor: "#fdfdfe" }]}
+            onPress={() => setisVisibleModalCategory(true)}
+          >
+            <Edit2 scale={18} color={appColor.primary} />
             <SpaceComponent width={8} />
-            <TextComponent text="Change" />
+            <TextComponent text="Change" color={appColor.primary} />
           </RowComponent>
         </RowComponent>
         <RowComponent

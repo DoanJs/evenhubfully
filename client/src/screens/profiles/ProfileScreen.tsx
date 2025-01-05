@@ -1,8 +1,10 @@
-import { gql, useQuery, useReactiveVar } from "@apollo/client";
+import { useQuery, useReactiveVar } from "@apollo/client";
+import MaterialIcons from "@expo/vector-icons/build/MaterialIcons";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
 import {
   AvatarComponent,
+  ButtonComponent,
   ContainerComponent,
   RowComponent,
   SectionComponent,
@@ -10,12 +12,12 @@ import {
   TextComponent,
 } from "../../components";
 import { appColor } from "../../constants/appColor";
+import { GetUserIdDocument } from "../../gql/graphql";
 import { userVar } from "../../graphqlClient/cache";
 import { UserModel } from "../../models/UserModel";
 import { globalStyles } from "../../styles/gloabalStyles";
 import AboutProfile from "./components/AboutProfile";
 import EditProfile from "./components/EditProfile";
-import { GetUserIdDocument } from "../../gql/graphql";
 
 const ProfileScreen = ({ route }: any) => {
   const userAsync = useReactiveVar(userVar);
@@ -35,7 +37,18 @@ const ProfileScreen = ({ route }: any) => {
   }, [data_user]);
 
   return (
-    <ContainerComponent back title="Profile">
+    <ContainerComponent
+      back
+      title={route.params ? "" : "Profile"}
+      right={
+        <ButtonComponent
+          onPress={() => {}}
+          icon={
+            <MaterialIcons name="more-vert" size={22} color={appColor.text} />
+          }
+        />
+      }
+    >
       {user ? (
         <>
           <SectionComponent styles={globalStyles.center}>
@@ -79,7 +92,7 @@ const ProfileScreen = ({ route }: any) => {
 
           {route.params?.userId &&
           userAsync?.UserID !== route.params?.userId ? (
-            <AboutProfile />
+            <AboutProfile author={user} />
           ) : (
             <EditProfile profile={user} />
           )}

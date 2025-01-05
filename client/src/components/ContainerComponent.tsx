@@ -23,16 +23,17 @@ interface Props {
   title?: string;
   children: ReactNode;
   back?: boolean;
+  right?: ReactNode;
 }
 
 const ContainerComponent = (props: Props) => {
-  const { isImageBackground, isScroll, title, children, back } = props;
+  const { isImageBackground, isScroll, title, children, back, right } = props;
   const navigation = useNavigation();
 
   const headerComponent = () => {
     return (
       <View>
-        {(back || title) && (
+        {(back || title || right) && (
           <RowComponent
             styles={{
               paddingHorizontal: 16,
@@ -46,9 +47,17 @@ const ContainerComponent = (props: Props) => {
                 <ArrowLeft size={24} color={appColor.text} />
               </TouchableOpacity>
             )}
-            {title && (
-              <TextComponent text={title} styles={{ marginLeft: 12 }} font={fontFamilies.medium} />
-            )}
+
+            <View style={{ flex: 1 }}>
+              {title && (
+                <TextComponent
+                  text={title}
+                  styles={{ marginLeft: 12 }}
+                  font={fontFamilies.medium}
+                />
+              )}
+            </View>
+            {right && right}
           </RowComponent>
         )}
         {returnContainer}
@@ -72,7 +81,7 @@ const ContainerComponent = (props: Props) => {
     </ImageBackground>
   ) : (
     <SafeAreaView style={[globalStyles.container]}>
-      <StatusBar barStyle={'dark-content'}/>
+      <StatusBar barStyle={"dark-content"} />
       <View>{headerComponent()}</View>
     </SafeAreaView>
   );

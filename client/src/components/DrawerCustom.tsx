@@ -101,9 +101,6 @@ const DrawerCustom = ({ navigation }: any) => {
           screen: "Profile",
           params: {
             screen: "ProfileScreen",
-            params: {
-              userId: user.UserID,
-            },
           },
         });
         break;

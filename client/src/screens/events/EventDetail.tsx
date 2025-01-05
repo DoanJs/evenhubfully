@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+// import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import arrowRight from "../../assets/images/arrowRight.png";
 import {
   AvatarGroup,
@@ -24,6 +24,7 @@ import {
 import { appColor } from "../../constants/appColor";
 import { appInfo } from "../../constants/appInfos";
 import { fontFamilies } from "../../constants/fontFamilies";
+import { GetUserIdDocument } from "../../gql/graphql";
 import {
   currentLocationVar,
   followersVar,
@@ -36,10 +37,11 @@ import { EventModel } from "../../models/EventModel";
 import { UserModel } from "../../models/UserModel";
 import { globalStyles } from "../../styles/gloabalStyles";
 import { DateTime } from "../../utils/DateTime";
+import MaterialIcons from "@expo/vector-icons/build/MaterialIcons";
 
 const EventDetail = ({ navigation, route }: any) => {
   // const navigation: NavigationProp<RootStackParamList> = useNavigation();
-  const [isvisible, setIsvisible] = useState<boolean>(false);
+  const [isVisible, setIsVisible] = useState<boolean>(false);
   const { item }: { item: EventModel } = route.params;
   const followEvents = useReactiveVar(followEventsVar);
   const followings = useReactiveVar(followingsVar);
@@ -157,27 +159,7 @@ const EventDetail = ({ navigation, route }: any) => {
     {
       refetchQueries: [
         {
-          query: gql`
-            query getUserId($userId: Float!) {
-              getUserId(userId: $userId) {
-                UserID
-                Email
-                PhotoUrl
-                followings {
-                  UserID
-                  PhotoUrl
-                  Username
-                  Email
-                }
-                followers {
-                  UserID
-                  PhotoUrl
-                  Username
-                  Email
-                }
-              }
-            }
-          `,
+          query: GetUserIdDocument,
           variables: {
             userId: user?.UserID,
           },
@@ -187,7 +169,7 @@ const EventDetail = ({ navigation, route }: any) => {
   );
 
   const handleFollowEvent = () => {
-    setIsvisible(true);
+    setIsVisible(true);
 
     const arr: any = [];
     let type: "insert" | "delete" = "delete";
@@ -212,23 +194,25 @@ const EventDetail = ({ navigation, route }: any) => {
         },
       },
     })
-      .then((res) => setIsvisible(false))
+      .then((res) => setIsVisible(false))
       .catch((err) => {
         console.log(err);
-        setIsvisible(false);
+        setIsVisible(false);
       });
   };
 
   const handleFollow = (author: UserModel) => {
-    setIsvisible(true);
+    setIsVisible(true);
     let type: "insert" | "delete" = "delete";
     const arrFollowing = [...followings];
     const arrFollower = [...followers];
 
-    const index = arrFollowing.findIndex((item: any) => item.UserID === author.UserID);
+    const index = arrFollowing.findIndex(
+      (item: any) => item.UserID === author.UserID
+    );
     if (index === -1) {
       arrFollowing.push(author);
-      arrFollower.push(author)
+      arrFollower.push(author);
       type = "insert";
     } else {
       arrFollowing.splice(index, 1);
@@ -236,7 +220,7 @@ const EventDetail = ({ navigation, route }: any) => {
     }
 
     followingsVar(arrFollowing);
-    followersVar(arrFollower)
+    followersVar(arrFollower);
     editFollow({
       variables: {
         type,
@@ -246,10 +230,10 @@ const EventDetail = ({ navigation, route }: any) => {
         },
       },
     })
-      .then(() => setIsvisible(false))
+      .then(() => setIsVisible(false))
       .catch((err) => {
         console.log(err);
-        setIsvisible(false);
+        setIsVisible(false);
       });
   };
 
@@ -464,17 +448,8 @@ const EventDetail = ({ navigation, route }: any) => {
               <RowComponent
                 styles={{ flex: 1, marginHorizontal: 10 }}
                 onPress={() =>
-                  navigation.navigate("Main", {
-                    screen: "HomeNavigator",
-                    params: {
-                      screen: "Profile",
-                      params: {
-                        screen: "ProfileScreen",
-                        params: {
-                          userId: item.author.UserID,
-                        },
-                      },
-                    },
+                  navigation.navigate("ProfileScreen", {
+                    userId: item.author.UserID,
                   })
                 }
               >
@@ -556,7 +531,7 @@ const EventDetail = ({ navigation, route }: any) => {
           iconFlex="right"
         />
       </LinearGradient>
-      <LoadingModal visible={isvisible} />
+      <LoadingModal visible={isVisible} />
     </View>
   );
 };

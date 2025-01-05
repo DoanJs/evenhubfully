@@ -19,6 +19,7 @@ const documents = {
     "mutation EditUser($userId: Float!, $userInput: UserInput!) {\n  editUser(userId: $userId, userInput: $userInput) {\n    UserID\n    Username\n    Email\n    Password\n    PhotoUrl\n    isChangePassword\n  }\n}": types.EditUserDocument,
     "query Categories {\n  categories {\n    CategoryID\n    createAt\n    updateAt\n    title\n    color\n    label\n  }\n}": types.CategoriesDocument,
     "query getUserId($userId: Float!) {\n  getUserId(userId: $userId) {\n    UserID\n    Username\n    Email\n    PhotoUrl\n    followings {\n      UserID\n      PhotoUrl\n      Username\n      Email\n    }\n    followers {\n      UserID\n      PhotoUrl\n      Username\n      Email\n    }\n    interests {\n      CategoryID\n      title\n      label\n      color\n    }\n  }\n}": types.GetUserIdDocument,
+    "query user($email: String!) {\n  user(email: $email) {\n    UserID\n    Username\n    Password\n    Email\n    PhotoUrl\n    followEvents {\n      EventID\n    }\n    fcmTokens {\n      FCMToken\n    }\n    followings {\n      UserID\n      PhotoUrl\n      Username\n      Email\n    }\n    followers {\n      UserID\n      PhotoUrl\n      Username\n      Email\n    }\n  }\n}": types.UserDocument,
 };
 
 /**
@@ -55,6 +56,10 @@ export function graphql(source: "query Categories {\n  categories {\n    Categor
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "query getUserId($userId: Float!) {\n  getUserId(userId: $userId) {\n    UserID\n    Username\n    Email\n    PhotoUrl\n    followings {\n      UserID\n      PhotoUrl\n      Username\n      Email\n    }\n    followers {\n      UserID\n      PhotoUrl\n      Username\n      Email\n    }\n    interests {\n      CategoryID\n      title\n      label\n      color\n    }\n  }\n}"): (typeof documents)["query getUserId($userId: Float!) {\n  getUserId(userId: $userId) {\n    UserID\n    Username\n    Email\n    PhotoUrl\n    followings {\n      UserID\n      PhotoUrl\n      Username\n      Email\n    }\n    followers {\n      UserID\n      PhotoUrl\n      Username\n      Email\n    }\n    interests {\n      CategoryID\n      title\n      label\n      color\n    }\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "query user($email: String!) {\n  user(email: $email) {\n    UserID\n    Username\n    Password\n    Email\n    PhotoUrl\n    followEvents {\n      EventID\n    }\n    fcmTokens {\n      FCMToken\n    }\n    followings {\n      UserID\n      PhotoUrl\n      Username\n      Email\n    }\n    followers {\n      UserID\n      PhotoUrl\n      Username\n      Email\n    }\n  }\n}"): (typeof documents)["query user($email: String!) {\n  user(email: $email) {\n    UserID\n    Username\n    Password\n    Email\n    PhotoUrl\n    followEvents {\n      EventID\n    }\n    fcmTokens {\n      FCMToken\n    }\n    followings {\n      UserID\n      PhotoUrl\n      Username\n      Email\n    }\n    followers {\n      UserID\n      PhotoUrl\n      Username\n      Email\n    }\n  }\n}"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

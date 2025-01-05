@@ -12,7 +12,7 @@ import TextComponent from "./TextComponent";
 
 interface Props {
   icon?: ReactNode;
-  text: string;
+  text?: string;
   type?: "primary" | "text" | "link";
   color?: string;
   styles?: StyleProp<ViewStyle>;
@@ -59,28 +59,33 @@ const ButtonComponent = (props: Props) => {
       ]}
     >
       {icon && iconFlex === "left" && icon}
-      <TextComponent
-        text={text}
-        color={textColor ?? appColor.white}
-        styles={[
-          textStyles,
-          {
-            margin: icon ? 12 : 0,
-            fontSize: 16,
-            textAlign: "center",
-          },
-        ]}
-        flex={icon && iconFlex === "right" ? 1 : 0}
-        font={textFonts ?? fontFamilies.bold}
-      />
+      {text && (
+        <TextComponent
+          text={text}
+          color={textColor ?? appColor.white}
+          styles={[
+            textStyles,
+            {
+              margin: icon ? 12 : 0,
+              fontSize: 16,
+              textAlign: "center",
+            },
+          ]}
+          flex={icon && iconFlex === "right" ? 1 : 0}
+          font={textFonts ?? fontFamilies.bold}
+        />
+      )}
       {!disable && icon && iconFlex === "right" && icon}
     </TouchableOpacity>
   ) : (
     <TouchableOpacity onPress={onPress}>
-      <TextComponent
-        text={text}
-        color={type === "link" ? appColor.link : appColor.text}
-      />
+      {icon && icon}
+      {text && (
+        <TextComponent
+          text={text}
+          color={type === "link" ? appColor.link : appColor.text}
+        />
+      )}
     </TouchableOpacity>
   );
 };

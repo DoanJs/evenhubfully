@@ -26,6 +26,7 @@ import { SplashScreen } from "./src/screens";
 import AxiosAPI from "./src/utils/auth/callapi";
 import JWTManager from "./src/utils/auth/jwt";
 import { HandleNotification } from "./src/utils/handleNotification";
+import { UserDocument } from "./src/gql/graphql";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -41,39 +42,10 @@ const App = () => {
   const [isShowSplash, setIsShowSplash] = useState(true);
   const token = useReactiveVar(tokenVar);
   const user = useReactiveVar(userVar);
-  const { data: Data_user } = useQuery(
-    gql`
-      query ($email: String!) {
-        user(email: $email) {
-          UserID
-          Username
-          Password
-          Email
-          PhotoUrl
-          followEvents {
-            EventID
-          }
-          fcmTokens {
-            FCMToken
-          }
-          followings {
-            UserID
-            PhotoUrl
-            Username
-            Email
-          }
-          followers {
-            UserID
-            PhotoUrl
-            Username
-            Email
-          }
-        }
-      }
-    `,
+  const { data: Data_user } = useQuery(UserDocument,
     {
       variables: {
-        email: user?.Email,
+        email: user?.Email as string,
       },
       skip: !user,
     }

@@ -1,0 +1,27 @@
+query user($email: String!) {
+  user(email: $email) {
+    UserID
+    Username
+    Password
+    Email
+    PhotoUrl
+    followEvents {
+      EventID
+    }
+    fcmTokens {
+      FCMToken
+    }
+    followings {
+      UserID
+      PhotoUrl
+      Username
+      Email
+    }
+    followers {
+      UserID
+      PhotoUrl
+      Username
+      Email
+    }
+  }
+}
