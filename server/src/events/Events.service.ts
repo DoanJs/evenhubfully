@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import * as DataLoader from 'dataloader';
+import Expo from 'expo-server-sdk';
+import { DataLoaderService } from 'src/dataloader/Dataloader.service';
+import { Event } from 'src/events/Event.model';
 import { Position } from 'src/positions/Position.model';
 import { User } from 'src/users/User.model';
 import { ParamsInput } from 'src/utils/types/Params.input';
 import { Repository } from 'typeorm';
-import { Event } from 'src/events/Event.model';
 import { EventInput } from './type/event.input';
-import { DataLoaderService } from 'src/dataloader/Dataloader.service';
 
 @Injectable()
 export class EventsService {
@@ -115,6 +115,47 @@ export class EventsService {
     );
 
     return result;
+  }
+
+  async handlePushNotification(exponentPushToken: string): Promise<string> {
+    const expo = new Expo({ useFcmV1: true });
+
+    const messages = [
+      {
+        to: 'ExponentPushToken[aItaukCHenOmipmx8F7orA]',
+        sound: 'default',
+        body: 'This is a test notification',
+        data: { withSome: 'data' },
+      },
+    ];
+
+    if (!Expo.isExpoPushToken(exponentPushToken)) {
+      console.error(
+        `Push token ${exponentPushToken} is not a valid Expo push token`,
+      );
+      return;
+    }
+
+    messages.push({
+      to: exponentPushToken,
+      sound: 'default',
+      body: 'This is a test notification',
+      data: { withSome: 'data' },
+    });
+
+    const chunks = expo.chunkPushNotifications(messages);
+
+    for (const chunk of chunks) {
+      try {
+        const ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+        console.log(chunk);
+        console.log(ticketChunk);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    return;
   }
 
   // relation

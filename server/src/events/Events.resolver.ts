@@ -44,6 +44,13 @@ export class EventsResolver {
     return this.eventsService.createEvent(eventinput);
   }
 
+  @Mutation(() => String)
+  handlePushNotification(
+    @Args('exponentPushToken') exponentPushToken: string,
+  ): Promise<string> {
+    return this.eventsService.handlePushNotification(exponentPushToken);
+  }
+
   // relation
   @ResolveField(() => User)
   author(@Parent() event: Event): Promise<User> {

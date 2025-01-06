@@ -88,7 +88,7 @@ export class HandleNotification {
     throw new Error(errorMessage);
   };
 
-  // ap dung luc test k co api cua FCM server
+  // ap dung cho thong bao cuc bo # voi thong bao day
   static schedulePushNotification = async () => {
     await Notifications.scheduleNotificationAsync({
       content: {

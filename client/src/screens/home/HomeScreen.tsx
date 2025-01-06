@@ -122,6 +122,15 @@ const HomeScreen = () => {
     }
   }, [data_events_nearby]);
 
+  const handlePushNotification =async  () => {
+    const data = await HandleNotification.sendPushNotification({
+      expoPushToken: "ExponentPushToken[upbG_wKguchuFU-UW_jVEK]",
+    })
+    console.log("handlePush")
+    console.log(data)
+  await HandleNotification.schedulePushNotification()
+  }
+
   return (
     <View style={[globalStyles.container]}>
       <StatusBar barStyle={"light-content"} />
@@ -165,13 +174,7 @@ const HomeScreen = () => {
             <CircleComponent
               color="#524ce0"
               size={36}
-              onPress={
-                async () =>
-                  await HandleNotification.sendPushNotification({
-                    expoPushToken: "ExponentPushToken[aItaukCHenOmipmx8F7orA]",
-                  })
-                // await HandleNotification.schedulePushNotification()
-              }
+              onPress={async () => handlePushNotification()}
             >
               <View>
                 <Notification size={18} color={appColor.white} />
