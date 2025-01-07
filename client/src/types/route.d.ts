@@ -13,6 +13,6 @@ type RootStackParamList = {
   // MainScreen: NavigatorScreenParams<MainParamList>;
   MainScreen: undefined;
   SearchEvents: { isFilter: boolean };
-  EventDetail: { item: EventModel };
+  EventDetail: { eventId: number };
   
 };

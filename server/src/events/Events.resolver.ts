@@ -25,6 +25,11 @@ export class EventsResolver {
     return this.eventsService.events(paramsInput);
   }
 
+  @Query(() => Event)
+  event(@Args('eventId') eventId: number): Promise<Event> {
+    return this.eventsService.event(eventId);
+  }
+
   @Query(() => [Event])
   events_upcoming(): Promise<Event[]> {
     return this.eventsService.events_upcoming();

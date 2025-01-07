@@ -4,13 +4,14 @@ import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import * as Location from "expo-location";
+import * as Notifications from "expo-notifications";
 import {
   HambergerMenu,
   Notification,
   SearchNormal1,
   Sort,
 } from "iconsax-react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   FlatList,
   ImageBackground,
@@ -20,6 +21,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import Toast from "react-native-toast-message";
 import Invite from "../../assets/images/invite.png";
 import {
   CategoriesList,
@@ -71,6 +73,30 @@ const HomeScreen = () => {
     error,
   } = useQuery(Events_UpcomingDocument);
 
+  const notificationListener = useRef<Notifications.EventSubscription>();
+  const responseListener = useRef<Notifications.EventSubscription>();
+
+  useEffect(() => {
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        Toast.show({
+          text1: "Lời mời",
+          text2: "Bạn đã được mời tham gia vào sự kiện",
+          visibilityTime: 3000,
+          onPress: () => {
+            const eventId = notification?.request.content.data?.eventId;
+            navigation.navigate("EventDetail", { eventId });
+          },
+        });
+      });
+
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log("response: ", response.notification.request.content.data);
+      });
+
+  }, []);
+
   useEffect(() => {
     const reverseGeoCode = async ({
       lat,
@@ -112,24 +138,24 @@ const HomeScreen = () => {
 
   useEffect(() => {
     if (data_events_upcoming) {
-      setEvents(data_events_upcoming.events_upcoming);
+      setEvents(data_events_upcoming.events_upcoming as EventModel[]);
     }
   }, [data_events_upcoming]);
 
   useEffect(() => {
     if (data_events_nearby) {
-      setEvents_nearby(data_events_nearby.events_nearby);
+      setEvents_nearby(data_events_nearby.events_nearby as EventModel[]);
     }
   }, [data_events_nearby]);
 
-  const handlePushNotification =async  () => {
+  const handlePushNotification = async () => {
     const data = await HandleNotification.sendPushNotification({
       expoPushToken: "ExponentPushToken[upbG_wKguchuFU-UW_jVEK]",
-    })
-    console.log("handlePush")
-    console.log(data)
-  await HandleNotification.schedulePushNotification()
-  }
+    });
+    console.log("handlePush");
+    console.log(data);
+    await HandleNotification.schedulePushNotification();
+  };
 
   return (
     <View style={[globalStyles.container]}>
@@ -342,3 +368,6 @@ const HomeScreen = () => {
 };
 
 export default HomeScreen;
+function checkFCMTokens(token: string | undefined) {
+  throw new Error("Function not implemented.");
+}

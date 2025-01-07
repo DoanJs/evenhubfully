@@ -16,10 +16,11 @@ export interface EventModel {
   date: number;
   createAt: number;
   updateAt: number;
+
+
   author: UserModel;
-  
-  users: string[];
-  followers: string[];
+  users: UserModel[];
+  followers: UserModel[];
 }
 
 export interface Position {

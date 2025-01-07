@@ -1,8 +1,10 @@
-import { gql, useMutation, useReactiveVar } from "@apollo/client";
+import { useMutation, useQuery, useReactiveVar } from "@apollo/client";
+import MaterialIcons from "@expo/vector-icons/build/MaterialIcons";
 import { LinearGradient } from "expo-linear-gradient";
 import { ArrowLeft, Calendar, Location } from "iconsax-react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   Image,
   ImageBackground,
   ScrollView,
@@ -26,6 +28,7 @@ import { fontFamilies } from "../../constants/fontFamilies";
 import {
   EditFollowDocument,
   EditFollowEventDocument,
+  EventDocument,
   Events_NearbyDocument,
   Events_UpcomingDocument,
   GetUserIdDocument,
@@ -40,16 +43,15 @@ import {
 } from "../../graphqlClient/cache";
 import { LoadingModal } from "../../modals";
 import { EventModel } from "../../models/EventModel";
+import ModalInvite from "../../models/ModalInvite";
 import { UserModel } from "../../models/UserModel";
 import { globalStyles } from "../../styles/gloabalStyles";
 import { DateTime } from "../../utils/DateTime";
-import MaterialIcons from "@expo/vector-icons/build/MaterialIcons";
-import ModalInvite from "../../models/ModalInvite";
 
 const EventDetail = ({ navigation, route }: any) => {
   // const navigation: NavigationProp<RootStackParamList> = useNavigation();
   const [isVisible, setIsVisible] = useState<boolean>(false);
-  const { item }: { item: EventModel } = route.params;
+  const { eventId }: { eventId: number } = route.params;
   const followEvents = useReactiveVar(followEventsVar);
   const followings = useReactiveVar(followingsVar);
   const followers = useReactiveVar(followersVar);
@@ -81,6 +83,20 @@ const EventDetail = ({ navigation, route }: any) => {
       },
     ],
   });
+  const [event, setEvent] = useState<EventModel>();
+  const { data: data_event } = useQuery(EventDocument, {
+    variables: {
+      eventId,
+    },
+    skip: !eventId,
+  });
+
+  useEffect(() => {
+    if (data_event) {
+      setEvent(data_event.event as EventModel);
+    }
+  }, [data_event]);
+
   const [editFollow] = useMutation(EditFollowDocument, {
     refetchQueries: [
       {
@@ -99,10 +115,10 @@ const EventDetail = ({ navigation, route }: any) => {
     let type: "insert" | "delete" = "delete";
 
     const index = followEvents.findIndex(
-      (event: EventModel) => event.EventID === item.EventID
+      (item: EventModel) => item.EventID === event?.EventID
     );
     if (index === -1) {
-      arr.push({ EventID: item.EventID, __typename: "Event" });
+      arr.push({ EventID: event?.EventID, __typename: "Event" });
       type = "insert";
     } else {
       arr.splice(index, 1);
@@ -114,7 +130,7 @@ const EventDetail = ({ navigation, route }: any) => {
         type,
         followEventInput: {
           UserID: user?.UserID,
-          EventID: item.EventID,
+          EventID: event?.EventID,
         },
       },
     })
@@ -161,10 +177,11 @@ const EventDetail = ({ navigation, route }: any) => {
       });
   };
 
+  if (!event) return <ActivityIndicator />;
   return (
     <View style={{ flex: 1 }}>
       <ImageBackground
-        source={{ uri: item.imageUrl }}
+        source={{ uri: event.imageUrl }}
         style={{
           flex: 1,
           height: 244,
@@ -196,7 +213,7 @@ const EventDetail = ({ navigation, route }: any) => {
                 color={appColor.white}
               />
             </RowComponent>
-            {item.author.UserID !== user?.UserID && (
+            {event.author.UserID !== user?.UserID && (
               <CardComponent
                 onPress={handleFollowEvent}
                 styles={[
@@ -215,7 +232,7 @@ const EventDetail = ({ navigation, route }: any) => {
                   color={
                     followEvents &&
                     followEvents.findIndex(
-                      (event: EventModel) => event.EventID === item.EventID
+                      (item: EventModel) => item.EventID === event.EventID
                     ) !== -1
                       ? appColor.danger2
                       : appColor.white
@@ -236,7 +253,7 @@ const EventDetail = ({ navigation, route }: any) => {
           }}
         >
           <SectionComponent>
-            {item.users.length > 0 ? (
+            {event.users.length > 0 ? (
               <View
                 style={{
                   flex: 1,
@@ -258,7 +275,7 @@ const EventDetail = ({ navigation, route }: any) => {
                     },
                   ]}
                 >
-                  <AvatarGroup size={36} zIndex={5} users={item.users} />
+                  <AvatarGroup size={36} zIndex={5} users={event.users} />
                   <TouchableOpacity
                     onPress={() => setisVisibleModalInvite(true)}
                     style={[
@@ -295,7 +312,7 @@ const EventDetail = ({ navigation, route }: any) => {
             <SectionComponent>
               <TextComponent
                 title
-                text={item.title}
+                text={event.title}
                 size={34}
                 font={fontFamilies.medium}
               />
@@ -326,16 +343,16 @@ const EventDetail = ({ navigation, route }: any) => {
                 >
                   <TextComponent
                     size={16}
-                    text={DateTime.GetDate(new Date(item.startAt))}
+                    text={DateTime.GetDate(new Date(event.startAt))}
                     title
                   />
                   <TextComponent
                     size={14}
                     text={`${appInfo.daysName[
-                      new Date(item.startAt).getDay()
+                      new Date(event.startAt).getDay()
                     ].substring(0, 3)}, ${DateTime.GetStartAndEnd(
-                      item.startAt,
-                      item.endAt
+                      event.startAt,
+                      event.endAt
                     )} `}
                   />
                 </View>
@@ -363,10 +380,10 @@ const EventDetail = ({ navigation, route }: any) => {
                     justifyContent: "space-around",
                   }}
                 >
-                  <TextComponent size={16} text={item.locationTitle} title />
+                  <TextComponent size={16} text={event.locationTitle} title />
                   <TextComponent
                     size={14}
-                    text={item.locationAddress}
+                    text={event.locationAddress}
                     numberOfLine={1}
                   />
                 </View>
@@ -375,12 +392,12 @@ const EventDetail = ({ navigation, route }: any) => {
                 styles={{ flex: 1, marginHorizontal: 10 }}
                 onPress={() =>
                   navigation.navigate("ProfileScreen", {
-                    userId: item.author.UserID,
+                    userId: event.author.UserID,
                   })
                 }
               >
                 <Image
-                  source={{ uri: item.author.PhotoUrl }}
+                  source={{ uri: event.author.PhotoUrl }}
                   style={{
                     resizeMode: "cover",
                     borderRadius: 12,
@@ -396,15 +413,15 @@ const EventDetail = ({ navigation, route }: any) => {
                     justifyContent: "space-around",
                   }}
                 >
-                  <TextComponent size={16} text={item.author.Username} title />
+                  <TextComponent size={16} text={event.author.Username} title />
                   <TextComponent
                     size={14}
-                    text={item.author.type ? item.author.type : "Personal"}
+                    text={event.author.type ? event.author.type : "Personal"}
                   />
                 </View>
-                {user?.UserID !== item.author.UserID && (
+                {user?.UserID !== event.author.UserID && (
                   <CardComponent
-                    onPress={() => handleFollow(item.author)}
+                    onPress={() => handleFollow(event.author)}
                     styles={[
                       globalStyles.noSpaceCard,
                       {
@@ -420,7 +437,7 @@ const EventDetail = ({ navigation, route }: any) => {
                       text={
                         followings.findIndex(
                           (following: any) =>
-                            following.UserID === item.author.UserID
+                            following.UserID === event.author.UserID
                         ) !== -1
                           ? "UnFollow"
                           : "Follow"
@@ -435,7 +452,7 @@ const EventDetail = ({ navigation, route }: any) => {
 
             <SectionComponent styles={{ marginBottom: 86 }}>
               <TabBarComponent title="About Event" />
-              <TextComponent text={item.description} />
+              <TextComponent text={event.description} />
             </SectionComponent>
           </View>
         </ScrollView>

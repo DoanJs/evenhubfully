@@ -2,16 +2,16 @@ import React from "react";
 import { Image, StyleProp, ViewStyle } from "react-native";
 import { appColor } from "../constants/appColor";
 import { fontFamilies } from "../constants/fontFamilies";
+import { UserModel } from "../models/UserModel";
 import RowComponent from "./RowComponent";
 import SpaceComponent from "./SpaceComponent";
 import TextComponent from "./TextComponent";
-import { UserModel } from "../models/UserModel";
 
 interface Props {
   styles?: StyleProp<ViewStyle>;
   size?: number;
   zIndex?: number;
-  users?: string[];
+  users?: UserModel[];
 }
 
 const AvatarGroup = (props: Props) => {
@@ -19,9 +19,12 @@ const AvatarGroup = (props: Props) => {
   return (
     <RowComponent
       justify="flex-start"
-      styles={{
-        marginVertical: 12,
-      }}
+      styles={[
+        {
+          marginVertical: 12,
+        },
+        styles,
+      ]}
     >
       {users && (
         <>

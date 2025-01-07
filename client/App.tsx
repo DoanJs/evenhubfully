@@ -12,6 +12,8 @@ import * as Notifications from "expo-notifications";
 import * as SplashSScreen from "expo-splash-screen";
 import { jwtDecode, JwtPayload } from "jwt-decode";
 import React, { useEffect, useRef, useState } from "react";
+import Toast from "react-native-toast-message";
+import { UserDocument } from "./src/gql/graphql";
 import client from "./src/graphqlClient";
 import {
   followersVar,
@@ -20,17 +22,17 @@ import {
   tokenVar,
   userVar,
 } from "./src/graphqlClient/cache";
+import linking from "./src/linking";
 import AuthNavigator from "./src/navigators/AuthNavigator";
 import MainNavigator from "./src/navigators/MainNavigator";
 import { SplashScreen } from "./src/screens";
 import AxiosAPI from "./src/utils/auth/callapi";
 import JWTManager from "./src/utils/auth/jwt";
 import { HandleNotification } from "./src/utils/handleNotification";
-import { UserDocument } from "./src/gql/graphql";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
-    shouldShowAlert: true,
+    shouldShowAlert: false, //default: true
     shouldPlaySound: false,
     shouldSetBadge: false,
   }),
@@ -42,14 +44,12 @@ const App = () => {
   const [isShowSplash, setIsShowSplash] = useState(true);
   const token = useReactiveVar(tokenVar);
   const user = useReactiveVar(userVar);
-  const { data: Data_user } = useQuery(UserDocument,
-    {
-      variables: {
-        email: user?.Email as string,
-      },
-      skip: !user,
-    }
-  );
+  const { data: Data_user } = useQuery(UserDocument, {
+    variables: {
+      email: user?.Email as string,
+    },
+    skip: !user,
+  });
   const [createFCMToken] = useMutation(
     gql`
       mutation CreateFCMToken($userId: Float!, $FCMToken: String!) {
@@ -59,23 +59,7 @@ const App = () => {
     {
       refetchQueries: [
         {
-          query: gql`
-            query ($email: String!) {
-              user(email: $email) {
-                UserID
-                Username
-                Password
-                Email
-                PhotoUrl
-                followEvents {
-                  EventID
-                }
-                fcmTokens {
-                  FCMToken
-                }
-              }
-            }
-          `,
+          query: UserDocument,
           variables: {
             email: user?.Email,
           },
@@ -83,12 +67,11 @@ const App = () => {
       ],
     }
   );
+ 
+
   const [loaded, error] = useFonts({
     AirbnbCereal_W_Bd: require("./assets/fonts/AirbnbCereal_W_Bd.otf"),
   });
-  
-  const notificationListener = useRef<Notifications.EventSubscription>();
-  const responseListener = useRef<Notifications.EventSubscription>();
 
   // Khi F5 app va k di qua LoginScreen
   useEffect(() => {
@@ -97,7 +80,7 @@ const App = () => {
       userVar(user);
       followEventsVar(user.followEvents);
       followingsVar(user.followings);
-      followersVar(user.followers)
+      followersVar(user.followers);
     };
     Data_user && setUser(Data_user.user);
   }, [Data_user]);
@@ -108,28 +91,6 @@ const App = () => {
         checkFCMTokens(token);
       })
       .catch((error: any) => console.log(error));
-
-    // if (Platform.OS === "android") {
-    //   Notifications.getNotificationChannelsAsync().then((value) => {
-    //     console.log(value)
-    //     // setChannels(value ?? []);
-    //   });
-    // }
-    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-      // setNotification(notification);
-      console.log(notification)
-    });
-
-    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-      console.log(response);
-    });
-
-    // return () => {
-    //   notificationListener.current &&
-    //     Notifications.removeNotificationSubscription(notificationListener.current);
-    //   responseListener.current &&
-    //     Notifications.removeNotificationSubscription(responseListener.current);
-    // };
   }, []);
 
   useEffect(() => {
@@ -200,7 +161,7 @@ const App = () => {
   return isShowSplash ? (
     <SplashScreen />
   ) : (
-    <NavigationContainer>
+    <NavigationContainer linking={linking}>
       {token ? <MainNavigator /> : <AuthNavigator />}
     </NavigationContainer>
   );
@@ -209,6 +170,7 @@ const App = () => {
 const MyApplication = () => (
   <ApolloProvider client={client}>
     <App />
+    <Toast />
   </ApolloProvider>
 );
 export default MyApplication;

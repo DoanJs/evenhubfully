@@ -1,11 +1,25 @@
-import { gql, useMutation, useReactiveVar } from "@apollo/client";
+import { useMutation, useReactiveVar } from "@apollo/client";
+import { MaterialIcons } from "@expo/vector-icons";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { Location } from "iconsax-react-native";
 import React, { useState } from "react";
-import { ImageBackground } from "react-native";
+import { ActivityIndicator, ImageBackground } from "react-native";
+import {
+  AvatarGroup,
+  CardComponent,
+  RowComponent,
+  SpaceComponent,
+  TextComponent,
+} from ".";
 import { appColor } from "../constants/appColor";
 import { appInfo } from "../constants/appInfos";
 import { fontFamilies } from "../constants/fontFamilies";
+import {
+  EditFollowEventDocument,
+  Events_NearbyDocument,
+  Events_UpcomingDocument,
+  UserDocument,
+} from "../gql/graphql";
 import {
   currentLocationVar,
   followEventsVar,
@@ -16,19 +30,6 @@ import { EventModel } from "../models/EventModel";
 import { globalStyles } from "../styles/gloabalStyles";
 import { RootStackParamList } from "../types/route";
 import { numberToString } from "../utils/numberToString";
-import AvatarGroup from "./AvatarGroup";
-import CardComponent from "./CardComponent";
-import RowComponent from "./RowComponent";
-import SpaceComponent from "./SpaceComponent";
-import TextComponent from "./TextComponent";
-import { MaterialIcons } from "@expo/vector-icons";
-import {
-  EditFollowEventDocument,
-  Events_NearbyDocument,
-  Events_UpcomingDocument,
-  UserDocument,
-} from "../gql/graphql";
-import { UserModel } from "../models/UserModel";
 
 interface Props {
   item: EventModel;
@@ -37,10 +38,10 @@ interface Props {
 const EventItem = (props: Props) => {
   const { item, type } = props;
   const navigation: NavigationProp<RootStackParamList> = useNavigation();
-  const [isvisible, setIsvisible] = useState<boolean>(false);
   const followEvents = useReactiveVar(followEventsVar);
   const user = useReactiveVar(userVar);
   const currentLocation = useReactiveVar(currentLocationVar);
+  const [isvisible, setIsvisible] = useState<boolean>(false);
   const [editFollowEvent] = useMutation(EditFollowEventDocument, {
     refetchQueries: [
       {
@@ -74,10 +75,10 @@ const EventItem = (props: Props) => {
     let type: "insert" | "delete" = "delete";
 
     const index = arr.findIndex(
-      (event: EventModel) => event.EventID === item.EventID
+      (event: EventModel) => event.EventID === item?.EventID
     );
     if (index === -1) {
-      arr.push({ EventID: item.EventID, __typename: "Event" });
+      arr.push({ EventID: item?.EventID, __typename: "Event" });
       type = "insert";
     } else {
       arr.splice(index, 1);
@@ -90,7 +91,7 @@ const EventItem = (props: Props) => {
         type,
         followEventInput: {
           UserID: user?.UserID,
-          EventID: item.EventID,
+          EventID: item?.EventID,
         },
       },
     })
@@ -104,7 +105,9 @@ const EventItem = (props: Props) => {
   return (
     <CardComponent
       isShadow
-      onPress={() => navigation.navigate("EventDetail", { item })}
+      onPress={() =>
+        navigation.navigate("EventDetail", { eventId: item.EventID })
+      }
       styles={{ width: appInfo.sizes.WIDTH * 0.7 }}
     >
       <ImageBackground

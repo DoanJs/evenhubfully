@@ -17,12 +17,18 @@ export class EventsService {
     private dataloaderService: DataLoaderService,
   ) {}
 
-  async handlePushNotification({ somePushTokens }) {
+  async handlePushNotification({
+    somePushTokens,
+    data,
+  }: {
+    somePushTokens: string[];
+    data: any;
+  }) {
     const expo = new Expo({ useFcmV1: true });
 
     // Create the messages that you want to send to clients
     const messages = [];
-    for (let pushToken of somePushTokens) {
+    for (const pushToken of somePushTokens) {
       // Each push token looks like ExponentPushToken[xxxxxxxxxxxxxxxxxxxxxx]
 
       // Check that all your push tokens appear to be valid Expo push tokens
@@ -35,8 +41,8 @@ export class EventsService {
       messages.push({
         to: pushToken,
         sound: 'default',
-        body: 'Bạn đã được mời tham gia vào sự kiện nào đó',
-        data: { withSome: 'data' },
+        body: 'Bạn đã được mời tham gia vào sự kiện',
+        data,
       });
     }
 
@@ -90,6 +96,13 @@ export class EventsService {
     } else {
       return this.eventRepository.query('select * from Events');
     }
+  }
+
+  async event(eventId: number): Promise<Event> {
+    const result = await this.eventRepository.query(
+      `select * from Events where EventID = ${eventId}`,
+    );
+    return result[0];
   }
 
   async events_upcoming(): Promise<Event[]> {
@@ -165,6 +178,10 @@ export class EventsService {
     const somePushTokens = [];
     const someEmails = [];
 
+    const author = await this.eventRepository.query(
+      `select * from Users where UserID = ${authorId}`,
+    );
+
     const result = userIds.map(async (id: number) => {
       const response = await this.eventRepository.query(
         `select * from FCMTokens where userId = ${id}`,
@@ -189,7 +206,10 @@ export class EventsService {
     await Promise.all(result);
 
     if (somePushTokens.length > 0) {
-      await this.handlePushNotification({ somePushTokens });
+      await this.handlePushNotification({
+        somePushTokens,
+        data: { eventId, userSend: author[0] },
+      });
     }
 
     if (someEmails.length > 0) {
