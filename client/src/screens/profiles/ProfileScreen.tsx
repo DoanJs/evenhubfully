@@ -1,7 +1,7 @@
 import { useQuery, useReactiveVar } from "@apollo/client";
 import MaterialIcons from "@expo/vector-icons/build/MaterialIcons";
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, View } from "react-native";
+import { ActivityIndicator, ScrollView, View } from "react-native";
 import {
   AvatarComponent,
   ButtonComponent,
@@ -49,57 +49,59 @@ const ProfileScreen = ({ route }: any) => {
         />
       }
     >
-      {user ? (
-        <>
-          <SectionComponent styles={globalStyles.center}>
-            <RowComponent styles={globalStyles.center}>
-              <AvatarComponent
-                photoURL={user.PhotoUrl}
-                name={user.Username ?? user.Email}
-                size={120}
-              />
-            </RowComponent>
-            <SpaceComponent height={16} />
-            <TextComponent size={24} text={user.Username ?? user.Email} />
-            <SpaceComponent height={16} />
-            <RowComponent>
-              <View style={[globalStyles.center, { flex: 1 }]}>
-                <TextComponent
-                  title
-                  text={`${user.followings?.length}`}
-                  size={20}
+      <ScrollView showsVerticalScrollIndicator={false} style={{paddingBottom: 150}}>
+        {user ? (
+          <>
+            <SectionComponent styles={globalStyles.center}>
+              <RowComponent styles={globalStyles.center}>
+                <AvatarComponent
+                  photoURL={user.PhotoUrl}
+                  name={user.Username ?? user.Email}
+                  size={120}
                 />
-                <TextComponent text="Following" />
-              </View>
-              <View
-                style={{
-                  width: 1,
-                  height: 30,
-                  backgroundColor: appColor.gray2,
-                  marginHorizontal: 10,
-                }}
-              />
-              <View style={[globalStyles.center, { flex: 1 }]}>
-                <TextComponent
-                  title
-                  text={`${user.followers?.length}`}
-                  size={20}
+              </RowComponent>
+              <SpaceComponent height={16} />
+              <TextComponent size={24} text={user.Username ?? user.Email} />
+              <SpaceComponent height={16} />
+              <RowComponent>
+                <View style={[globalStyles.center, { flex: 1 }]}>
+                  <TextComponent
+                    title
+                    text={`${user.followings?.length}`}
+                    size={20}
+                  />
+                  <TextComponent text="Following" />
+                </View>
+                <View
+                  style={{
+                    width: 1,
+                    height: 30,
+                    backgroundColor: appColor.gray2,
+                    marginHorizontal: 10,
+                  }}
                 />
-                <TextComponent text="Followers" />
-              </View>
-            </RowComponent>
-          </SectionComponent>
+                <View style={[globalStyles.center, { flex: 1 }]}>
+                  <TextComponent
+                    title
+                    text={`${user.followers?.length}`}
+                    size={20}
+                  />
+                  <TextComponent text="Followers" />
+                </View>
+              </RowComponent>
+            </SectionComponent>
 
-          {route.params?.userId &&
-          userAsync?.UserID !== route.params?.userId ? (
-            <AboutProfile author={user} />
-          ) : (
-            <EditProfile profile={user} />
-          )}
-        </>
-      ) : (
-        <ActivityIndicator />
-      )}
+            {route.params?.userId &&
+            userAsync?.UserID !== route.params?.userId ? (
+              <AboutProfile author={user} />
+            ) : (
+              <EditProfile profile={user} />
+            )}
+          </>
+        ) : (
+          <ActivityIndicator />
+        )}
+      </ScrollView>
     </ContainerComponent>
   );
 };

@@ -45,10 +45,16 @@ export class EventsResolver {
   }
 
   @Mutation(() => String)
-  handlePushNotification(
-    @Args('exponentPushToken') exponentPushToken: string,
+  pushInviteNotifications(
+    @Args('userIds', { type: () => [Number] }) userIds: number[],
+    @Args('authorId') authorId: number,
+    @Args('eventId') eventId: number,
   ): Promise<string> {
-    return this.eventsService.handlePushNotification(exponentPushToken);
+    return this.eventsService.pushInviteNotifications({
+      userIds,
+      eventId,
+      authorId,
+    });
   }
 
   // relation

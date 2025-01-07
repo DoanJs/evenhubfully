@@ -23,7 +23,14 @@ import {
 import { appColor } from "../../constants/appColor";
 import { appInfo } from "../../constants/appInfos";
 import { fontFamilies } from "../../constants/fontFamilies";
-import { GetUserIdDocument } from "../../gql/graphql";
+import {
+  EditFollowDocument,
+  EditFollowEventDocument,
+  Events_NearbyDocument,
+  Events_UpcomingDocument,
+  GetUserIdDocument,
+  UserDocument,
+} from "../../gql/graphql";
 import {
   currentLocationVar,
   followersVar,
@@ -49,134 +56,50 @@ const EventDetail = ({ navigation, route }: any) => {
   const user = useReactiveVar(userVar);
   const currentLocation = useReactiveVar(currentLocationVar);
   const [isVisibleModalInvite, setisVisibleModalInvite] = useState(false);
-  const [editFollowEvent] = useMutation(
-    gql`
-      mutation editFollowEvent(
-        $type: String!
-        $followEventInput: FollowEventInput!
-      ) {
-        editFollowEvent(type: $type, followEventInput: $followEventInput)
-      }
-    `,
-    {
-      refetchQueries: [
-        {
-          query: gql`
-            query Events_upcoming {
-              events_upcoming {
-                EventID
-                title
-                description
-                locationTitle
-                locationAddress
-                imageUrl
-                price
-                category
-                date
-                startAt
-                endAt
-                position {
-                  lat
-                  lng
-                }
-                followers {
-                  UserID
-                }
-                users {
-                  UserID
-                  PhotoUrl
-                }
-              }
-            }
-          `,
+  const [editFollowEvent] = useMutation(EditFollowEventDocument, {
+    refetchQueries: [
+      {
+        query: Events_UpcomingDocument,
+      },
+      {
+        query: UserDocument,
+        variables: {
+          email: user?.Email,
         },
-        {
-          query: gql`
-            query user($email: String!) {
-              user(email: $email) {
-                UserID
-                Username
-                Password
-                Email
-                PhotoUrl
-                followEvents {
-                  EventID
-                }
-              }
-            }
-          `,
-          variables: {
-            email: user?.Email,
-          },
-        },
-        {
-          query: gql`
-            query Events_nearby($paramsInput: ParamsInput!) {
-              events_nearby(paramsInput: $paramsInput) {
-                EventID
-                title
-                description
-                locationTitle
-                locationAddress
-                imageUrl
-                price
-                category
-                date
-                startAt
-                endAt
-                position {
-                  lat
-                  lng
-                }
-                followers {
-                  UserID
-                }
-                users {
-                  UserID
-                  PhotoUrl
-                }
-              }
-            }
-          `,
-          variables: {
-            paramsInput: {
-              data: {
-                lat: currentLocation?.position.lat,
-                long: currentLocation?.position.lng,
-                distance: 1,
-              },
+      },
+      {
+        query: Events_NearbyDocument,
+        variables: {
+          paramsInput: {
+            data: {
+              lat: currentLocation?.position.lat,
+              long: currentLocation?.position.lng,
+              distance: 1,
             },
           },
         },
-      ],
-    }
-  );
-  const [editFollow] = useMutation(
-    gql`
-      mutation EditFollow($type: String!, $followInput: FollowInput!) {
-        editFollow(type: $type, followInput: $followInput)
-      }
-    `,
-    {
-      refetchQueries: [
-        {
-          query: GetUserIdDocument,
-          variables: {
-            userId: user?.UserID,
-          },
+      },
+    ],
+  });
+  const [editFollow] = useMutation(EditFollowDocument, {
+    refetchQueries: [
+      {
+        query: GetUserIdDocument,
+        variables: {
+          userId: user?.UserID,
         },
-      ],
-    }
-  );
+      },
+    ],
+  });
 
   const handleFollowEvent = () => {
     setIsVisible(true);
 
-    const arr: any = [];
+    const arr: any = [...followEvents];
     let type: "insert" | "delete" = "delete";
 
     const index = followEvents.findIndex(
-      (follower) => follower.EventID === item.EventID
+      (event: EventModel) => event.EventID === item.EventID
     );
     if (index === -1) {
       arr.push({ EventID: item.EventID, __typename: "Event" });
@@ -291,9 +214,9 @@ const EventDetail = ({ navigation, route }: any) => {
                   name="bookmark"
                   color={
                     followEvents &&
-                    followEvents.filter(
-                      (follower: any) => follower.EventID === item.EventID
-                    ).length > 0
+                    followEvents.findIndex(
+                      (event: EventModel) => event.EventID === item.EventID
+                    ) !== -1
                       ? appColor.danger2
                       : appColor.white
                   }

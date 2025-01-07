@@ -22,6 +22,13 @@ import RowComponent from "./RowComponent";
 import SpaceComponent from "./SpaceComponent";
 import TextComponent from "./TextComponent";
 import { MaterialIcons } from "@expo/vector-icons";
+import {
+  EditFollowEventDocument,
+  Events_NearbyDocument,
+  Events_UpcomingDocument,
+  UserDocument,
+} from "../gql/graphql";
+import { UserModel } from "../models/UserModel";
 
 interface Props {
   item: EventModel;
@@ -34,117 +41,40 @@ const EventItem = (props: Props) => {
   const followEvents = useReactiveVar(followEventsVar);
   const user = useReactiveVar(userVar);
   const currentLocation = useReactiveVar(currentLocationVar);
-  const [editFollowEvent] = useMutation(
-    gql`
-      mutation editFollowEvent(
-        $type: String!
-        $followEventInput: FollowEventInput!
-      ) {
-        editFollowEvent(type: $type, followEventInput: $followEventInput)
-      }
-    `,
-    {
-      refetchQueries: [
-        {
-          query: gql`
-            query Events_upcoming {
-              events_upcoming {
-                EventID
-                title
-                description
-                locationTitle
-                locationAddress
-                imageUrl
-                price
-                category
-                date
-                startAt
-                endAt
-                position {
-                  lat
-                  lng
-                }
-                followers {
-                  UserID
-                }
-                users {
-                  UserID
-                  PhotoUrl
-                }
-              }
-            }
-          `,
-        },
-        {
-          query: gql`
-            query ($email: String!) {
-              user(email: $email) {
-                UserID
-                Username
-                Password
-                Email
-                PhotoUrl
-                user_followers {
-                  EventID
-                }
-              }
-            }
-          `,
-          variables: {
-            email: user?.Email,
-          },
-        },
-        {
-          query: gql`
-            query Events_nearby($paramsInput: ParamsInput!) {
-              events_nearby(paramsInput: $paramsInput) {
-                EventID
-                title
-                description
-                locationTitle
-                locationAddress
-                imageUrl
-                price
-                category
-                date
-                startAt
-                endAt
-                position {
-                  lat
-                  lng
-                }
-                followers {
-                  UserID
-                }
-                users {
-                  UserID
-                  PhotoUrl
-                }
-              }
-            }
-          `,
-          variables: {
-            paramsInput: {
-              data: {
-                lat: currentLocation?.position.lat,
-                long: currentLocation?.position.lng,
-                distance: 1,
-              },
+  const [editFollowEvent] = useMutation(EditFollowEventDocument, {
+    refetchQueries: [
+      {
+        query: Events_UpcomingDocument,
+      },
+      {
+        query: Events_NearbyDocument,
+        variables: {
+          paramsInput: {
+            data: {
+              lat: currentLocation?.position.lat,
+              long: currentLocation?.position.lng,
+              distance: 1,
             },
           },
         },
-      ],
-    }
-  );
+      },
+      {
+        query: UserDocument,
+        variables: {
+          email: user?.Email,
+        },
+      },
+    ],
+  });
 
   const handleFollower = () => {
     setIsvisible(true);
 
-    const arr: any = [];
+    const arr: any = [...followEvents];
     let type: "insert" | "delete" = "delete";
 
-    const index = followEvents.findIndex(
-      (follower) => follower.EventID === item.EventID
+    const index = arr.findIndex(
+      (event: EventModel) => event.EventID === item.EventID
     );
     if (index === -1) {
       arr.push({ EventID: item.EventID, __typename: "Event" });
@@ -216,9 +146,9 @@ const EventItem = (props: Props) => {
               <MaterialIcons
                 name="bookmark"
                 color={
-                  followEvents.filter(
-                    (follower: any) => follower.EventID === item.EventID
-                  ).length > 0
+                  followEvents.findIndex(
+                    (event: EventModel) => event.EventID === item.EventID
+                  ) !== -1
                     ? appColor.danger2
                     : appColor.white
                 }

@@ -1,0 +1,3 @@
+mutation EditFollow($type: String!, $followInput: FollowInput!) {
+  editFollow(type: $type, followInput: $followInput)
+}

@@ -1,4 +1,7 @@
+import { gql, useMutation, useReactiveVar } from "@apollo/client";
+import { Feather, Ionicons } from "@expo/vector-icons";
 import React, { ReactNode, useState } from "react";
+import { TouchableOpacity } from "react-native";
 import {
   ButtonComponent,
   RowComponent,
@@ -7,18 +10,15 @@ import {
   TextComponent,
 } from "../../../components";
 import { appColor } from "../../../constants/appColor";
-import { UserModel } from "../../../models/UserModel";
-import { gql, useMutation, useReactiveVar } from "@apollo/client";
+import { fontFamilies } from "../../../constants/fontFamilies";
+import { GetUserIdDocument } from "../../../gql/graphql";
 import {
   followersVar,
   followingsVar,
   userVar,
 } from "../../../graphqlClient/cache";
 import { LoadingModal } from "../../../modals";
-import { TouchableOpacity } from "react-native";
-import { fontFamilies } from "../../../constants/fontFamilies";
-import { Feather, Ionicons } from "@expo/vector-icons";
-import { GetUserIdDocument } from "../../../gql/graphql";
+import { UserModel } from "../../../models/UserModel";
 
 interface Props {
   author: UserModel;
@@ -169,7 +169,7 @@ const AboutProfile = (props: Props) => {
         </RowComponent>
       </SectionComponent>
 
-      <SectionComponent>
+      <SectionComponent styles={{paddingBottom: 160}}>
         <RowComponent justify="space-between">
           {tabs.map((item) => (
             <TouchableOpacity
@@ -180,7 +180,7 @@ const AboutProfile = (props: Props) => {
                 borderBottomColor:
                   tabSelected === item.key ? appColor.primary : appColor.gray,
                 paddingBottom: 8,
-                marginBottom: 12
+                marginBottom: 12,
               }}
             >
               <TextComponent

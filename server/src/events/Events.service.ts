@@ -17,6 +17,42 @@ export class EventsService {
     private dataloaderService: DataLoaderService,
   ) {}
 
+  async handlePushNotification({ somePushTokens }) {
+    const expo = new Expo({ useFcmV1: true });
+
+    // Create the messages that you want to send to clients
+    const messages = [];
+    for (let pushToken of somePushTokens) {
+      // Each push token looks like ExponentPushToken[xxxxxxxxxxxxxxxxxxxxxx]
+
+      // Check that all your push tokens appear to be valid Expo push tokens
+      if (!Expo.isExpoPushToken(pushToken)) {
+        console.error(`Push token ${pushToken} is not a valid Expo push token`);
+        continue;
+      }
+
+      // Construct a message (see https://docs.expo.io/push-notifications/sending-notifications/)
+      messages.push({
+        to: pushToken,
+        sound: 'default',
+        body: 'Bạn đã được mời tham gia vào sự kiện nào đó',
+        data: { withSome: 'data' },
+      });
+    }
+
+    const chunks = expo.chunkPushNotifications(messages);
+
+    for (const chunk of chunks) {
+      try {
+        const ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+        console.log(chunk);
+        console.log(ticketChunk);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }
+
   toRoad(val: number) {
     return (val * Math.PI) / 180;
   }
@@ -117,42 +153,47 @@ export class EventsService {
     return result;
   }
 
-  async handlePushNotification(exponentPushToken: string): Promise<string> {
-    const expo = new Expo({ useFcmV1: true });
+  async pushInviteNotifications({
+    userIds,
+    eventId,
+    authorId,
+  }: {
+    userIds: number[];
+    eventId: number;
+    authorId: number;
+  }): Promise<string> {
+    const somePushTokens = [];
+    const someEmails = [];
 
-    const messages = [
-      {
-        to: 'ExponentPushToken[aItaukCHenOmipmx8F7orA]',
-        sound: 'default',
-        body: 'This is a test notification',
-        data: { withSome: 'data' },
-      },
-    ];
-
-    if (!Expo.isExpoPushToken(exponentPushToken)) {
-      console.error(
-        `Push token ${exponentPushToken} is not a valid Expo push token`,
+    const result = userIds.map(async (id: number) => {
+      const response = await this.eventRepository.query(
+        `select * from FCMTokens where userId = ${id}`,
       );
-      return;
+      if (response.length > 0) {
+        response.map((item: any) => {
+          if (
+            somePushTokens.findIndex((key: string) => key === item.FCMToken) ===
+            -1
+          ) {
+            somePushTokens.push(item.FCMToken);
+          }
+        });
+      } else {
+        const user = await this.eventRepository.query(
+          `select * from Users where userId = ${id}`,
+        );
+        someEmails.push(user[0].Email);
+      }
+      // return response;
+    });
+    await Promise.all(result);
+
+    if (somePushTokens.length > 0) {
+      await this.handlePushNotification({ somePushTokens });
     }
 
-    messages.push({
-      to: exponentPushToken,
-      sound: 'default',
-      body: 'This is a test notification',
-      data: { withSome: 'data' },
-    });
-
-    const chunks = expo.chunkPushNotifications(messages);
-
-    for (const chunk of chunks) {
-      try {
-        const ticketChunk = await expo.sendPushNotificationsAsync(chunk);
-        console.log(chunk);
-        console.log(ticketChunk);
-      } catch (error) {
-        console.error(error);
-      }
+    if (someEmails.length > 0) {
+      // send mail
     }
 
     return;
