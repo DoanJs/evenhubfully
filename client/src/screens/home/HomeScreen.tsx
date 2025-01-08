@@ -47,9 +47,10 @@ import { EventModel } from "../../models/EventModel";
 import { globalStyles } from "../../styles/gloabalStyles";
 import { RootStackParamList } from "../../types/route";
 import { HandleNotification } from "../../utils/handleNotification";
+import * as Linking from "expo-linking";
 
 const HomeScreen = () => {
-  const navigation: DrawerNavigationProp<RootStackParamList> = useNavigation();
+  const navigation: any = useNavigation();
   const currentLocation = useReactiveVar(currentLocationVar);
   const [events, setEvents] = useState<EventModel[]>([]);
   const [events_nearby, setEvents_nearby] = useState<EventModel[]>([]);
@@ -84,17 +85,27 @@ const HomeScreen = () => {
           text2: "Bạn đã được mời tham gia vào sự kiện",
           visibilityTime: 3000,
           onPress: () => {
-            const eventId = notification?.request.content.data?.eventId;
+            const { eventId } = notification?.request.content.data;
             navigation.navigate("EventDetail", { eventId });
           },
         });
+        console.log(notification)
       });
 
     responseListener.current =
       Notifications.addNotificationResponseReceivedListener((response) => {
         console.log("response: ", response.notification.request.content.data);
+        // Linking.openURL("exp://192.168.0.105:8081/--/EventDetail/30");
+        // Toast.show({
+        //   text1: "Lời mời",
+        //   text2: "Bạn đã được mời tham gia vào sự kiện",
+        //   visibilityTime: 3000,
+        //   onPress: () => {
+        //     const { eventId } = response.notification.request.content.data;
+        //     navigation.navigate("EventDetail", { eventId });
+        //   },
+        // });
       });
-
   }, []);
 
   useEffect(() => {

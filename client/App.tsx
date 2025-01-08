@@ -11,7 +11,7 @@ import { useFonts } from "expo-font";
 import * as Notifications from "expo-notifications";
 import * as SplashSScreen from "expo-splash-screen";
 import { jwtDecode, JwtPayload } from "jwt-decode";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Toast from "react-native-toast-message";
 import { UserDocument } from "./src/gql/graphql";
 import client from "./src/graphqlClient";
@@ -67,7 +67,6 @@ const App = () => {
       ],
     }
   );
- 
 
   const [loaded, error] = useFonts({
     AirbnbCereal_W_Bd: require("./assets/fonts/AirbnbCereal_W_Bd.otf"),

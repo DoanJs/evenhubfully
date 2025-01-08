@@ -9,23 +9,19 @@ import EventsScreen from "./events/EventsScreen";
 import SearchEvents from "./events/SearchEvents";
 import HomeScreen from "./home/HomeScreen";
 import MapScreen from "./maps/MapScreen";
+import NotFound from "./NotFound";
 import EditProfileScreen from "./profiles/EditProfileScreen";
 import ProfileScreen from "./profiles/ProfileScreen";
 import SplashScreen from "./SplashScreen";
 
 export {
-  AddNewScreen,
-  EventsScreen,
+  AddNewScreen, EditProfileScreen, EventDetail, EventsScreen,
   ForgotPassword,
   HomeScreen,
   LoginScreen,
-  MapScreen,
-  OnbroadingScreen,
-  ProfileScreen,
-  SignupScreen,
+  MapScreen, NotFound, OnbroadingScreen,
+  ProfileScreen, SearchEvents, SignupScreen,
   SplashScreen,
-  Verification,
-  SearchEvents,
-  EventDetail,
-  EditProfileScreen
+  Verification
 };
+

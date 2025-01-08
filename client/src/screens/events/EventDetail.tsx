@@ -86,10 +86,11 @@ const EventDetail = ({ navigation, route }: any) => {
   const [event, setEvent] = useState<EventModel>();
   const { data: data_event } = useQuery(EventDocument, {
     variables: {
-      eventId,
+      eventId: Number(eventId),
     },
     skip: !eventId,
   });
+  
 
   useEffect(() => {
     if (data_event) {
