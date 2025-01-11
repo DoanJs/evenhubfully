@@ -29,6 +29,7 @@ import { SplashScreen } from "./src/screens";
 import AxiosAPI from "./src/utils/auth/callapi";
 import JWTManager from "./src/utils/auth/jwt";
 import { HandleNotification } from "./src/utils/handleNotification";
+import * as Linking from 'expo-linking'
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -71,6 +72,21 @@ const App = () => {
   const [loaded, error] = useFonts({
     AirbnbCereal_W_Bd: require("./assets/fonts/AirbnbCereal_W_Bd.otf"),
   });
+
+  useEffect(() => {
+    async function getInitialUrl() {
+      try {
+        const initialUrl = await Linking.getInitialURL();
+        if (initialUrl) {
+          console.log(initialUrl)
+        }
+      } catch (error) {
+        console.error("Error getting initial :", error);
+      }
+    }
+
+    getInitialUrl()
+  }, [])
 
   // Khi F5 app va k di qua LoginScreen
   useEffect(() => {

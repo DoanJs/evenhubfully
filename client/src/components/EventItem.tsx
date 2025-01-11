@@ -3,7 +3,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { Location } from "iconsax-react-native";
 import React, { useState } from "react";
-import { ActivityIndicator, ImageBackground } from "react-native";
+import { ActivityIndicator, ImageBackground, ViewStyle } from "react-native";
 import {
   AvatarGroup,
   CardComponent,
@@ -30,13 +30,15 @@ import { EventModel } from "../models/EventModel";
 import { globalStyles } from "../styles/gloabalStyles";
 import { RootStackParamList } from "../types/route";
 import { numberToString } from "../utils/numberToString";
+import { StyleProp } from "react-native";
 
 interface Props {
   item: EventModel;
   type: "card" | "list";
+  styles?: StyleProp<ViewStyle>;
 }
 const EventItem = (props: Props) => {
-  const { item, type } = props;
+  const { item, type, styles } = props;
   const navigation: NavigationProp<RootStackParamList> = useNavigation();
   const followEvents = useReactiveVar(followEventsVar);
   const user = useReactiveVar(userVar);
@@ -108,7 +110,7 @@ const EventItem = (props: Props) => {
       onPress={() =>
         navigation.navigate("EventDetail", { eventId: item.EventID })
       }
-      styles={{ width: appInfo.sizes.WIDTH * 0.7 }}
+      styles={[{ width: appInfo.sizes.WIDTH * 0.7 }, styles]}
     >
       <ImageBackground
         style={{
@@ -161,6 +163,7 @@ const EventItem = (props: Props) => {
           )}
         </RowComponent>
       </ImageBackground>
+      
       <TextComponent text={item.title} title size={18} numberOfLine={1} />
       <AvatarGroup users={item.users} />
       <RowComponent>

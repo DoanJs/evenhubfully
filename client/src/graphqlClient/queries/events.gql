@@ -1,0 +1,33 @@
+query Events($paramsInput: ParamsInput!) {
+  events(paramsInput: $paramsInput) {
+    EventID
+    title
+    description
+    locationTitle
+    locationAddress
+    imageUrl
+    price
+    category
+    date
+    startAt
+    endAt
+    position {
+      lat
+      lng
+    }
+    followers {
+      UserID
+    }
+    users {
+      UserID
+      PhotoUrl
+    }
+    author {
+      UserID
+      Email
+      Username
+      PhotoUrl
+      type
+    }
+  }
+}

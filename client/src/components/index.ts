@@ -12,6 +12,7 @@ import DrawerCustom from "./DrawerCustom";
 import DropdownPicker from "./DropdownPicker";
 import EventItem from "./EventItem";
 import InputComponent from "./InputComponent";
+import ListEventComponent from "./ListEventComponent";
 import LoadingComponent from "./LoadingComponent";
 import MakerCustom from "./MakerCustom";
 import RowComponent from "./RowComponent";
@@ -36,6 +37,7 @@ export {
   DropdownPicker,
   EventItem,
   InputComponent,
+  ListEventComponent,
   LoadingComponent,
   MakerCustom,
   RowComponent,

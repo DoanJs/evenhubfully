@@ -6,6 +6,7 @@ import SignupScreen from "./auth/SignupScreen";
 import Verification from "./auth/Verification";
 import EventDetail from "./events/EventDetail";
 import EventsScreen from "./events/EventsScreen";
+import ExploreEvents from "./events/ExploreEvents";
 import SearchEvents from "./events/SearchEvents";
 import HomeScreen from "./home/HomeScreen";
 import MapScreen from "./maps/MapScreen";
@@ -22,6 +23,6 @@ export {
   MapScreen, NotFound, OnbroadingScreen,
   ProfileScreen, SearchEvents, SignupScreen,
   SplashScreen,
-  Verification
+  Verification, ExploreEvents
 };
 

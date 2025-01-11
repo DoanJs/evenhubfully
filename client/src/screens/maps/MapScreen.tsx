@@ -18,8 +18,10 @@ import { appInfo } from "../../constants/appInfos";
 import { currentLocationVar } from "../../graphqlClient/cache";
 import { globalStyles } from "../../styles/gloabalStyles";
 import { EventModel } from "../../models/EventModel";
+import { useStatusBar } from "../../utils/useStatusBar";
 
 const MapScreen = () => {
+  useStatusBar('dark-content')
   const navigation: any = useNavigation();
   const currentLocation = useReactiveVar(currentLocationVar);
   const [events_nearby, setEvents_nearby] = useState<EventModel[]>([]);

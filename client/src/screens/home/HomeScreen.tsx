@@ -48,8 +48,10 @@ import { globalStyles } from "../../styles/gloabalStyles";
 import { RootStackParamList } from "../../types/route";
 import { HandleNotification } from "../../utils/handleNotification";
 import * as Linking from "expo-linking";
+import { useStatusBar } from "../../utils/useStatusBar";
 
 const HomeScreen = () => {
+  useStatusBar('light-content')
   const navigation: any = useNavigation();
   const currentLocation = useReactiveVar(currentLocationVar);
   const [events, setEvents] = useState<EventModel[]>([]);
@@ -89,22 +91,15 @@ const HomeScreen = () => {
             navigation.navigate("EventDetail", { eventId });
           },
         });
-        console.log(notification)
+        console.log('notification: ', notification)
       });
 
     responseListener.current =
       Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log("response: ", response.notification.request.content.data);
-        // Linking.openURL("exp://192.168.0.105:8081/--/EventDetail/30");
-        // Toast.show({
-        //   text1: "Lời mời",
-        //   text2: "Bạn đã được mời tham gia vào sự kiện",
-        //   visibilityTime: 3000,
-        //   onPress: () => {
-        //     const { eventId } = response.notification.request.content.data;
-        //     navigation.navigate("EventDetail", { eventId });
-        //   },
-        // });
+        const {eventId} = response.notification.request.content.data
+        console.log(response.notification.request.content.data)
+        // Linking.openURL("exp://192.168.1.86:8081/--/EventDetail/30");
+
       });
   }, []);
 
@@ -293,7 +288,7 @@ const HomeScreen = () => {
         ]}
       >
         <SectionComponent styles={{ paddingHorizontal: 0 }}>
-          <TabBarComponent onPress={() => {}} title="Upcoming Events" />
+          <TabBarComponent onPress={() => navigation.navigate('ExploreEvents')} title="Upcoming Events" />
           {events.length > 0 ? (
             <FlatList
               horizontal

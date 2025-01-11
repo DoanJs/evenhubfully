@@ -23,7 +23,7 @@ const prefix = Linking.createURL("/");
 
 const linking: any = {
   prefixes: [prefix, "https://app.example.com"],
-  config,
+  config
 };
 
 export default linking;
