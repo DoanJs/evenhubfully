@@ -3,8 +3,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Modalize } from "react-native-modalize";
 import { Portal } from "react-native-portalize";
-import AntDesign from "react-native-vector-icons/AntDesign";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { appColor } from "../constants/appColor";
 import { fontFamilies } from "../constants/fontFamilies";
 import { SelectModel } from "../models/SelectModel";
@@ -14,10 +12,12 @@ import InputComponent from "./InputComponent";
 import RowComponent from "./RowComponent";
 import SpaceComponent from "./SpaceComponent";
 import TextComponent from "./TextComponent";
+import { MaterialCommunityIcons, AntDesign } from "@expo/vector-icons";
+import { CategoryModel } from "../models/CategoryModel";
 
 interface Props {
   label?: string;
-  values: SelectModel[];
+  values: any;
   selected?: string | string[];
   onSelect: (val: string | string[]) => void;
   multiple?: boolean;
@@ -53,7 +53,7 @@ const DropdownPicker = (props: Props) => {
     setSelectedItems(list);
   };
 
-  const renderSelectItem = (item: SelectModel, index: number) => {
+  const renderSelectItem = (item: any, index: number) => {
     return (
       <RowComponent
         onPress={
@@ -64,7 +64,7 @@ const DropdownPicker = (props: Props) => {
                 onSelect(item.label);
               }
         }
-        key={item.value}
+        key={item.label}
         justify="flex-start"
         styles={[localStyles.listItem, {}]}
       >
@@ -72,7 +72,7 @@ const DropdownPicker = (props: Props) => {
           <Image
             source={{
               uri:
-                item.urlImg ??
+                item.title ??
                 "https://cdn.vectorstock.com/i/1000v/95/56/user-profile-icon-avatar-or-person-vector-45089556.jpg",
             }}
             height={30}
@@ -140,7 +140,7 @@ const DropdownPicker = (props: Props) => {
               ))
             ) : (
               <TextComponent
-                text={values.find((e) => e.label === selected)?.label ?? ""}
+                text={values.find((e: any) => e.label === selected)?.label ?? ""}
               />
             )
           ) : (
@@ -211,7 +211,7 @@ const DropdownPicker = (props: Props) => {
               paddingHorizontal: 20,
             }}
           >
-            {values.map((item: SelectModel, index: number) =>
+            {values.map((item: CategoryModel, index: number) =>
               renderSelectItem(item, index)
             )}
           </View>

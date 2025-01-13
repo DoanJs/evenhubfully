@@ -1,0 +1,17 @@
+mutation SearchEvent($keySearch: String!) {
+  searchEvent(keySearch: $keySearch) {
+    EventID
+    title
+    description
+    locationTitle
+    locationAddress
+    imageUrl
+    price
+    category
+    date
+    startAt
+    endAt
+    createAt
+    updateAt
+  }
+}

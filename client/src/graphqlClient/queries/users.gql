@@ -1,0 +1,12 @@
+query Users {
+  users {
+    UserID
+    Username
+    Email
+    Password
+    PhotoUrl
+    about
+    type
+    isChangePassword
+  }
+}

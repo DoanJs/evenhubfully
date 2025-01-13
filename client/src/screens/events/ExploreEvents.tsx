@@ -50,7 +50,7 @@ const ExploreEvents = () => {
       }
     >
       {events.length > 0 ? (
-        <ListEventComponent items={events} />
+        <ListEventComponent type="seeAll" items={events} />
       ) : (
         <LoadingComponent value={events.length} isLoading={isLoading} />
       )}

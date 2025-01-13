@@ -1,6 +1,5 @@
 import { useQuery, useReactiveVar } from "@apollo/client";
 import { MaterialIcons } from "@expo/vector-icons";
-import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import * as Location from "expo-location";
@@ -45,13 +44,11 @@ import {
 import { currentLocationVar } from "../../graphqlClient/cache";
 import { EventModel } from "../../models/EventModel";
 import { globalStyles } from "../../styles/gloabalStyles";
-import { RootStackParamList } from "../../types/route";
 import { HandleNotification } from "../../utils/handleNotification";
-import * as Linking from "expo-linking";
 import { useStatusBar } from "../../utils/useStatusBar";
 
 const HomeScreen = () => {
-  useStatusBar('light-content')
+  useStatusBar("light-content");
   const navigation: any = useNavigation();
   const currentLocation = useReactiveVar(currentLocationVar);
   const [events, setEvents] = useState<EventModel[]>([]);
@@ -91,15 +88,14 @@ const HomeScreen = () => {
             navigation.navigate("EventDetail", { eventId });
           },
         });
-        console.log('notification: ', notification)
+        console.log("notification: ", notification);
       });
 
     responseListener.current =
       Notifications.addNotificationResponseReceivedListener((response) => {
-        const {eventId} = response.notification.request.content.data
-        console.log(response.notification.request.content.data)
+        const { eventId } = response.notification.request.content.data;
+        console.log(response.notification.request.content.data);
         // Linking.openURL("exp://192.168.1.86:8081/--/EventDetail/30");
-
       });
   }, []);
 
@@ -288,7 +284,10 @@ const HomeScreen = () => {
         ]}
       >
         <SectionComponent styles={{ paddingHorizontal: 0 }}>
-          <TabBarComponent onPress={() => navigation.navigate('ExploreEvents')} title="Upcoming Events" />
+          <TabBarComponent
+            onPress={() => navigation.navigate("ExploreEvents")}
+            title="Upcoming Events"
+          />
           {events.length > 0 ? (
             <FlatList
               horizontal

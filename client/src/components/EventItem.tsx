@@ -3,11 +3,12 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { Location } from "iconsax-react-native";
 import React, { useState } from "react";
-import { ActivityIndicator, ImageBackground, ViewStyle } from "react-native";
+import { Image, ImageBackground, StyleProp, ViewStyle } from "react-native";
 import {
   AvatarGroup,
   CardComponent,
   RowComponent,
+  SectionComponent,
   SpaceComponent,
   TextComponent,
 } from ".";
@@ -30,7 +31,6 @@ import { EventModel } from "../models/EventModel";
 import { globalStyles } from "../styles/gloabalStyles";
 import { RootStackParamList } from "../types/route";
 import { numberToString } from "../utils/numberToString";
-import { StyleProp } from "react-native";
 
 interface Props {
   item: EventModel;
@@ -112,71 +112,124 @@ const EventItem = (props: Props) => {
       }
       styles={[{ width: appInfo.sizes.WIDTH * 0.7 }, styles]}
     >
-      <ImageBackground
-        style={{
-          flex: 1,
-          marginBottom: 12,
-          padding: 10,
-          height: 131,
-        }}
-        source={{ uri: item.imageUrl }}
-        imageStyle={{
-          resizeMode: "cover",
-          borderRadius: 12,
-        }}
-      >
-        <RowComponent styles={{ justifyContent: "space-between" }}>
-          <CardComponent styles={[globalStyles.noSpaceCard]} color="#ffffffb3">
+      {type === "card" ? (
+        <>
+          <ImageBackground
+            style={{
+              flex: 1,
+              marginBottom: 12,
+              padding: 10,
+              height: 131,
+            }}
+            source={{ uri: item.imageUrl }}
+            imageStyle={{
+              resizeMode: "cover",
+              borderRadius: 12,
+            }}
+          >
+            <RowComponent styles={{ justifyContent: "space-between" }}>
+              <CardComponent
+                styles={[globalStyles.noSpaceCard]}
+                color="#ffffffb3"
+              >
+                <TextComponent
+                  font={fontFamilies.bold}
+                  size={18}
+                  text={
+                    numberToString(new Date(item.startAt).getDate()) as string
+                  }
+                  color={appColor.danger2}
+                />
+                <TextComponent
+                  font={fontFamilies.bold}
+                  size={12}
+                  text={appInfo.monthNames[
+                    new Date(item.startAt).getMonth()
+                  ].substring(0, 3)}
+                  color={appColor.danger2}
+                />
+              </CardComponent>
+              {item.author.UserID !== user?.UserID && (
+                <CardComponent
+                  styles={[globalStyles.noSpaceCard]}
+                  color="#ffffffb3"
+                  onPress={handleFollower}
+                >
+                  <MaterialIcons
+                    name="bookmark"
+                    color={
+                      followEvents.findIndex(
+                        (event: EventModel) => event.EventID === item.EventID
+                      ) !== -1
+                        ? appColor.danger2
+                        : appColor.white
+                    }
+                    size={22}
+                  />
+                </CardComponent>
+              )}
+            </RowComponent>
+          </ImageBackground>
+          <TextComponent text={item.title} title size={18} numberOfLine={1} />
+          <AvatarGroup users={item.users} />
+          <RowComponent>
+            <Location size={18} variant="Bold" color={appColor.text2} />
+            <SpaceComponent width={6} />
             <TextComponent
-              font={fontFamilies.bold}
-              size={18}
-              text={numberToString(new Date(item.startAt).getDate()) as string}
-              color={appColor.danger2}
+              flex={1}
+              numberOfLine={1}
+              text={item.locationAddress}
+              size={14}
+              color={appColor.text3}
             />
-            <TextComponent
-              font={fontFamilies.bold}
-              size={12}
-              text={appInfo.monthNames[
-                new Date(item.startAt).getMonth()
-              ].substring(0, 3)}
-              color={appColor.danger2}
+          </RowComponent>
+        </>
+      ) : (
+        <>
+          <RowComponent>
+            <Image
+              source={{ uri: item.imageUrl }}
+              style={{
+                width: "20%",
+                height: "100%",
+                resizeMode: "cover",
+                borderRadius: 20,
+              }}
             />
-          </CardComponent>
-          {item.author.UserID !== user?.UserID && (
-            <CardComponent
-              styles={[globalStyles.noSpaceCard]}
-              color="#ffffffb3"
-              onPress={handleFollower}
-            >
-              <MaterialIcons
-                name="bookmark"
-                color={
-                  followEvents.findIndex(
-                    (event: EventModel) => event.EventID === item.EventID
-                  ) !== -1
-                    ? appColor.danger2
-                    : appColor.white
-                }
-                size={22}
+            <SectionComponent styles={{ flex: 1, paddingBottom: 10 }}>
+              <TextComponent
+                size={16}
+                text={`${appInfo.daysName[
+                  new Date(item.startAt).getDay()
+                ].substring(0, 3)}, ${
+                  appInfo.monthNames[new Date(item.startAt).getMonth()]
+                } ${new Date(item.startAt).getDate()} • ${new Date(
+                  item.startAt
+                ).getHours()}:${new Date(item.startAt).getMinutes()}`}
+                color={appColor.gray}
               />
-            </CardComponent>
-          )}
-        </RowComponent>
-      </ImageBackground>
-      
-      <TextComponent text={item.title} title size={18} numberOfLine={1} />
-      <AvatarGroup users={item.users} />
-      <RowComponent>
-        <Location size={18} variant="Bold" color={appColor.text2} />
-        <SpaceComponent width={6} />
-        <TextComponent
-          flex={1}
-          numberOfLine={1}
-          text={item.locationAddress}
-          size={14}
-          color={appColor.text3}
-        />
-      </RowComponent>
+              <TextComponent
+                text={item.title}
+                title
+                size={18}
+                numberOfLine={1}
+              />
+              <RowComponent>
+                <Location size={18} variant="Bold" color={appColor.text2} />
+                <SpaceComponent width={6} />
+                <TextComponent
+                  flex={1}
+                  numberOfLine={1}
+                  text={item.locationAddress}
+                  size={14}
+                  color={appColor.text3}
+                />
+              </RowComponent>
+            </SectionComponent>
+          </RowComponent>
+        </>
+      )}
+
       <LoadingModal visible={isvisible} />
     </CardComponent>
   );

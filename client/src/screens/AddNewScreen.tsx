@@ -22,6 +22,8 @@ import { EventModel, Position } from "../models/EventModel";
 import { SelectModel } from "../models/SelectModel";
 import { _handleImagePicked } from "../utils/uploadImg";
 import { Validate } from "../utils/validate";
+import { CategoriesDocument, UsersDocument } from "../gql/graphql";
+import { CategoryModel } from "../models/CategoryModel";
 
 const initValues = {
   title: "",
@@ -49,19 +51,8 @@ const AddNewScreen = () => {
     ...initValues,
     authorId: `${user.UserID}`,
   });
-  const { data: Data_users, error } = useQuery(
-    gql`
-      query {
-        users {
-          UserID
-          Username
-          Password
-          Email
-          PhotoUrl
-        }
-      }
-    `
-  );
+
+  const { data: Data_users } = useQuery(UsersDocument);
   const [isVisible, setIsVisible] = useState(false);
   const [values, setValues] = useState<SelectModel[]>([]);
   const [fileSelected, setFileSelected] = useState<any>();
@@ -70,6 +61,8 @@ const AddNewScreen = () => {
     address: string;
     position: Position;
   }>();
+  const { data: data_categories } = useQuery(CategoriesDocument);
+  console.log(data_categories?.categories[0]);
   const [createEvent] = useMutation(
     gql`
       mutation MUTATION_createEvent($eventinput: EventInput!) {
@@ -142,7 +135,7 @@ const AddNewScreen = () => {
           });
           setIsVisible(false);
           navigation.navigate("Explore", {
-            screen: 'HomeScreen'
+            screen: "HomeScreen",
           });
         })
         .catch((err) => console.log("err __handleImagePicked func: ", err));
@@ -220,28 +213,7 @@ const AddNewScreen = () => {
         <DropdownPicker
           label="Category"
           selected={eventData.category}
-          values={[
-            {
-              label: "Sport",
-              value: "sport",
-              urlImg: "",
-            },
-            {
-              label: "Food",
-              value: "food",
-              urlImg: "",
-            },
-            {
-              label: "Art",
-              value: "art",
-              urlImg: "",
-            },
-            {
-              label: "Music",
-              value: "music",
-              urlImg: "",
-            },
-          ]}
+          values={data_categories?.categories as CategoryModel[]}
           onSelect={(val) => handleChangeValue("category", val)}
         />
 

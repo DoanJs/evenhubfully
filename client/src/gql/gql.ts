@@ -19,6 +19,7 @@ const documents = {
     "mutation editFollowEvent($type: String!, $followEventInput: FollowEventInput!) {\n  editFollowEvent(type: $type, followEventInput: $followEventInput)\n}": types.EditFollowEventDocument,
     "mutation EditInterests($userId: Float!, $interests: [UserCategoryInput!]!) {\n  editInterests(userId: $userId, interests: $interests)\n}": types.EditInterestsDocument,
     "mutation EditUser($userId: Float!, $userInput: UserInput!) {\n  editUser(userId: $userId, userInput: $userInput) {\n    UserID\n    Username\n    Email\n    Password\n    PhotoUrl\n    isChangePassword\n  }\n}": types.EditUserDocument,
+    "mutation SearchEvent($keySearch: String!) {\n  searchEvent(keySearch: $keySearch) {\n    EventID\n    title\n    description\n    locationTitle\n    locationAddress\n    imageUrl\n    price\n    category\n    date\n    startAt\n    endAt\n    createAt\n    updateAt\n  }\n}": types.SearchEventDocument,
     "query Categories {\n  categories {\n    CategoryID\n    createAt\n    updateAt\n    title\n    color\n    label\n  }\n}": types.CategoriesDocument,
     "query Event($eventId: Float!) {\n  event(eventId: $eventId) {\n    EventID\n    title\n    description\n    locationTitle\n    locationAddress\n    imageUrl\n    price\n    category\n    date\n    startAt\n    endAt\n    position {\n      lat\n      lng\n    }\n    followers {\n      UserID\n    }\n    users {\n      UserID\n      PhotoUrl\n    }\n    author {\n      UserID\n      Email\n      Username\n      PhotoUrl\n      type\n    }\n  }\n}": types.EventDocument,
     "query Events_nearby($paramsInput: ParamsInput!) {\n  events_nearby(paramsInput: $paramsInput) {\n    EventID\n    title\n    description\n    locationTitle\n    locationAddress\n    imageUrl\n    price\n    category\n    date\n    startAt\n    endAt\n    position {\n      lat\n      lng\n    }\n    followers {\n      UserID\n    }\n    users {\n      UserID\n      PhotoUrl\n    }\n    author {\n      UserID\n      Email\n      Username\n      PhotoUrl\n      type\n    }\n  }\n}": types.Events_NearbyDocument,
@@ -26,6 +27,7 @@ const documents = {
     "query Events($paramsInput: ParamsInput!) {\n  events(paramsInput: $paramsInput) {\n    EventID\n    title\n    description\n    locationTitle\n    locationAddress\n    imageUrl\n    price\n    category\n    date\n    startAt\n    endAt\n    position {\n      lat\n      lng\n    }\n    followers {\n      UserID\n    }\n    users {\n      UserID\n      PhotoUrl\n    }\n    author {\n      UserID\n      Email\n      Username\n      PhotoUrl\n      type\n    }\n  }\n}": types.EventsDocument,
     "query getUserId($userId: Float!) {\n  getUserId(userId: $userId) {\n    UserID\n    Username\n    Email\n    PhotoUrl\n    about\n    followings {\n      UserID\n      PhotoUrl\n      Username\n      Email\n    }\n    followers {\n      UserID\n      PhotoUrl\n      Username\n      Email\n    }\n    interests {\n      CategoryID\n      title\n      label\n      color\n    }\n  }\n}": types.GetUserIdDocument,
     "query user($email: String!) {\n  user(email: $email) {\n    UserID\n    Username\n    Password\n    Email\n    PhotoUrl\n    about\n    followEvents {\n      EventID\n    }\n    fcmTokens {\n      FCMToken\n    }\n    followings {\n      UserID\n      PhotoUrl\n      Username\n      Email\n    }\n    followers {\n      UserID\n      PhotoUrl\n      Username\n      Email\n    }\n  }\n}": types.UserDocument,
+    "query Users {\n  users {\n    UserID\n    Username\n    Email\n    Password\n    PhotoUrl\n    about\n    type\n    isChangePassword\n  }\n}": types.UsersDocument,
 };
 
 /**
@@ -65,6 +67,10 @@ export function graphql(source: "mutation EditUser($userId: Float!, $userInput: 
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function graphql(source: "mutation SearchEvent($keySearch: String!) {\n  searchEvent(keySearch: $keySearch) {\n    EventID\n    title\n    description\n    locationTitle\n    locationAddress\n    imageUrl\n    price\n    category\n    date\n    startAt\n    endAt\n    createAt\n    updateAt\n  }\n}"): (typeof documents)["mutation SearchEvent($keySearch: String!) {\n  searchEvent(keySearch: $keySearch) {\n    EventID\n    title\n    description\n    locationTitle\n    locationAddress\n    imageUrl\n    price\n    category\n    date\n    startAt\n    endAt\n    createAt\n    updateAt\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function graphql(source: "query Categories {\n  categories {\n    CategoryID\n    createAt\n    updateAt\n    title\n    color\n    label\n  }\n}"): (typeof documents)["query Categories {\n  categories {\n    CategoryID\n    createAt\n    updateAt\n    title\n    color\n    label\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
@@ -90,6 +96,10 @@ export function graphql(source: "query getUserId($userId: Float!) {\n  getUserId
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "query user($email: String!) {\n  user(email: $email) {\n    UserID\n    Username\n    Password\n    Email\n    PhotoUrl\n    about\n    followEvents {\n      EventID\n    }\n    fcmTokens {\n      FCMToken\n    }\n    followings {\n      UserID\n      PhotoUrl\n      Username\n      Email\n    }\n    followers {\n      UserID\n      PhotoUrl\n      Username\n      Email\n    }\n  }\n}"): (typeof documents)["query user($email: String!) {\n  user(email: $email) {\n    UserID\n    Username\n    Password\n    Email\n    PhotoUrl\n    about\n    followEvents {\n      EventID\n    }\n    fcmTokens {\n      FCMToken\n    }\n    followings {\n      UserID\n      PhotoUrl\n      Username\n      Email\n    }\n    followers {\n      UserID\n      PhotoUrl\n      Username\n      Email\n    }\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "query Users {\n  users {\n    UserID\n    Username\n    Email\n    Password\n    PhotoUrl\n    about\n    type\n    isChangePassword\n  }\n}"): (typeof documents)["query Users {\n  users {\n    UserID\n    Username\n    Email\n    Password\n    PhotoUrl\n    about\n    type\n    isChangePassword\n  }\n}"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

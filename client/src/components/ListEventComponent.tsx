@@ -1,27 +1,35 @@
 import React from "react";
-import { FlatList, Text, View } from "react-native";
+import { FlatList } from "react-native";
 import { EventModel } from "../models/EventModel";
 import EventItem from "./EventItem";
+import SectionComponent from "./SectionComponent";
 
 interface Props {
   items: EventModel[];
+  type?: "seeAll" | "search";
 }
 
 const ListEventComponent = (props: Props) => {
-  const { items } = props;
+  const { items, type } = props;
   return (
-    <FlatList
-      showsHorizontalScrollIndicator={false}
-      data={items}
-      renderItem={({ item }) => (
-        <EventItem
-          item={item}
-          key={item.EventID}
-          type="list"
-          styles={{ width: undefined }}
-        />
-      )}
-    />
+    <SectionComponent
+      styles={{
+        paddingBottom: type === "seeAll" ? 180 : 400,
+      }}
+    >
+      <FlatList
+        showsVerticalScrollIndicator={false}
+        data={items}
+        renderItem={({ item }) => (
+          <EventItem
+            item={item}
+            key={item.EventID}
+            type="list"
+            styles={{ width: undefined }}
+          />
+        )}
+      />
+    </SectionComponent>
   );
 };
 

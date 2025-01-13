@@ -102,7 +102,14 @@ export class EventsService {
     const result = await this.eventRepository.query(
       `select * from Events where EventID = ${eventId}`,
     );
-    return result[0];
+    return result[0]
+  }
+
+  async searchEvent(keySearch: string): Promise<Event[]> {
+    const result = await this.eventRepository.query(
+      `select * from Events where title LIKE '%${keySearch}%'`,
+    );
+    return result
   }
 
   async events_upcoming(): Promise<Event[]> {

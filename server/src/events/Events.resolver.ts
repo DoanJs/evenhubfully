@@ -41,6 +41,11 @@ export class EventsResolver {
   ): Promise<Event[]> {
     return this.eventsService.events_nearby(paramsInput);
   }
+  
+  @Mutation(() => [Event])
+  searchEvent(@Args('keySearch') keySearch: string): Promise<Event[]> {
+    return this.eventsService.searchEvent(keySearch);
+  }
 
   @Mutation(() => Event)
   createEvent(

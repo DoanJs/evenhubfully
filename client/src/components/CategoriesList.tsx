@@ -1,12 +1,16 @@
-import React, { ReactNode } from "react";
-import { FlatList, Text, View } from "react-native";
-import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import Ionicons from "react-native-vector-icons/Ionicons";
+import { useQuery } from "@apollo/client";
+import {
+  FontAwesome5,
+  Ionicons,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
+import React, { ReactNode, useEffect, useState } from "react";
+import { FlatList } from "react-native";
 import { appColor } from "../constants/appColor";
-import TagComponent from "./TagComponent";
+import { CategoriesDocument } from "../gql/graphql";
+import { CategoryModel } from "../models/CategoryModel";
 import { globalStyles } from "../styles/gloabalStyles";
-import { Category } from "../models/CategoryModel";
+import TagComponent from "./TagComponent";
 
 interface Props {
   isFill?: boolean;
@@ -14,56 +18,106 @@ interface Props {
 
 const CategoriesList = (props: Props) => {
   const { isFill } = props;
-  const categories: Category[] = [
-    {
-      key: "sport",
-      label: "Sports",
-      icon: (
-        <FontAwesome5
-          name="basketball-ball"
-          color={isFill ? appColor.white : "#f0635a"}
-          size={20}
-        />
-      ),
-      color: "#f0635a",
-    },
-    {
-      key: "music",
-      label: "Music",
-      icon: (
-        <FontAwesome5
-          name="music"
-          color={isFill ? appColor.white : "#f59762"}
-          size={20}
-        />
-      ),
-      color: "#f59762",
-    },
-    {
-      key: "food",
-      label: "Food",
-      icon: (
-        <MaterialCommunityIcons
-          name="silverware-fork-knife"
-          color={isFill ? appColor.white : "#29d697"}
-          size={20}
-        />
-      ),
-      color: "#29d697",
-    },
-    {
-      key: "color",
-      label: "Color",
-      icon: (
-        <Ionicons
-          name="color-palette"
-          color={isFill ? appColor.white : "#46cdf8"}
-          size={20}
-        />
-      ),
-      color: "#46cdf8",
-    },
-  ];
+  const [categories, setCategories] = useState<CategoryModel[]>([]);
+  const { data: data_categories } = useQuery(CategoriesDocument);
+
+  useEffect(() => {
+    if (data_categories) {
+      setCategories(data_categories.categories as CategoryModel[]);
+    }
+  }, [data_categories]);
+
+  const handleIconCategories = (key: string) => {
+    let icon: ReactNode;
+    switch (key) {
+      case "sport":
+        icon = (
+          <FontAwesome5
+            name="basketball-ball"
+            color={isFill ? appColor.white : "#f0635a"}
+            size={20}
+          />
+        );
+        break;
+      case "music":
+        icon = (
+          <FontAwesome5
+            name="music"
+            color={isFill ? appColor.white : "#f59762"}
+            size={20}
+          />
+        );
+        break;
+      case "food":
+        icon = (
+          <MaterialCommunityIcons
+            name="silverware-fork-knife"
+            color={isFill ? appColor.white : "#29d697"}
+            size={20}
+          />
+        );
+        break;
+
+      default:
+        icon = (
+          <Ionicons
+            name="color-palette"
+            color={isFill ? appColor.white : "#46cdf8"}
+            size={20}
+          />
+        );
+        break;
+    }
+
+    return icon;
+  };
+
+  // const categories: CategoryModel[] = [
+  //   {
+  //     key: "sport",
+  //     label: "Sports",
+  //     icon: (
+
+  //     ),
+  //     color: "#f0635a",
+  //   },
+  //   {
+  //     key: "music",
+  //     label: "Music",
+  //     icon: (
+  // <FontAwesome5
+  //   name="music"
+  //   color={isFill ? appColor.white : "#f59762"}
+  //   size={20}
+  // />
+  //     ),
+  //     color: "#f59762",
+  //   },
+  //   {
+  //     key: "food",
+  //     label: "Food",
+  //     icon: (
+  // <MaterialCommunityIcons
+  //   name="silverware-fork-knife"
+  //   color={isFill ? appColor.white : "#29d697"}
+  //   size={20}
+  // />
+  //     ),
+  //     color: "#29d697",
+  //   },
+  //   {
+  //     key: "color",
+  //     label: "Color",
+  //     icon: (
+  // <Ionicons
+  //   name="color-palette"
+  //   color={isFill ? appColor.white : "#46cdf8"}
+  //   size={20}
+  // />
+  //     ),
+  //     color: "#46cdf8",
+  //   },
+  // ];
   return (
     <FlatList
       style={{ paddingHorizontal: 16 }}
@@ -82,7 +136,7 @@ const CategoriesList = (props: Props) => {
           ]}
           bgColor={isFill ? item.color : appColor.white}
           label={item.label}
-          icon={item.icon}
+          icon={handleIconCategories(item.title)}
           onPress={() => {}}
           textColor={isFill ? appColor.white : appColor.text}
         />
