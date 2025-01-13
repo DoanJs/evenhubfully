@@ -1,0 +1,17 @@
+mutation CreateEvent($eventinput: EventInput!) {
+  createEvent(eventinput: $eventinput) {
+    EventID
+    title
+    description
+    locationTitle
+    locationAddress
+    imageUrl
+    price
+    category
+    date
+    startAt
+    endAt
+    createAt
+    updateAt
+  }
+}

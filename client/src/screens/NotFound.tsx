@@ -1,11 +1,14 @@
 import React from "react";
 import { Text, View } from "react-native";
+import { ContainerComponent, SectionComponent } from "../components";
 
 const NotFound = () => {
   return (
-    <View>
-      <Text>NotFound</Text>
-    </View>
+    <ContainerComponent back>
+      <SectionComponent>
+        <Text>NotFound</Text>
+      </SectionComponent>
+    </ContainerComponent>
   );
 };
 

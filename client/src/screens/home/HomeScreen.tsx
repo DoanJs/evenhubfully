@@ -23,6 +23,7 @@ import {
 import Toast from "react-native-toast-message";
 import Invite from "../../assets/images/invite.png";
 import {
+  ButtonComponent,
   CategoriesList,
   CircleComponent,
   EventItem,
@@ -46,6 +47,7 @@ import { EventModel } from "../../models/EventModel";
 import { globalStyles } from "../../styles/gloabalStyles";
 import { HandleNotification } from "../../utils/handleNotification";
 import { useStatusBar } from "../../utils/useStatusBar";
+import { Linking } from "react-native";
 
 const HomeScreen = () => {
   useStatusBar("light-content");
@@ -95,7 +97,7 @@ const HomeScreen = () => {
       Notifications.addNotificationResponseReceivedListener((response) => {
         const { eventId } = response.notification.request.content.data;
         console.log(response.notification.request.content.data);
-        // Linking.openURL("exp://192.168.1.86:8081/--/EventDetail/30");
+        Linking.openURL("exp://192.168.1.86:8081/--/EventDetail/30");
       });
   }, []);
 
@@ -284,6 +286,13 @@ const HomeScreen = () => {
         ]}
       >
         <SectionComponent styles={{ paddingHorizontal: 0 }}>
+          <TouchableOpacity
+            onPress={() =>
+              Linking.openURL("exp://192.168.1.46:8081/--/Main/HomeNavigator/Add")
+            }
+          >
+            <TextComponent text="asdas" />
+          </TouchableOpacity>
           <TabBarComponent
             onPress={() => navigation.navigate("ExploreEvents")}
             title="Upcoming Events"
@@ -373,6 +382,3 @@ const HomeScreen = () => {
 };
 
 export default HomeScreen;
-function checkFCMTokens(token: string | undefined) {
-  throw new Error("Function not implemented.");
-}

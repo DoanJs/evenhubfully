@@ -98,18 +98,25 @@ export class EventsService {
     }
   }
 
+  async getEventConditions(condition: string): Promise<Event[]> {
+    const result = await this.eventRepository.query(
+      `select * from Events where ${condition !== '' ? condition : `EventID != ''`}`,
+    );
+    return result;
+  }
+
   async event(eventId: number): Promise<Event> {
     const result = await this.eventRepository.query(
       `select * from Events where EventID = ${eventId}`,
     );
-    return result[0]
+    return result[0];
   }
 
   async searchEvent(keySearch: string): Promise<Event[]> {
     const result = await this.eventRepository.query(
       `select * from Events where title LIKE '%${keySearch}%'`,
     );
-    return result
+    return result;
   }
 
   async events_upcoming(): Promise<Event[]> {
@@ -159,7 +166,7 @@ export class EventsService {
     });
     await this.eventRepository.save(result);
 
-    const response = eventinput.users.map(async (userId: any) => {
+    const response = users.map(async (userId: any) => {
       await this.eventRepository.query(
         `insert into Events_Users (UserID, EventID) values (${Number(userId)}, ${Number(result.EventID)})`,
       );

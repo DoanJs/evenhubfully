@@ -24,7 +24,7 @@ export interface EventModel {
 }
 
 export interface Position {
-  __typename: string;
+  __typename?: string;
   lat: number;
   lng: number;
 }

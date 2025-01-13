@@ -8,12 +8,12 @@ import {
   Resolver,
 } from '@nestjs/graphql';
 import { GraphQLGuard } from 'src/auth/GraphQL.Guard';
-import { EventInput } from './type/event.input';
-import { Position } from 'src/positions/Position.model';
-import { ParamsInput } from 'src/utils/types/Params.input';
-import { User } from 'src/users/User.model';
-import { EventsService } from './Events.service';
 import { Event } from 'src/events/Event.model';
+import { Position } from 'src/positions/Position.model';
+import { User } from 'src/users/User.model';
+import { ParamsInput } from 'src/utils/types/Params.input';
+import { EventsService } from './Events.service';
+import { EventInput } from './type/event.input';
 
 @Resolver(() => Event)
 @UseGuards(GraphQLGuard)
@@ -23,6 +23,11 @@ export class EventsResolver {
   @Query(() => [Event])
   events(@Args('paramsInput') paramsInput: ParamsInput): Promise<Event[]> {
     return this.eventsService.events(paramsInput);
+  }
+
+  @Query(() => [Event])
+  getEventConditions(@Args('condition') condition: string): Promise<Event[]> {
+    return this.eventsService.getEventConditions(condition);
   }
 
   @Query(() => Event)
@@ -41,7 +46,7 @@ export class EventsResolver {
   ): Promise<Event[]> {
     return this.eventsService.events_nearby(paramsInput);
   }
-  
+
   @Mutation(() => [Event])
   searchEvent(@Args('keySearch') keySearch: string): Promise<Event[]> {
     return this.eventsService.searchEvent(keySearch);

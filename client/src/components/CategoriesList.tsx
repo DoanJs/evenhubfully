@@ -11,6 +11,7 @@ import { CategoriesDocument } from "../gql/graphql";
 import { CategoryModel } from "../models/CategoryModel";
 import { globalStyles } from "../styles/gloabalStyles";
 import TagComponent from "./TagComponent";
+import { useNavigation } from "@react-navigation/native";
 
 interface Props {
   isFill?: boolean;
@@ -18,6 +19,7 @@ interface Props {
 
 const CategoriesList = (props: Props) => {
   const { isFill } = props;
+  const navigation: any = useNavigation();
   const [categories, setCategories] = useState<CategoryModel[]>([]);
   const { data: data_categories } = useQuery(CategoriesDocument);
 
@@ -72,52 +74,6 @@ const CategoriesList = (props: Props) => {
     return icon;
   };
 
-  // const categories: CategoryModel[] = [
-  //   {
-  //     key: "sport",
-  //     label: "Sports",
-  //     icon: (
-
-  //     ),
-  //     color: "#f0635a",
-  //   },
-  //   {
-  //     key: "music",
-  //     label: "Music",
-  //     icon: (
-  // <FontAwesome5
-  //   name="music"
-  //   color={isFill ? appColor.white : "#f59762"}
-  //   size={20}
-  // />
-  //     ),
-  //     color: "#f59762",
-  //   },
-  //   {
-  //     key: "food",
-  //     label: "Food",
-  //     icon: (
-  // <MaterialCommunityIcons
-  //   name="silverware-fork-knife"
-  //   color={isFill ? appColor.white : "#29d697"}
-  //   size={20}
-  // />
-  //     ),
-  //     color: "#29d697",
-  //   },
-  //   {
-  //     key: "color",
-  //     label: "Color",
-  //     icon: (
-  // <Ionicons
-  //   name="color-palette"
-  //   color={isFill ? appColor.white : "#46cdf8"}
-  //   size={20}
-  // />
-  //     ),
-  //     color: "#46cdf8",
-  //   },
-  // ];
   return (
     <FlatList
       style={{ paddingHorizontal: 16 }}
@@ -137,7 +93,12 @@ const CategoriesList = (props: Props) => {
           bgColor={isFill ? item.color : appColor.white}
           label={item.label}
           icon={handleIconCategories(item.title)}
-          onPress={() => {}}
+          onPress={() =>
+            navigation.navigate("CategoryDetail", {
+              categoryId: item.CategoryID,
+              title: item.label,
+            })
+          }
           textColor={isFill ? appColor.white : appColor.text}
         />
       )}

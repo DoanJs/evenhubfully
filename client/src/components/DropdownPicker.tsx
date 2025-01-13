@@ -72,7 +72,7 @@ const DropdownPicker = (props: Props) => {
           <Image
             source={{
               uri:
-                item.title ??
+                item.urlImg ??
                 "https://cdn.vectorstock.com/i/1000v/95/56/user-profile-icon-avatar-or-person-vector-45089556.jpg",
             }}
             height={30}

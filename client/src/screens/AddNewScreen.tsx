@@ -22,7 +22,11 @@ import { EventModel, Position } from "../models/EventModel";
 import { SelectModel } from "../models/SelectModel";
 import { _handleImagePicked } from "../utils/uploadImg";
 import { Validate } from "../utils/validate";
-import { CategoriesDocument, UsersDocument } from "../gql/graphql";
+import {
+  CategoriesDocument,
+  CreateEventDocument,
+  UsersDocument,
+} from "../gql/graphql";
 import { CategoryModel } from "../models/CategoryModel";
 
 const initValues = {
@@ -47,11 +51,10 @@ const initValues = {
 const AddNewScreen = () => {
   const navigation: any = useNavigation();
   const user = useReactiveVar(userVar);
-  const [eventData, setEventData] = useState<EventModel>({
+  const [eventData, setEventData] = useState<any>({
     ...initValues,
-    authorId: `${user.UserID}`,
+    authorId: `${user?.UserID}`,
   });
-
   const { data: Data_users } = useQuery(UsersDocument);
   const [isVisible, setIsVisible] = useState(false);
   const [values, setValues] = useState<SelectModel[]>([]);
@@ -62,21 +65,7 @@ const AddNewScreen = () => {
     position: Position;
   }>();
   const { data: data_categories } = useQuery(CategoriesDocument);
-  console.log(data_categories?.categories[0]);
-  const [createEvent] = useMutation(
-    gql`
-      mutation MUTATION_createEvent($eventinput: EventInput!) {
-        createEvent(eventinput: $eventinput) {
-          EventID
-        }
-      }
-    `,
-    {
-      // refetchQueries: [
-      //   { query: QUERY_denghiTSNTs, variables: { utilsParams: {} } },
-      // ],
-    }
-  );
+  const [createEvent] = useMutation(CreateEventDocument);
 
   useEffect(() => {
     if (Data_users) {
@@ -145,7 +134,7 @@ const AddNewScreen = () => {
     }
   };
 
-  const handlePushEvent = async (event: EventModel) => {
+  const handlePushEvent = async (event: any) => {
     createEvent({
       variables: {
         eventinput: event,

@@ -1,0 +1,17 @@
+query GetEventConditions($condition: String!) {
+  getEventConditions(condition: $condition) {
+    EventID
+    title
+    description
+    locationTitle
+    locationAddress
+    imageUrl
+    price
+    category
+    date
+    startAt
+    endAt
+    createAt
+    updateAt
+  }
+}

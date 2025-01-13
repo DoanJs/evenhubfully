@@ -1,5 +1,5 @@
 export interface SelectModel {
-    label: string
-    value: string,
-    urlImg: string
+  label: string;
+  value: string;
+  urlImg: string;
 }
