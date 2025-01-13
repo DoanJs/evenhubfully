@@ -54,6 +54,11 @@ const ModalInvite = (props: Props) => {
     setSelectedUsers(items);
   };
 
+  const handleInviteUser = async () => {
+    const userIds = selectedUsers.map((user: UserModel) => user.UserID)
+    console.log(userIds)
+  }
+
   const onShare = async () => {
     try {
       const result = await Share.share({
@@ -86,7 +91,7 @@ const ModalInvite = (props: Props) => {
             <ButtonComponent
               text="Invite"
               type="primary"
-              onPress={onShare}
+              onPress={handleInviteUser}
             />
           </RowComponent>
         }

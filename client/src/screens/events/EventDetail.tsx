@@ -478,6 +478,7 @@ const EventDetail = ({ navigation, route }: any) => {
           iconFlex="right"
         />
       </LinearGradient>
+      
       <LoadingModal visible={isVisible} />
 
       <ModalInvite

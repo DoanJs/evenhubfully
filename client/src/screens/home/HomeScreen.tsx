@@ -96,8 +96,8 @@ const HomeScreen = () => {
     responseListener.current =
       Notifications.addNotificationResponseReceivedListener((response) => {
         const { eventId } = response.notification.request.content.data;
-        console.log(response.notification.request.content.data);
-        Linking.openURL("exp://192.168.1.86:8081/--/EventDetail/30");
+        console.log("response: ", response.notification.request.content.data);
+        Linking.openURL(`exp://192.168.0.105:8081/--/EventDetail/${eventId}`);
       });
   }, []);
 
@@ -286,13 +286,6 @@ const HomeScreen = () => {
         ]}
       >
         <SectionComponent styles={{ paddingHorizontal: 0 }}>
-          <TouchableOpacity
-            onPress={() =>
-              Linking.openURL("exp://192.168.1.46:8081/--/Main/HomeNavigator/Add")
-            }
-          >
-            <TextComponent text="asdas" />
-          </TouchableOpacity>
           <TabBarComponent
             onPress={() => navigation.navigate("ExploreEvents")}
             title="Upcoming Events"
