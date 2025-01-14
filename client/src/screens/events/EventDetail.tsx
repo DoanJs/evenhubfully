@@ -26,6 +26,7 @@ import { appColor } from "../../constants/appColor";
 import { appInfo } from "../../constants/appInfos";
 import { fontFamilies } from "../../constants/fontFamilies";
 import {
+  CreateBillDocument,
   EditFollowDocument,
   EditFollowEventDocument,
   EventDocument,
@@ -47,6 +48,7 @@ import ModalInvite from "../../models/ModalInvite";
 import { UserModel } from "../../models/UserModel";
 import { globalStyles } from "../../styles/gloabalStyles";
 import { DateTime } from "../../utils/DateTime";
+import { BillModel } from "../../models/BillModel";
 
 const EventDetail = ({ navigation, route }: any) => {
   // const navigation: NavigationProp<RootStackParamList> = useNavigation();
@@ -90,7 +92,9 @@ const EventDetail = ({ navigation, route }: any) => {
     },
     skip: !eventId,
   });
-  
+  const [createBill] = useMutation(CreateBillDocument, {
+    refetchQueries: [],
+  });
 
   useEffect(() => {
     if (data_event) {
@@ -176,6 +180,34 @@ const EventDetail = ({ navigation, route }: any) => {
         console.log(err);
         setIsVisible(false);
       });
+  };
+
+  const handleCreateBillPaymentDetail = async () => {
+    setIsVisible(true);
+    if (user && event) {
+      createBill({
+        variables: {
+          billInput: {
+            createAt: Date.now(),
+            updateAt: null,
+            price: Number(event?.price),
+            eventBuy: eventId,
+            authorEvent: event?.author.UserID,
+            userBuy: user?.UserID,
+          },
+        },
+      })
+        .then((result) => {
+          navigation.navigate("PaymentScreen", {
+            billDetail: result.data?.createBill,
+          });
+          setIsVisible(false);
+        })
+        .catch((err) => {
+          setIsVisible(false);
+          console.log(err);
+        });
+    }
   };
 
   if (!event) return <ActivityIndicator />;
@@ -470,15 +502,17 @@ const EventDetail = ({ navigation, route }: any) => {
           alignItems: "center",
         }}
       >
-        <ButtonComponent
-          type="primary"
-          text="BUY TICKET $120"
-          onPress={() => alert("Buy ticket")}
-          icon={<Image source={arrowRight} height={20} />}
-          iconFlex="right"
-        />
+        {user && user.UserID !== event.author.UserID && (
+          <ButtonComponent
+            type="primary"
+            text={`BUY TICKET $${event.price}`}
+            onPress={() => handleCreateBillPaymentDetail()}
+            icon={<Image source={arrowRight} height={20} />}
+            iconFlex="right"
+          />
+        )}
       </LinearGradient>
-      
+
       <LoadingModal visible={isVisible} />
 
       <ModalInvite

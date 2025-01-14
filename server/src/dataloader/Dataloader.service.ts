@@ -19,4 +19,14 @@ export class DataLoaderService {
     });
     return Promise.resolve(result);
   });
+
+  public readonly loaderEvent = new DataLoader((ids: number[]) => {
+    const result = ids.map(async (id) => {
+      const response = await this.userRepository.query(
+        `select * from Events where EventID = ${id}`,
+      );
+      return response[0];
+    });
+    return Promise.resolve(result);
+  });
 }

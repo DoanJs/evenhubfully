@@ -16,6 +16,7 @@ interface Props {
 
 const AvatarGroup = (props: Props) => {
   const { styles, size, zIndex, users } = props;
+
   return (
     <RowComponent
       justify="flex-start"

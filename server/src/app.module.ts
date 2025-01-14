@@ -7,13 +7,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth';
+import { BillModule } from './bills/Bill.module';
+import { CategoryModule } from './categories/Category.module';
+import { DataLoaderModule } from './dataloader/Dataloader.module';
 import { EventModule } from './events/Event.module';
 import { FCMTokenModule } from './fcmtokens/FCMToken.module';
 import { FollowModule } from './follows/Follow.module';
 import { PositionModule } from './positions/Position.module';
 import { UsersModule } from './users/Users.module';
-import { DataLoaderModule } from './dataloader/Dataloader.module';
-import { CategoryModule } from './categories/Category.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { CategoryModule } from './categories/Category.module';
     FollowModule,
     CategoryModule,
     DataLoaderModule,
+    BillModule,
   ],
   controllers: [AppController],
   providers: [AppService],

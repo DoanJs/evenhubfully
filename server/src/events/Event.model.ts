@@ -1,4 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
+import { Bill } from 'src/bills/Bill.model';
 import { Position } from 'src/positions/Position.model';
 import { User } from 'src/users/User.model';
 import {
@@ -8,6 +9,7 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -88,6 +90,9 @@ export class Event {
   })
   @Field(() => User, { nullable: true })
   author: User;
+
+  @OneToMany(() => Bill, (bill) => bill.eventBuy)
+  bills: [Bill];
 
   // many-to-many
   @ManyToMany(() => User, (user) => user.user_events, {

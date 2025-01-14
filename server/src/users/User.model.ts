@@ -1,4 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
+import { Bill } from 'src/bills/Bill.model';
 import { Category } from 'src/categories/Category.model';
 import { Event } from 'src/events/Event.model';
 import { FCMToken } from 'src/fcmtokens/FCMToken.model';
@@ -59,6 +60,12 @@ export class User {
 
   @OneToMany(() => Follow, (follow) => follow.follower_user)
   followers: [Follow];
+
+  @OneToMany(() => Bill, (bill) => bill.userBuy)
+  bills: [Bill];
+
+  @OneToMany(() => Bill, (bill) => bill.authorEvent)
+  billAuthors: [Bill];
 
   // many-to-many
   @ManyToMany(() => Event, (event) => event.users)

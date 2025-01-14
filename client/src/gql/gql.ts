@@ -14,6 +14,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Learn more about it here: https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#reducing-bundle-size
  */
 const documents = {
+    "mutation CreateBill($billInput: BillInput!) {\n  createBill(billInput: $billInput) {\n    BillID\n    createAt\n    updateAt\n    price\n    status\n    userBuy {\n      UserID\n    }\n    authorEvent {\n      UserID\n    }\n    eventBuy {\n      EventID\n    }\n  }\n}": types.CreateBillDocument,
     "mutation CreateCategory($categoryInput: CategoryInput!) {\n  createCategory(categoryInput: $categoryInput) {\n    CategoryID\n    createAt\n    updateAt\n    title\n    color\n    label\n  }\n}": types.CreateCategoryDocument,
     "mutation CreateEvent($eventinput: EventInput!) {\n  createEvent(eventinput: $eventinput) {\n    EventID\n    title\n    description\n    locationTitle\n    locationAddress\n    imageUrl\n    price\n    category\n    date\n    startAt\n    endAt\n    createAt\n    updateAt\n  }\n}": types.CreateEventDocument,
     "mutation EditFollow($type: String!, $followInput: FollowInput!) {\n  editFollow(type: $type, followInput: $followInput)\n}": types.EditFollowDocument,
@@ -46,6 +47,10 @@ const documents = {
  */
 export function graphql(source: string): unknown;
 
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "mutation CreateBill($billInput: BillInput!) {\n  createBill(billInput: $billInput) {\n    BillID\n    createAt\n    updateAt\n    price\n    status\n    userBuy {\n      UserID\n    }\n    authorEvent {\n      UserID\n    }\n    eventBuy {\n      EventID\n    }\n  }\n}"): (typeof documents)["mutation CreateBill($billInput: BillInput!) {\n  createBill(billInput: $billInput) {\n    BillID\n    createAt\n    updateAt\n    price\n    status\n    userBuy {\n      UserID\n    }\n    authorEvent {\n      UserID\n    }\n    eventBuy {\n      EventID\n    }\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

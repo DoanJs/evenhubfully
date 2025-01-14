@@ -18,6 +18,27 @@ export type Scalars = {
   DateTime: { input: any; output: any; }
 };
 
+export type Bill = {
+  __typename?: 'Bill';
+  BillID: Scalars['Float']['output'];
+  authorEvent?: Maybe<User>;
+  createAt?: Maybe<Scalars['DateTime']['output']>;
+  eventBuy?: Maybe<Event>;
+  price?: Maybe<Scalars['Float']['output']>;
+  status?: Maybe<Scalars['String']['output']>;
+  updateAt?: Maybe<Scalars['DateTime']['output']>;
+  userBuy?: Maybe<User>;
+};
+
+export type BillInput = {
+  authorEvent?: InputMaybe<Scalars['Float']['input']>;
+  createAt?: InputMaybe<Scalars['DateTime']['input']>;
+  eventBuy?: InputMaybe<Scalars['Float']['input']>;
+  price?: InputMaybe<Scalars['Float']['input']>;
+  updateAt?: InputMaybe<Scalars['DateTime']['input']>;
+  userBuy?: InputMaybe<Scalars['Float']['input']>;
+};
+
 export type Category = {
   __typename?: 'Category';
   CategoryID: Scalars['Float']['output'];
@@ -105,6 +126,7 @@ export type FollowInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  createBill: Bill;
   createCategory: Category;
   createEvent: Event;
   createFCMToken: Scalars['String']['output'];
@@ -114,6 +136,11 @@ export type Mutation = {
   editUser: User;
   pushInviteNotifications: Scalars['String']['output'];
   searchEvent: Array<Event>;
+};
+
+
+export type MutationCreateBillArgs = {
+  billInput: BillInput;
 };
 
 
@@ -188,6 +215,7 @@ export type PositionInput = {
 
 export type Query = {
   __typename?: 'Query';
+  bills: Array<Bill>;
   categories: Array<Category>;
   event: Event;
   events: Array<Event>;
@@ -272,6 +300,13 @@ export type UserInput = {
   followEvents?: InputMaybe<Array<EventInput>>;
   isChangePassword?: InputMaybe<Scalars['Float']['input']>;
 };
+
+export type CreateBillMutationVariables = Exact<{
+  billInput: BillInput;
+}>;
+
+
+export type CreateBillMutation = { __typename?: 'Mutation', createBill: { __typename?: 'Bill', BillID: number, createAt?: any | null, updateAt?: any | null, price?: number | null, status?: string | null, userBuy?: { __typename?: 'User', UserID: number } | null, authorEvent?: { __typename?: 'User', UserID: number } | null, eventBuy?: { __typename?: 'Event', EventID: number } | null } };
 
 export type CreateCategoryMutationVariables = Exact<{
   categoryInput: CategoryInput;
@@ -384,6 +419,7 @@ export type UsersQueryVariables = Exact<{ [key: string]: never; }>;
 export type UsersQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', UserID: number, Username?: string | null, Email?: string | null, Password?: string | null, PhotoUrl?: string | null, about?: string | null, type?: string | null, isChangePassword?: number | null }> };
 
 
+export const CreateBillDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateBill"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"billInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"BillInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createBill"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"billInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"billInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"BillID"}},{"kind":"Field","name":{"kind":"Name","value":"createAt"}},{"kind":"Field","name":{"kind":"Name","value":"updateAt"}},{"kind":"Field","name":{"kind":"Name","value":"price"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"userBuy"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"UserID"}}]}},{"kind":"Field","name":{"kind":"Name","value":"authorEvent"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"UserID"}}]}},{"kind":"Field","name":{"kind":"Name","value":"eventBuy"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"EventID"}}]}}]}}]}}]} as unknown as DocumentNode<CreateBillMutation, CreateBillMutationVariables>;
 export const CreateCategoryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateCategory"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"categoryInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CategoryInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createCategory"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"categoryInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"categoryInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"CategoryID"}},{"kind":"Field","name":{"kind":"Name","value":"createAt"}},{"kind":"Field","name":{"kind":"Name","value":"updateAt"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"color"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}}]}}]} as unknown as DocumentNode<CreateCategoryMutation, CreateCategoryMutationVariables>;
 export const CreateEventDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateEvent"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"eventinput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"EventInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createEvent"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"eventinput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"eventinput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"EventID"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"locationTitle"}},{"kind":"Field","name":{"kind":"Name","value":"locationAddress"}},{"kind":"Field","name":{"kind":"Name","value":"imageUrl"}},{"kind":"Field","name":{"kind":"Name","value":"price"}},{"kind":"Field","name":{"kind":"Name","value":"category"}},{"kind":"Field","name":{"kind":"Name","value":"date"}},{"kind":"Field","name":{"kind":"Name","value":"startAt"}},{"kind":"Field","name":{"kind":"Name","value":"endAt"}},{"kind":"Field","name":{"kind":"Name","value":"createAt"}},{"kind":"Field","name":{"kind":"Name","value":"updateAt"}}]}}]}}]} as unknown as DocumentNode<CreateEventMutation, CreateEventMutationVariables>;
 export const EditFollowDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"EditFollow"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"type"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"followInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"FollowInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"editFollow"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"type"},"value":{"kind":"Variable","name":{"kind":"Name","value":"type"}}},{"kind":"Argument","name":{"kind":"Name","value":"followInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"followInput"}}}]}]}}]} as unknown as DocumentNode<EditFollowMutation, EditFollowMutationVariables>;

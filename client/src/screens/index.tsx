@@ -8,6 +8,7 @@ import CategoryDetail from "./events/CategoryDetail";
 import EventDetail from "./events/EventDetail";
 import EventsScreen from "./events/EventsScreen";
 import ExploreEvents from "./events/ExploreEvents";
+import PaymentScreen from "./events/PaymentScreen";
 import SearchEvents from "./events/SearchEvents";
 import HomeScreen from "./home/HomeScreen";
 import MapScreen from "./maps/MapScreen";
@@ -34,4 +35,5 @@ export {
   Verification,
   ExploreEvents,
   CategoryDetail,
+  PaymentScreen
 };

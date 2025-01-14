@@ -1,0 +1,19 @@
+mutation CreateBill($billInput: BillInput!) {
+  createBill(billInput: $billInput) {
+    BillID
+    createAt
+    updateAt
+    price
+    status
+
+    userBuy {
+      UserID
+    }
+    authorEvent {
+      UserID
+    }
+    eventBuy {
+      EventID
+    }
+  }
+}

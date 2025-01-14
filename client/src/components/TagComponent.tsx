@@ -6,7 +6,7 @@ import { appColor } from "../constants/appColor";
 import { fontFamilies } from "../constants/fontFamilies";
 
 interface Props {
-  onPress: () => void;
+  onPress?: () => void;
   label: string;
   icon?: ReactNode;
   textColor?: string;
