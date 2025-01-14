@@ -13,11 +13,12 @@ import {
 } from "../../components";
 import { appColor } from "../../constants/appColor";
 import { GetUserIdDocument } from "../../gql/graphql";
-import { userVar } from "../../graphqlClient/cache";
+import { billsVar, userVar } from "../../graphqlClient/cache";
 import { UserModel } from "../../models/UserModel";
 import { globalStyles } from "../../styles/gloabalStyles";
 import AboutProfile from "./components/AboutProfile";
 import EditProfile from "./components/EditProfile";
+import { BillModel } from "../../models/BillModel";
 
 const ProfileScreen = ({ route }: any) => {
   const userAsync = useReactiveVar(userVar);
@@ -33,6 +34,7 @@ const ProfileScreen = ({ route }: any) => {
   useEffect(() => {
     if (data_user) {
       setUser(data_user.getUserId as UserModel);
+      billsVar(data_user.getUserId.bills as BillModel[]);
     }
   }, [data_user]);
 
@@ -49,7 +51,10 @@ const ProfileScreen = ({ route }: any) => {
         />
       }
     >
-      <ScrollView showsVerticalScrollIndicator={false} style={{paddingBottom: 150}}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={{ paddingBottom: 150 }}
+      >
         {user ? (
           <>
             <SectionComponent styles={globalStyles.center}>

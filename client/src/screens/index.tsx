@@ -13,6 +13,8 @@ import SearchEvents from "./events/SearchEvents";
 import HomeScreen from "./home/HomeScreen";
 import MapScreen from "./maps/MapScreen";
 import NotFound from "./NotFound";
+import CartScreen from "./profiles/CartScreen";
+import BillItem from "./profiles/components/BillItem";
 import EditProfileScreen from "./profiles/EditProfileScreen";
 import ProfileScreen from "./profiles/ProfileScreen";
 import SplashScreen from "./SplashScreen";
@@ -35,5 +37,7 @@ export {
   Verification,
   ExploreEvents,
   CategoryDetail,
-  PaymentScreen
+  PaymentScreen,
+  CartScreen,
+  BillItem
 };

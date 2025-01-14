@@ -7,6 +7,7 @@ import { FollowEventInput } from './type/followEvent.input';
 import { UserInput } from './type/user.input';
 import { User } from './User.model';
 import { UserCategoryInput } from './type/userCategory.input';
+import { Bill } from 'src/bills/Bill.model';
 
 @Injectable()
 export class UsersService {
@@ -150,6 +151,12 @@ export class UsersService {
         on Categories.CategoryID = Categories_Users.CategoryID 
         where Categories_Users.UserID = ${UserID}
   `,
+    );
+  }
+
+  async bills(UserID: number): Promise<Bill[]> {
+    return this.userRepository.query(
+      `select * from Bills where userBuyId = ${UserID}`,
     );
   }
 }

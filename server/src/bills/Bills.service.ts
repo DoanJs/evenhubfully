@@ -18,6 +18,12 @@ export class BillsService {
     return this.billsRepository.query('select * from Bills');
   }
 
+  getBillConditions(condition: string): Promise<Bill[]> {
+    return this.billsRepository.query(
+      `select * from Bills where ${condition !== '' ? condition : `BillID != ''`}`,
+    );
+  }
+
   async createBill(billInput: BillInput): Promise<Bill> {
     const { createAt, updateAt, price, userBuy, authorEvent, eventBuy } =
       billInput;
@@ -41,6 +47,22 @@ export class BillsService {
     await this.billsRepository.save(bill);
     const result = await this.billsRepository.query(
       `select * from Bills where BillID = ${bill.BillID}`,
+    );
+    return result[0];
+  }
+
+  async editBill({
+    billInput,
+    billId,
+  }: {
+    billInput: BillInput;
+    billId: number;
+  }): Promise<Bill> {
+    await this.billsRepository.query(
+      `update Bills set status = 'success' where BillID = ${billId}`,
+    );
+    const result = await this.billsRepository.query(
+      `select * from Bills where BillID = ${billId}`,
     );
     return result[0];
   }

@@ -12,6 +12,7 @@ import DrawerCustom from "./DrawerCustom";
 import DropdownPicker from "./DropdownPicker";
 import EventItem from "./EventItem";
 import InputComponent from "./InputComponent";
+import ListBillComponent from "./ListBillComponent";
 import ListEventComponent from "./ListEventComponent";
 import LoadingComponent from "./LoadingComponent";
 import MakerCustom from "./MakerCustom";
@@ -46,4 +47,5 @@ export {
   TabBarComponent,
   TagComponent,
   TextComponent,
+  ListBillComponent
 };

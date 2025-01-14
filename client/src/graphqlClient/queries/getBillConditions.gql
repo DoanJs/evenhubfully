@@ -1,0 +1,16 @@
+query GetBillConditions($condition: String!) {
+  getBillConditions(condition: $condition) {
+    BillID
+    createAt
+    updateAt
+    price
+    status
+    eventBuy {
+      EventID
+      imageUrl
+      title
+      startAt
+      endAt
+    }
+  }
+}

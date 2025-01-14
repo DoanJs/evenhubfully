@@ -1,4 +1,5 @@
-import React from "react";
+import { useMutation } from "@apollo/client";
+import React, { useState } from "react";
 import {
   ButtonComponent,
   ContainerComponent,
@@ -9,14 +10,33 @@ import {
 } from "../../components";
 import { appColor } from "../../constants/appColor";
 import { fontFamilies } from "../../constants/fontFamilies";
-import { DateTime } from "../../utils/DateTime";
+import { EditBillDocument } from "../../gql/graphql";
 import { BillModel } from "../../models/BillModel";
+import { DateTime } from "../../utils/DateTime";
+import { LoadingModal } from "../../modals";
 
-const PaymentScreen = ({ route }: any) => {
+const PaymentScreen = ({ route, navigation }: any) => {
   const { billDetail }: { billDetail: BillModel } = route.params;
+  const [isVisible, setIsVisible] = useState(false);
+  const [editBill] = useMutation(EditBillDocument, {
+    refetchQueries: [],
+  });
 
   const handlePaySuccessfully = async () => {
-    console.log(billDetail);
+    setIsVisible(true);
+    if (billDetail) {
+      editBill({
+        variables: {
+          billId: billDetail.BillID,
+          billInput: {},
+        },
+      }).then((result) => {
+        setIsVisible(false)
+        navigation.goBack()
+      }).catch(err=> {
+        setIsVisible(false)
+      });
+    }
   };
 
   return (
@@ -76,6 +96,8 @@ const PaymentScreen = ({ route }: any) => {
           text="Payment securely progressed by Paypal"
         />
       </SectionComponent>
+
+      <LoadingModal visible={isVisible} />
     </ContainerComponent>
   );
 };

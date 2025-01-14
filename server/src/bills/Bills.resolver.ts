@@ -20,9 +20,24 @@ export class BillsResolver {
     return this.billsService.bills();
   }
 
+  @Query(() => [Bill])
+  getBillConditions(
+    @Args('condition') condition: string
+  ): Promise<Bill[]> {
+    return this.billsService.getBillConditions(condition);
+  }
+
   @Mutation(() => Bill)
   createBill(@Args('billInput') billInput: BillInput): Promise<Bill> {
     return this.billsService.createBill(billInput);
+  }
+
+  @Mutation(() => Bill)
+  editBill(
+    @Args('billId') billId: number,
+    @Args('billInput') billInput: BillInput,
+  ): Promise<Bill> {
+    return this.billsService.editBill({ billInput, billId });
   }
 
   // relation

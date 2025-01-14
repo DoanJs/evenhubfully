@@ -1,0 +1,9 @@
+mutation EditBill($billId: Float!, $billInput: BillInput!) {
+  editBill(billId: $billId, billInput: $billInput) {
+    BillID
+    createAt
+    updateAt
+    price
+    status
+  }
+}

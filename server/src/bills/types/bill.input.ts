@@ -19,4 +19,7 @@ export class BillInput {
 
   @Field({ nullable: true })
   eventBuy?: number;
+
+  @Field({ nullable: true })
+  status?: string;
 }

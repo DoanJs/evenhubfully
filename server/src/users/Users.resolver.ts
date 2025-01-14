@@ -13,6 +13,7 @@ import { UsersService } from './User.service';
 import { UserInput } from './type/user.input';
 import { UserCategoryInput } from './type/userCategory.input';
 import { Category } from 'src/categories/Category.model';
+import { Bill } from 'src/bills/Bill.model';
 
 @Resolver(() => User)
 export class UsersResolver {
@@ -83,5 +84,10 @@ export class UsersResolver {
   @ResolveField(() => [Category])
   interests(@Parent() user: User): Promise<User[]> {
     return this.usersService.interests(user.UserID);
+  }
+
+  @ResolveField(() => [Bill])
+  bills(@Parent() user: User): Promise<Bill[]> {
+    return this.usersService.bills(user.UserID);
   }
 }

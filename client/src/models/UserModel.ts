@@ -1,3 +1,4 @@
+import { BillModel } from "./BillModel";
 import { CategoryModel } from "./CategoryModel";
 
 export interface UserModel {
@@ -14,4 +15,5 @@ export interface UserModel {
   followings?: [UserModel];
   followers?: [UserModel];
   interests?: [CategoryModel];
+  bills?:[BillModel]
 }

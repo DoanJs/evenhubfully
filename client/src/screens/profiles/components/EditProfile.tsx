@@ -29,13 +29,26 @@ const EditProfile = (props: Props) => {
       <RowComponent justify="center">
         <ButtonComponent
           styles={{
-            width: "60%",
+            width: "30%",
             backgroundColor: appColor.white,
             borderWidth: 1,
             borderColor: appColor.gray2,
           }}
           text="Edit Profile"
           onPress={() => navigation.navigate("EditProfileScreen", { profile })}
+          type="primary"
+          textColor={appColor.primary}
+        />
+        <SpaceComponent width={12}/>
+        <ButtonComponent
+          styles={{
+            width: "30%",
+            backgroundColor: appColor.white,
+            borderWidth: 1,
+            borderColor: appColor.gray2,
+          }}
+          text="View Card"
+          onPress={() => navigation.navigate("CartScreen")}
           type="primary"
           textColor={appColor.primary}
         />

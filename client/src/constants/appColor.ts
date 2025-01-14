@@ -15,6 +15,8 @@ export const appColor = {
     skip:'#ABB4FF',
     link: '#5669ff',
     danger:'red',
-    danger2: '#f0635a'
+    danger2: '#f0635a',
+    green: 'green',
+    coral:'coral'
 
 }

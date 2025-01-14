@@ -23,5 +23,19 @@ query getUserId($userId: Float!) {
       label
       color
     }
+    bills {
+      BillID
+      createAt
+      updateAt
+      price
+      status
+      eventBuy {
+        EventID
+        imageUrl
+        title
+        startAt
+        endAt
+      }
+    }
   }
 }
