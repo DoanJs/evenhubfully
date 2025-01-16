@@ -48,7 +48,6 @@ import ModalInvite from "../../models/ModalInvite";
 import { UserModel } from "../../models/UserModel";
 import { globalStyles } from "../../styles/gloabalStyles";
 import { DateTime } from "../../utils/DateTime";
-import { BillModel } from "../../models/BillModel";
 
 const EventDetail = ({ navigation, route }: any) => {
   // const navigation: NavigationProp<RootStackParamList> = useNavigation();

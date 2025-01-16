@@ -1,15 +1,7 @@
-import { NavigationProp, useNavigation } from "@react-navigation/native";
-import { Location } from "iconsax-react-native";
+import { AntDesign, Feather } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
-import {
-  Image,
-  StyleProp,
-  TouchableOpacity,
-  View,
-  ViewStyle,
-} from "react-native";
-import { BillModel } from "../../../models/BillModel";
-import { RootStackParamList } from "../../../types/route";
+import { Image, StyleProp, View, ViewStyle } from "react-native";
 import {
   CardComponent,
   RowComponent,
@@ -17,10 +9,10 @@ import {
   SpaceComponent,
   TextComponent,
 } from "../../../components";
-import { appInfo } from "../../../constants/appInfos";
 import { appColor } from "../../../constants/appColor";
+import { appInfo } from "../../../constants/appInfos";
 import { LoadingModal } from "../../../modals";
-import { AntDesign, Feather } from "@expo/vector-icons";
+import { BillModel } from "../../../models/BillModel";
 import { DateTime } from "../../../utils/DateTime";
 
 interface Props {
@@ -36,7 +28,7 @@ const BillItem = (props: Props) => {
   return (
     <CardComponent
       isShadow
-      onPress={() => {}}
+      onPress={() => navigation.navigate("PaymentScreen", { billDetail: item })}
       styles={[{ width: appInfo.sizes.WIDTH * 0.7 }, styles]}
     >
       <>
@@ -115,29 +107,6 @@ const BillItem = (props: Props) => {
                 </RowComponent>
               </RowComponent>
             </RowComponent>
-            {item.status === "success" ? (
-              <TextComponent
-                text="Success"
-                styles={{
-                  fontStyle: "italic",
-                }}
-                color={appColor.green}
-              />
-            ) : (
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate("PaymentScreen", { billDetail: item })
-                }
-              >
-                <TextComponent
-                  text="Đi đến thanh toán"
-                  styles={{
-                    fontStyle: "italic",
-                  }}
-                  color={appColor.primary}
-                />
-              </TouchableOpacity>
-            )}
           </SectionComponent>
         </RowComponent>
       </>

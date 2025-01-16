@@ -2,16 +2,25 @@ import { gql, useQuery, useReactiveVar } from "@apollo/client";
 import { useNavigation } from "@react-navigation/native";
 import { ArrowLeft2 } from "iconsax-react-native";
 import React, { useEffect, useState } from "react";
-import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
+import {
+  FlatList,
+  Platform,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import MapView, { Marker } from "react-native-maps";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import {
   CardComponent,
   CategoriesList,
+  EventItem,
   InputComponent,
+  LoadingComponent,
   MakerCustom,
   RowComponent,
+  SectionComponent,
   SpaceComponent,
+  TextComponent,
 } from "../../components";
 import { appColor } from "../../constants/appColor";
 import { appInfo } from "../../constants/appInfos";
@@ -19,46 +28,16 @@ import { currentLocationVar } from "../../graphqlClient/cache";
 import { globalStyles } from "../../styles/gloabalStyles";
 import { EventModel } from "../../models/EventModel";
 import { useStatusBar } from "../../utils/useStatusBar";
+import { MaterialIcons } from "@expo/vector-icons";
+import { Events_NearbyDocument } from "../../gql/graphql";
 
 const MapScreen = () => {
-  useStatusBar('dark-content')
+  useStatusBar("dark-content");
   const navigation: any = useNavigation();
   const currentLocation = useReactiveVar(currentLocationVar);
   const [events_nearby, setEvents_nearby] = useState<EventModel[]>([]);
   const { data: data_events_nearby, loading: loading_events_nearby } = useQuery(
-    gql`
-      query Events_nearby($paramsInput: ParamsInput!) {
-        events_nearby(paramsInput: $paramsInput) {
-          EventID
-          title
-          description
-          locationTitle
-          locationAddress
-          imageUrl
-          price
-          category
-          date
-          startAt
-          endAt
-          position {
-            lat
-            lng
-          }
-          followers {
-            UserID
-          }
-          users {
-            UserID
-            PhotoUrl
-          }
-          author {
-            UserID
-            Email
-            Username
-          }
-        }
-      }
-    `,
+    Events_NearbyDocument,
     {
       variables: {
         paramsInput: {
@@ -74,7 +53,7 @@ const MapScreen = () => {
 
   useEffect(() => {
     if (data_events_nearby) {
-      setEvents_nearby(data_events_nearby.events_nearby);
+      setEvents_nearby(data_events_nearby.events_nearby as EventModel[]);
     }
   }, [data_events_nearby]);
 
@@ -113,7 +92,8 @@ const MapScreen = () => {
         >
           {events_nearby &&
             events_nearby.map((event: any) => (
-              <Marker key={event.EventID}
+              <Marker
+                key={event.EventID}
                 title="asd"
                 description="asdas"
                 coordinate={{
@@ -173,6 +153,23 @@ const MapScreen = () => {
         <SpaceComponent height={20} />
         <CategoriesList />
       </View>
+      <SectionComponent styles={{ position: "absolute", bottom: 0 }}>
+        {events_nearby.length > 0 ? (
+          <FlatList
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            data={events_nearby}
+            renderItem={({ item }) => (
+              <EventItem item={item} key={item.EventID} type="list" />
+            )}
+          />
+        ) : (
+          <LoadingComponent
+            value={events_nearby.length}
+            isLoading={loading_events_nearby}
+          />
+        )}
+      </SectionComponent>
     </View>
   );
 };

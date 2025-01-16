@@ -1,4 +1,4 @@
-import { useMutation } from "@apollo/client";
+import { useMutation, useReactiveVar } from "@apollo/client";
 import React, { useState } from "react";
 import {
   ButtonComponent,
@@ -10,16 +10,24 @@ import {
 } from "../../components";
 import { appColor } from "../../constants/appColor";
 import { fontFamilies } from "../../constants/fontFamilies";
-import { EditBillDocument } from "../../gql/graphql";
+import { EditBillDocument, GetUserIdDocument } from "../../gql/graphql";
 import { BillModel } from "../../models/BillModel";
 import { DateTime } from "../../utils/DateTime";
 import { LoadingModal } from "../../modals";
+import { userVar } from "../../graphqlClient/cache";
 
 const PaymentScreen = ({ route, navigation }: any) => {
+  const user = useReactiveVar(userVar)
   const { billDetail }: { billDetail: BillModel } = route.params;
   const [isVisible, setIsVisible] = useState(false);
   const [editBill] = useMutation(EditBillDocument, {
-    refetchQueries: [],
+    refetchQueries: [
+      {
+        query: GetUserIdDocument, variables: {
+          userId: user?.UserID
+        }
+      }
+    ],
   });
 
   const handlePaySuccessfully = async () => {
@@ -33,6 +41,8 @@ const PaymentScreen = ({ route, navigation }: any) => {
       }).then((result) => {
         setIsVisible(false)
         navigation.goBack()
+        console.log(result)
+        console.log(billDetail)
       }).catch(err=> {
         setIsVisible(false)
       });

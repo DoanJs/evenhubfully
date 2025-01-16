@@ -1,11 +1,8 @@
 import React from "react";
 import { FlatList, StyleProp, ViewStyle } from "react-native";
 import { BillModel } from "../models/BillModel";
-import EventItem from "./EventItem";
-import SectionComponent from "./SectionComponent";
 import { BillItem } from "../screens";
-import ButtonComponent from "./ButtonComponent";
-import { View } from "react-native";
+import SectionComponent from "./SectionComponent";
 
 interface Props {
   items: BillModel[];
@@ -29,21 +26,6 @@ const ListBillComponent = (props: Props) => {
           />
         )}
       />
-
-      <View
-        style={{
-          // position: "absolute",
-          bottom: 0,
-          right: 0,
-          left: 0,
-        }}
-      >
-        <ButtonComponent
-          styles={{ width: undefined }}
-          text="Buy now"
-          type="primary"
-        />
-      </View>
     </SectionComponent>
   );
 };
