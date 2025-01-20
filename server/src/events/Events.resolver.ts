@@ -14,6 +14,7 @@ import { User } from 'src/users/User.model';
 import { ParamsInput } from 'src/utils/types/Params.input';
 import { EventsService } from './Events.service';
 import { EventInput } from './type/event.input';
+import { EventConditionInput } from './type/eventCondition.input';
 
 @Resolver(() => Event)
 @UseGuards(GraphQLGuard)
@@ -26,8 +27,10 @@ export class EventsResolver {
   }
 
   @Query(() => [Event])
-  getEventConditions(@Args('condition') condition: string): Promise<Event[]> {
-    return this.eventsService.getEventConditions(condition);
+  getEventConditions(
+    @Args('eventConditionInput') eventConditionInput: EventConditionInput
+  ): Promise<Event[]> {
+    return this.eventsService.getEventConditions(eventConditionInput);
   }
 
   @Query(() => Event)

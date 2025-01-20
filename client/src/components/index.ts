@@ -16,6 +16,7 @@ import ListBillComponent from "./ListBillComponent";
 import ListEventComponent from "./ListEventComponent";
 import LoadingComponent from "./LoadingComponent";
 import MakerCustom from "./MakerCustom";
+import RadioButton from "./RadioButton";
 import RowComponent from "./RowComponent";
 import SectionComponent from "./SectionComponent";
 import SpaceComponent from "./SpaceComponent";
@@ -47,5 +48,6 @@ export {
   TabBarComponent,
   TagComponent,
   TextComponent,
-  ListBillComponent
+  ListBillComponent,
+  RadioButton
 };

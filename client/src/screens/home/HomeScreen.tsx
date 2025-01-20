@@ -48,11 +48,13 @@ import { globalStyles } from "../../styles/gloabalStyles";
 import { HandleNotification } from "../../utils/handleNotification";
 import { useStatusBar } from "../../utils/useStatusBar";
 import { Linking } from "react-native";
+import { ModalFilterEvent } from "../../modals";
 
 const HomeScreen = () => {
   useStatusBar("light-content");
   const navigation: any = useNavigation();
   const currentLocation = useReactiveVar(currentLocationVar);
+  const [isvisibleModalFilter, setIsvisibleModalFilter] = useState(false);
   const [events, setEvents] = useState<EventModel[]>([]);
   const [events_nearby, setEvents_nearby] = useState<EventModel[]>([]);
   const { data: data_events_nearby, loading: loading_events_nearby } = useQuery(
@@ -262,11 +264,7 @@ const HomeScreen = () => {
                   <Sort size={16} color="white" />
                 </CircleComponent>
               }
-              onPress={() =>
-                navigation.navigate("SearchEvents", {
-                  isFilter: true,
-                })
-              }
+              onPress={() => setIsvisibleModalFilter(true)}
             />
           </RowComponent>
           <SpaceComponent height={20} />
@@ -287,7 +285,12 @@ const HomeScreen = () => {
       >
         <SectionComponent styles={{ paddingHorizontal: 0 }}>
           <TabBarComponent
-            onPress={() => navigation.navigate("ExploreEvents")}
+            onPress={() =>
+              navigation.navigate("ExploreEvents", {
+                key: "upcoming",
+                title: "Upcoming Events",
+              })
+            }
             title="Upcoming Events"
           />
           {events.length > 0 ? (
@@ -348,7 +351,15 @@ const HomeScreen = () => {
           </ImageBackground>
         </SectionComponent>
         <SectionComponent styles={{ paddingHorizontal: 0 }}>
-          <TabBarComponent onPress={() => {}} title="Nearby You" />
+          <TabBarComponent
+            onPress={() =>
+              navigation.navigate("ExploreEvents", {
+                key: "nearby",
+                title: "Nearby You",
+              })
+            }
+            title="Nearby You"
+          />
           {events_nearby.length > 0 ? (
             <FlatList
               horizontal
@@ -370,6 +381,19 @@ const HomeScreen = () => {
           )}
         </SectionComponent>
       </ScrollView>
+      <ModalFilterEvent
+        visible={isvisibleModalFilter}
+        // selected={
+        //   profile && profile.interests
+        //     ? [...profile.interests].map((item) => {
+        //         return `${item.CategoryID}`;
+        //       })
+        //     : []
+        // }
+
+        onClose={() => setIsvisibleModalFilter(false)}
+        onSelected={(vals) => console.log(vals)}
+      />
     </View>
   );
 };

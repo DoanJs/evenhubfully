@@ -1,4 +1,6 @@
-import { View, Text } from "react-native";
+import { useQuery, useReactiveVar } from "@apollo/client";
+import { MaterialIcons } from "@expo/vector-icons";
+import { SearchNormal1 } from "iconsax-react-native";
 import React, { useEffect, useState } from "react";
 import {
   ButtonComponent,
@@ -8,32 +10,48 @@ import {
   RowComponent,
   SpaceComponent,
 } from "../../components";
-import { EventModel } from "../../models/EventModel";
-import { useQuery } from "@apollo/client";
-import { EventsDocument } from "../../gql/graphql";
-import { SearchNormal1 } from "iconsax-react-native";
 import { appColor } from "../../constants/appColor";
-import { MaterialIcons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import {
+  Events_NearbyDocument,
+  Events_UpcomingDocument,
+  EventsDocument,
+  GetEventConditionsDocument,
+} from "../../gql/graphql";
+import { EventModel } from "../../models/EventModel";
+import { currentLocationVar } from "../../graphqlClient/cache";
 
-const ExploreEvents = () => {
-  const navigation: any = useNavigation();
+const ExploreEvents = ({ route, navigation }: any) => {
   const [isLoading, setIsLoading] = useState(false);
+  const currentLocation = useReactiveVar(currentLocationVar);
   const [events, setEvents] = useState<EventModel[]>([]);
-  const { data: data_events } = useQuery(EventsDocument, {
-    variables: { paramsInput: {} },
-  });
+  const { data: data_getEventConditions } = useQuery(
+    GetEventConditionsDocument,
+    {
+      variables: {
+        eventConditionInput: {
+          filter: {
+            key: route.params.key,
+            data: {
+              lat: currentLocation?.position.lat,
+              long: currentLocation?.position.lng,
+              distance: 1,
+            },
+          },
+        },
+      },
+    }
+  );
 
   useEffect(() => {
-    if (data_events) {
-      setEvents(data_events.events as EventModel[]);
+    if (data_getEventConditions) {
+      setEvents(data_getEventConditions.getEventConditions as EventModel[]);
     }
-  }, [data_events]);
+  }, [data_getEventConditions]);
 
   return (
     <ContainerComponent
       back
-      title="Events"
+      title={route.params.title}
       right={
         <RowComponent>
           <ButtonComponent

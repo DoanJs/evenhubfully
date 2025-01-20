@@ -1,5 +1,5 @@
-query GetEventConditions($condition: String!) {
-  getEventConditions(condition: $condition) {
+query GetEventConditions($eventConditionInput: EventConditionInput!) {
+  getEventConditions(eventConditionInput: $eventConditionInput) {
     EventID
     title
     description

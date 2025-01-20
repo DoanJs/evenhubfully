@@ -12,7 +12,7 @@ import { useNavigation } from "@react-navigation/native";
 import { UserModel } from "../../../models/UserModel";
 import { appColor } from "../../../constants/appColor";
 import { Edit2 } from "iconsax-react-native";
-import ModalSelectCategories from "../../../models/ModalSelectCategories";
+import ModalSelectCategories from "../../../modals/ModalSelectCategories";
 import { globalStyles } from "../../../styles/gloabalStyles";
 
 interface Props {

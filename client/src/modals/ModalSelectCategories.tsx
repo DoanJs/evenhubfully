@@ -13,12 +13,12 @@ import {
   EditInterestsDocument,
   GetUserIdDocument,
 } from "../gql/graphql";
-import { CategoryModel } from "./CategoryModel";
+import { CategoryModel } from "../models/CategoryModel";
 import { TouchableOpacity } from "react-native";
 import { globalStyles } from "../styles/gloabalStyles";
 import { appColor } from "../constants/appColor";
 import { userVar } from "../graphqlClient/cache";
-import { LoadingModal } from "../modals";
+import { LoadingModal } from ".";
 
 interface Props {
   visible: boolean;

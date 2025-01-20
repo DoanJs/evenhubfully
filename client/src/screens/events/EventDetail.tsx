@@ -44,7 +44,7 @@ import {
 } from "../../graphqlClient/cache";
 import { LoadingModal } from "../../modals";
 import { EventModel } from "../../models/EventModel";
-import ModalInvite from "../../models/ModalInvite";
+import ModalInvite from "../../modals/ModalInvite";
 import { UserModel } from "../../models/UserModel";
 import { globalStyles } from "../../styles/gloabalStyles";
 import { DateTime } from "../../utils/DateTime";

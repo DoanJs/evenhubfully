@@ -8,6 +8,7 @@ import { User } from 'src/users/User.model';
 import { ParamsInput } from 'src/utils/types/Params.input';
 import { Repository } from 'typeorm';
 import { EventInput } from './type/event.input';
+import { EventConditionInput } from './type/eventCondition.input';
 
 @Injectable()
 export class EventsService {
@@ -98,10 +99,34 @@ export class EventsService {
     }
   }
 
-  async getEventConditions(condition: string): Promise<Event[]> {
-    const result = await this.eventRepository.query(
-      `select * from Events where ${condition !== '' ? condition : `EventID != ''`}`,
-    );
+  async getEventConditions(
+    eventConditionInput: EventConditionInput,
+  ): Promise<Event[]> {
+    const { condition, filter } = eventConditionInput;
+    let result: any;
+    if (!filter) {
+      result = await this.eventRepository.query(
+        `select * from Events where ${condition !== '' ? condition : `EventID != ''`}`,
+      );
+    } else {
+      switch (filter.key) {
+        case 'upcoming':
+          result = this.events_upcoming();
+          break;
+        case 'pastevent':
+          const events = await this.eventRepository.query(`select * from Events`);
+          result = events.filter((event: any) => event.startAt <= Date.now());
+          break;
+        case 'nearby':
+          result = this.events_nearby({data: filter.data});
+          break;
+
+        default:
+          result = this.events({})
+          break;
+      }
+    }
+
     return result;
   }
 

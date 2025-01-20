@@ -13,8 +13,8 @@ import {
 import UserComponent from "../components/UserComponent";
 import { appColor } from "../constants/appColor";
 import { followingsVar, userVar } from "../graphqlClient/cache";
-import { LoadingModal } from "../modals";
-import { UserModel } from "./UserModel";
+import { LoadingModal } from ".";
+import { UserModel } from "../models/UserModel";
 import { Share } from "react-native";
 import { Alert } from "react-native";
 
