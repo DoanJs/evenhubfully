@@ -233,6 +233,11 @@ const HomeScreen = () => {
               onPress={() =>
                 navigation.navigate("SearchEvents", {
                   isFilter: false,
+                  data: {
+                    categorySelected: [],
+                    dateTimeSelected: '',
+                    dateCalendar: false,
+                  },
                 })
               }
             >
@@ -383,14 +388,6 @@ const HomeScreen = () => {
       </ScrollView>
       <ModalFilterEvent
         visible={isvisibleModalFilter}
-        // selected={
-        //   profile && profile.interests
-        //     ? [...profile.interests].map((item) => {
-        //         return `${item.CategoryID}`;
-        //       })
-        //     : []
-        // }
-
         onClose={() => setIsvisibleModalFilter(false)}
         onSelected={(vals) => console.log(vals)}
       />

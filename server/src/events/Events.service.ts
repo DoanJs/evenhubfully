@@ -9,6 +9,7 @@ import { ParamsInput } from 'src/utils/types/Params.input';
 import { Repository } from 'typeorm';
 import { EventInput } from './type/event.input';
 import { EventConditionInput } from './type/eventCondition.input';
+import { FilterEventsData } from './type/filterEventsData.input';
 
 @Injectable()
 export class EventsService {
@@ -114,15 +115,16 @@ export class EventsService {
           result = this.events_upcoming();
           break;
         case 'pastevent':
-          const events = await this.eventRepository.query(`select * from Events`);
+          const events =
+            await this.eventRepository.query(`select * from Events`);
           result = events.filter((event: any) => event.startAt <= Date.now());
           break;
         case 'nearby':
-          result = this.events_nearby({data: filter.data});
+          result = this.events_nearby({ data: filter.data });
           break;
 
         default:
-          result = this.events({})
+          result = this.events({});
           break;
       }
     }
@@ -203,6 +205,107 @@ export class EventsService {
     );
 
     return result;
+  }
+
+  async filterEventsCondition(
+    filterEventsData: FilterEventsData,
+  ): Promise<Event[]> {
+    let result: any;
+    const { condition, date, type, position } = filterEventsData;
+
+    if (condition) {
+      result = await this.eventRepository.query(
+        `select * from Events where ${condition}`,
+      );
+    } else {
+      result = await this.events({});
+    }
+
+    if (type !== '') {
+      if (type === 'Today') {
+        result = result.filter(
+          (event: Event) =>
+            this.handleDateTime(event.startAt) ===
+            this.handleDateTime(new Date()),
+        );
+      } else if (type === 'Tomorrow') {
+        result = result.filter(
+          (event: Event) =>
+            this.handleDateTime(event.startAt) ===
+            this.handleDateTime(new Date(Date.now() + 86400000)),
+        );
+      } else if (type === 'This week') {
+        const newDate = new Date();
+        let startDay: any;
+        let endDay: any;
+        const dayOfWeek = newDate.getDay();
+
+        if (dayOfWeek === 0) {
+          startDay = newDate.getTime() - 6 * 86400000;
+          endDay = newDate.getTime();
+        } else {
+          startDay = newDate.getTime() - (dayOfWeek - 1) * 86400000;
+          endDay = newDate.getTime() + (7 - dayOfWeek) * 86400000;
+        }
+
+        result = result.filter(
+          (event: Event) =>
+            new Date(event.startAt).getDate() >= new Date(startDay).getDate() &&
+            new Date(event.startAt).getDate() <= new Date(endDay).getDate(),
+        );
+      }
+    }
+
+    if (
+      type === '' &&
+      this.handleDateTime(new Date(Date.now())) !==
+        this.handleDateTime(new Date(date))
+    ) {
+      console.log(this.handleDateTime(new Date(Date.now())));
+      console.log(date);
+      console.log(new Date(date));
+      result = result.filter(
+        (event: Event) =>
+          this.handleDateTime(event.startAt) ===
+          this.handleDateTime(new Date(date)),
+      );
+    }
+
+    if (position) {
+      if (result?.length > 0) {
+        const data: any = [...result];
+
+        const promiseItems = data.map(async (event: Event, index: number) => {
+          const posi = (await this.eventRepository.query(
+            `select * from Positions where eventId = ${event.EventID}`,
+          )) as Position[];
+
+          data[index].position = posi[0];
+        });
+
+        await Promise.all(promiseItems);
+
+        result = data.filter((event: any) => {
+          const eventDistance = this.calcDistanceLocation({
+            currentLat: position.lat,
+            currentLong: position.lng,
+            addressLat: event.position?.lat,
+            addressLong: event.position?.lng,
+          });
+          return eventDistance < 1;
+        });
+      }
+    }
+
+    return result;
+  }
+
+  handleDateTime(dateObj: any) {
+    const month = dateObj.getMonth() + 1; // months from 1-12
+    const day = dateObj.getDate();
+    const year = dateObj.getFullYear();
+
+    return `${day}/${month}/${year}`;
   }
 
   async pushInviteNotifications({

@@ -15,6 +15,7 @@ import { ParamsInput } from 'src/utils/types/Params.input';
 import { EventsService } from './Events.service';
 import { EventInput } from './type/event.input';
 import { EventConditionInput } from './type/eventCondition.input';
+import { FilterEventsData } from './type/filterEventsData.input';
 
 @Resolver(() => Event)
 @UseGuards(GraphQLGuard)
@@ -28,7 +29,7 @@ export class EventsResolver {
 
   @Query(() => [Event])
   getEventConditions(
-    @Args('eventConditionInput') eventConditionInput: EventConditionInput
+    @Args('eventConditionInput') eventConditionInput: EventConditionInput,
   ): Promise<Event[]> {
     return this.eventsService.getEventConditions(eventConditionInput);
   }
@@ -60,6 +61,13 @@ export class EventsResolver {
     @Args('eventinput', { type: () => EventInput }) eventinput: EventInput,
   ): Promise<Event> {
     return this.eventsService.createEvent(eventinput);
+  }
+
+  @Mutation(() => [Event])
+  filterEventsCondition(
+    @Args('filterEventsData') filterEventsData: FilterEventsData,
+  ): Promise<Event[]> {
+    return this.eventsService.filterEventsCondition(filterEventsData);
   }
 
   @Mutation(() => String)

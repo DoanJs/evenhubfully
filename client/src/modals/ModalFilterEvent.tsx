@@ -5,13 +5,22 @@ import {
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { ArrowRight2, Calendar, Location } from "iconsax-react-native";
-import React, { Fragment, ReactNode, useEffect, useRef, useState } from "react";
+import { useNavigation } from "@react-navigation/native";
+import { ArrowRight2, Calendar } from "iconsax-react-native";
+import React, {
+  Fragment,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { FlatList, TouchableOpacity, View } from "react-native";
 import { Modalize } from "react-native-modalize";
 import { Portal } from "react-native-portalize";
 import {
   ButtonComponent,
+  ChoiceLocation,
   RowComponent,
   SectionComponent,
   SpaceComponent,
@@ -19,8 +28,11 @@ import {
 } from "../components";
 import { appColor } from "../constants/appColor";
 import { CategoriesDocument } from "../gql/graphql";
+import { Position } from "../models/AddressModel";
 import { CategoryModel } from "../models/CategoryModel";
 import { globalStyles } from "../styles/gloabalStyles";
+import { DateTime } from "../utils/DateTime";
+import RnRangeSlider from "rn-range-slider";
 
 interface Props {
   visible: boolean;
@@ -31,13 +43,28 @@ interface Props {
 
 const ModalFilterEvent = (props: Props) => {
   const { visible, onClose, onSelected, selected } = props;
+  const navigation: any = useNavigation();
   const modalizeRef = useRef<Modalize>();
+  const [addressSelected, setAddressSelected] = useState<{
+    address: string;
+    position: Position;
+  }>();
   const [categories, setCategories] = useState<CategoryModel[]>([]);
   const [categorySelected, setCategorySelected] = useState<string[]>([]);
   const { data: data_categories } = useQuery(CategoriesDocument);
   const [isVisibleModalDate, setIsVisibleModalDate] = useState(false);
   const [dateCalendar, setDateCalendar] = useState(Date.now());
   const [dateTimeSelected, setDateTimeSelected] = useState("");
+
+  const [low, setLow] = useState(0);
+  const [high, setHigh] = useState(100);
+  const [min, setMin] = useState(0);
+  const [max, setMax] = useState(100);
+
+  const handleValueChange = useCallback((lowValue: any, highValue: any) => {
+    setLow(lowValue);
+    setHigh(highValue);
+  }, []);
 
   useEffect(() => {
     if (visible) {
@@ -56,7 +83,7 @@ const ModalFilterEvent = (props: Props) => {
   const handleIconCategories = (key: string) => {
     let icon: ReactNode;
     switch (key) {
-      case "sport":
+      case "Sports":
         icon = (
           <FontAwesome5
             name="basketball-ball"
@@ -65,7 +92,7 @@ const ModalFilterEvent = (props: Props) => {
           />
         );
         break;
-      case "music":
+      case "Music":
         icon = (
           <FontAwesome5
             name="music"
@@ -74,7 +101,7 @@ const ModalFilterEvent = (props: Props) => {
           />
         );
         break;
-      case "food":
+      case "Food":
         icon = (
           <MaterialCommunityIcons
             name="silverware-fork-knife"
@@ -117,7 +144,6 @@ const ModalFilterEvent = (props: Props) => {
     setIsVisibleModalDate(false);
   };
 
-
   const selectedDateTime = (title: string) => {
     let key = "";
     if (title !== dateTimeSelected) {
@@ -126,11 +152,18 @@ const ModalFilterEvent = (props: Props) => {
 
     setDateTimeSelected(key);
   };
-  
+
   const handleFilterEvent = () => {
-    console.log("categorySelected: ", categorySelected);
-    console.log("dateTimeSelected: ", dateTimeSelected);
-    console.log("dateCalendar: ", dateCalendar);
+    modalizeRef.current?.close();
+    navigation.navigate("SearchEvents", {
+      isFilter: true,
+      data: {
+        categorySelected,
+        dateTimeSelected,
+        dateCalendar: !dateTimeSelected && dateCalendar,
+        addressSelected,
+      },
+    });
   };
   return (
     <>
@@ -160,7 +193,7 @@ const ModalFilterEvent = (props: Props) => {
                         width: 63,
                         height: 63,
                         borderRadius: 100,
-                        backgroundColor: categorySelected.includes(item.title)
+                        backgroundColor: categorySelected.includes(item.label)
                           ? item.color
                           : appColor.white,
                         borderWidth: 1,
@@ -169,9 +202,9 @@ const ModalFilterEvent = (props: Props) => {
                         marginRight: index === categories.length - 1 ? 0 : 16,
                       },
                     ]}
-                    onPress={() => handleSelectedCategory(item.title)}
+                    onPress={() => handleSelectedCategory(item.label)}
                   >
-                    {handleIconCategories(item.title)}
+                    {handleIconCategories(item.label)}
                   </TouchableOpacity>
                   <SpaceComponent height={8} />
                   <TextComponent text={item.label} />
@@ -239,6 +272,43 @@ const ModalFilterEvent = (props: Props) => {
           <SectionComponent>
             <TextComponent title text="Location" />
             <SpaceComponent height={10} />
+            <ChoiceLocation
+              onSelect={(val: {
+                address: string;
+                position: { lat: number; lng: number };
+              }) => setAddressSelected(val)}
+            />
+          </SectionComponent>
+
+          <SectionComponent>
+            <TextComponent text="Price range" title />
+            <TextComponent text={`${high}`} />
+            <TextComponent text={`${low}`} />
+            <SpaceComponent height={16} />
+            <RnRangeSlider
+              style={{
+                flex: 1,
+                height: 5,
+                backgroundColor: appColor.gray2,
+                borderRadius: 10,
+              }}
+              min={min}
+              max={max}
+              step={5}
+              renderThumb={() => (
+                <View
+                  style={{
+                    width: 20,
+                    height: 20,
+                    borderRadius: 10,
+                    backgroundColor: appColor.primary,
+                  }}
+                />
+              )}
+              renderRail={() => null}
+              renderRailSelected={() => null}
+              onValueChanged={handleValueChange}
+            />
           </SectionComponent>
 
           <SectionComponent>
@@ -246,13 +316,24 @@ const ModalFilterEvent = (props: Props) => {
               <ButtonComponent
                 type="primary"
                 styles={{ width: "50%" }}
-                onPress={() => {}}
+                onPress={() => {
+                  setCategorySelected([]);
+                  setDateCalendar(Date.now());
+                  setDateTimeSelected("");
+                }}
                 color={appColor.white}
                 textColor={appColor.text}
                 text="Reset"
               />
               <SpaceComponent width={8} />
               <ButtonComponent
+                disable={
+                  categorySelected.length === 0 &&
+                  dateTimeSelected === "" &&
+                  DateTime.GetDate(new Date(dateCalendar)) ===
+                    DateTime.GetDate(new Date()) &&
+                  !addressSelected
+                }
                 type="primary"
                 styles={{ width: "50%" }}
                 text="Agree"
@@ -261,7 +342,6 @@ const ModalFilterEvent = (props: Props) => {
             </RowComponent>
           </SectionComponent>
         </Modalize>
-        {/* <LoadingModal visible={isVisible} /> */}
       </Portal>
 
       {isVisibleModalDate && (

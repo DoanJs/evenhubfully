@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from "@apollo/client";
 import { SearchNormal1, Sort } from "iconsax-react-native";
+import { debounce } from "lodash";
 import React, { useEffect, useState } from "react";
 import { TextInput, View } from "react-native";
 import {
@@ -12,13 +13,34 @@ import {
   TagComponent,
 } from "../../components";
 import { appColor } from "../../constants/appColor";
-import { EventsDocument, SearchEventDocument } from "../../gql/graphql";
+import {
+  EventsDocument,
+  FilterEventsConditionDocument,
+  SearchEventDocument,
+} from "../../gql/graphql";
+import { ModalFilterEvent } from "../../modals";
 import { EventModel } from "../../models/EventModel";
-import { debounce } from "lodash";
+import { Position } from "../../models/AddressModel";
 
 const SearchEvents = ({ navigation, route }: any) => {
-  const { isFilter }: { isFilter: boolean } = route.params;
+  const {
+    isFilter,
+    data: { categorySelected, dateCalendar, dateTimeSelected, addressSelected },
+  }: {
+    isFilter: boolean;
+    data: {
+      categorySelected: string[];
+      dateCalendar: number;
+      dateTimeSelected: string;
+      addressSelected: {
+        address: string;
+        position: Position;
+      };
+    };
+  } = route.params;
+
   const [isLoading, setIsLoading] = useState(false);
+  const [isvisibleModalFilter, setIsvisibleModalFilter] = useState(false);
   const [searchKey, setSearchKey] = useState("");
   const [events, setEvents] = useState<EventModel[]>([]);
   const [results, setResults] = useState<EventModel[]>([]);
@@ -28,6 +50,31 @@ const SearchEvents = ({ navigation, route }: any) => {
   const [searchEvent] = useMutation(SearchEventDocument, {
     refetchQueries: [],
   });
+  const [filterEventsCondition] = useMutation(FilterEventsConditionDocument, {
+    refetchQueries: [],
+  });
+
+  useEffect(() => {
+    if (isFilter) {
+      filterEventsCondition({
+        variables: {
+          filterEventsData: {
+            condition:
+              categorySelected.length > 0
+                ? `category in ('Sports', 'Food')`
+                : "",
+            date: Number(dateCalendar),
+            type: dateTimeSelected,
+            position: addressSelected && addressSelected.position,
+          },
+        },
+      })
+        .then((result) =>
+          setResults(result.data?.filterEventsCondition as EventModel[])
+        )
+        .catch((err) => console.log(err));
+    }
+  }, [route.params]);
 
   useEffect(() => {
     if (!searchKey) {
@@ -88,11 +135,7 @@ const SearchEvents = ({ navigation, route }: any) => {
                 <Sort size={16} color={appColor.primary} />
               </CircleComponent>
             }
-            onPress={() =>
-              navigation.navigate("SearchEvents", {
-                isFilter: true,
-              })
-            }
+            onPress={() => setIsvisibleModalFilter(true)}
           />
         </RowComponent>
       </SectionComponent>
@@ -101,6 +144,12 @@ const SearchEvents = ({ navigation, route }: any) => {
       ) : (
         <LoadingComponent value={results.length} isLoading={isLoading} />
       )}
+
+      <ModalFilterEvent
+        visible={isvisibleModalFilter}
+        onClose={() => setIsvisibleModalFilter(false)}
+        onSelected={(vals) => console.log(vals)}
+      />
     </ContainerComponent>
   );
 };

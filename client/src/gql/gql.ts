@@ -22,6 +22,7 @@ const documents = {
     "mutation editFollowEvent($type: String!, $followEventInput: FollowEventInput!) {\n  editFollowEvent(type: $type, followEventInput: $followEventInput)\n}": types.EditFollowEventDocument,
     "mutation EditInterests($userId: Float!, $interests: [UserCategoryInput!]!) {\n  editInterests(userId: $userId, interests: $interests)\n}": types.EditInterestsDocument,
     "mutation EditUser($userId: Float!, $userInput: UserInput!) {\n  editUser(userId: $userId, userInput: $userInput) {\n    UserID\n    Username\n    Email\n    Password\n    PhotoUrl\n    isChangePassword\n  }\n}": types.EditUserDocument,
+    "mutation FilterEventsCondition($filterEventsData: FilterEventsData!) {\n  filterEventsCondition(filterEventsData: $filterEventsData) {\n    EventID\n    title\n    description\n    locationTitle\n    locationAddress\n    imageUrl\n    price\n    category\n    date\n    startAt\n    endAt\n    createAt\n    updateAt\n  }\n}": types.FilterEventsConditionDocument,
     "mutation SearchEvent($keySearch: String!) {\n  searchEvent(keySearch: $keySearch) {\n    EventID\n    title\n    description\n    locationTitle\n    locationAddress\n    imageUrl\n    price\n    category\n    date\n    startAt\n    endAt\n    createAt\n    updateAt\n  }\n}": types.SearchEventDocument,
     "query Categories {\n  categories {\n    CategoryID\n    createAt\n    updateAt\n    title\n    color\n    label\n  }\n}": types.CategoriesDocument,
     "query Event($eventId: Float!) {\n  event(eventId: $eventId) {\n    EventID\n    title\n    description\n    locationTitle\n    locationAddress\n    imageUrl\n    price\n    category\n    date\n    startAt\n    endAt\n    position {\n      lat\n      lng\n    }\n    followers {\n      UserID\n    }\n    users {\n      UserID\n      PhotoUrl\n    }\n    author {\n      UserID\n      Email\n      Username\n      PhotoUrl\n      type\n    }\n  }\n}": types.EventDocument,
@@ -81,6 +82,10 @@ export function graphql(source: "mutation EditInterests($userId: Float!, $intere
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "mutation EditUser($userId: Float!, $userInput: UserInput!) {\n  editUser(userId: $userId, userInput: $userInput) {\n    UserID\n    Username\n    Email\n    Password\n    PhotoUrl\n    isChangePassword\n  }\n}"): (typeof documents)["mutation EditUser($userId: Float!, $userInput: UserInput!) {\n  editUser(userId: $userId, userInput: $userInput) {\n    UserID\n    Username\n    Email\n    Password\n    PhotoUrl\n    isChangePassword\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "mutation FilterEventsCondition($filterEventsData: FilterEventsData!) {\n  filterEventsCondition(filterEventsData: $filterEventsData) {\n    EventID\n    title\n    description\n    locationTitle\n    locationAddress\n    imageUrl\n    price\n    category\n    date\n    startAt\n    endAt\n    createAt\n    updateAt\n  }\n}"): (typeof documents)["mutation FilterEventsCondition($filterEventsData: FilterEventsData!) {\n  filterEventsCondition(filterEventsData: $filterEventsData) {\n    EventID\n    title\n    description\n    locationTitle\n    locationAddress\n    imageUrl\n    price\n    category\n    date\n    startAt\n    endAt\n    createAt\n    updateAt\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

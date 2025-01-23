@@ -1,16 +1,17 @@
 import { Field, InputType } from '@nestjs/graphql';
+import { PositionInput } from 'src/positions/type/position.input';
 
 @InputType()
-export class DataInput {
+export class FilterEventsData {
   @Field({ nullable: true })
-  lat?: number;
+  condition?: string;
 
   @Field({ nullable: true })
-  long?: number;
+  date?: number;
 
   @Field({ nullable: true })
-  distance?: number;
+  type?: string;
 
   @Field({ nullable: true })
-  date?: Date;
+  position?: PositionInput;
 }

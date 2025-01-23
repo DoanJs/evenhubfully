@@ -1,0 +1,17 @@
+mutation FilterEventsCondition($filterEventsData: FilterEventsData!) {
+  filterEventsCondition(filterEventsData: $filterEventsData) {
+    EventID
+    title
+    description
+    locationTitle
+    locationAddress
+    imageUrl
+    price
+    category
+    date
+    startAt
+    endAt
+    createAt
+    updateAt
+  }
+}
