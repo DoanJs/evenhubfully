@@ -73,10 +73,6 @@ const SliderScreen = (props: Props) => {
         renderNotch={renderNotch}
         onValueChanged={handleValueChange}
       />
-      <View style={styles.horizontalContainer}>
-        <TextComponent text={`${low}`} />
-        <TextComponent text={`${high}`} />
-      </View>
     </View>
   );
 };

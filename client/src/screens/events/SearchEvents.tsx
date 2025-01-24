@@ -66,13 +66,13 @@ const SearchEvents = ({ navigation, route }: any) => {
 
   useEffect(() => {
     if (isFilter) {
+      setIsLoading(true);
       filterEventsCondition({
         variables: {
           filterEventsData: {
-            condition:
-              categorySelected.length > 0
-                ? `category in ('Sports', 'Food')`
-                : "",
+            condition: categorySelected
+              ? `category in (${categorySelected})`
+              : "",
             date: Number(dateCalendar),
             type: dateTimeSelected,
             position: addressSelected && addressSelected.position,
@@ -80,10 +80,14 @@ const SearchEvents = ({ navigation, route }: any) => {
           },
         },
       })
-        .then((result) =>
-          setResults(result.data?.filterEventsCondition as EventModel[])
-        )
-        .catch((err) => console.log(err));
+        .then((result) => {
+          setIsLoading(false);
+          setResults(result.data?.filterEventsCondition as EventModel[]);
+        })
+        .catch((err) => {
+          setIsLoading(false);
+          console.log(err);
+        });
     }
   }, [route.params]);
 

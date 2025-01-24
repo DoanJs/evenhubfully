@@ -257,6 +257,7 @@ export class EventsService {
     }
 
     if (
+      //handle date detail
       type === '' &&
       this.handleDateTime(new Date(Date.now())) !==
         this.handleDateTime(new Date(date))

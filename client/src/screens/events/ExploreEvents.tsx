@@ -59,6 +59,11 @@ const ExploreEvents = ({ route, navigation }: any) => {
             onPress={() =>
               navigation.navigate("SearchEvents", {
                 isFilter: false,
+                data: {
+                  categorySelected: [],
+                  dateTimeSelected: '',
+                  dateCalendar: false,
+                },
               })
             }
           />

@@ -140,12 +140,25 @@ const ModalFilterEvent = (props: Props) => {
     setDateTimeSelected(key);
   };
 
+  const handleCategoryArrayToString = (categorySelected: any) => {
+    let result = "";
+    categorySelected.map(
+      (category: any, index: number) =>
+        (result += `'${category}'${
+          index !== categorySelected.length - 1 ? "," : ""
+        }`)
+    );
+    return result;
+  };
+
   const handleFilterEvent = () => {
     modalizeRef.current?.close();
     navigation.navigate("SearchEvents", {
       isFilter: true,
       data: {
-        categorySelected,
+        categorySelected:
+          categorySelected.length > 0 &&
+          handleCategoryArrayToString(categorySelected),
         dateTimeSelected,
         dateCalendar: !dateTimeSelected && dateCalendar,
         addressSelected,
@@ -269,7 +282,20 @@ const ModalFilterEvent = (props: Props) => {
           </SectionComponent>
 
           <SectionComponent>
-            <TextComponent text="Price range" title />
+            <RowComponent justify="space-between">
+              <TextComponent text="Select price range" title />
+              <RowComponent>
+                <TextComponent
+                  text={`$${priceRange?.lowValue}`}
+                  color={appColor.primary}
+                />
+                <TextComponent text="-" color={appColor.primary} />
+                <TextComponent
+                  text={`$${priceRange?.highValue}`}
+                  color={appColor.primary}
+                />
+              </RowComponent>
+            </RowComponent>
 
             <SliderScreen onSelected={(val) => setPriceRange(val)} />
           </SectionComponent>
