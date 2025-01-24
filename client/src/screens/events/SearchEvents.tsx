@@ -25,7 +25,13 @@ import { Position } from "../../models/AddressModel";
 const SearchEvents = ({ navigation, route }: any) => {
   const {
     isFilter,
-    data: { categorySelected, dateCalendar, dateTimeSelected, addressSelected },
+    data: {
+      categorySelected,
+      dateCalendar,
+      dateTimeSelected,
+      addressSelected,
+      priceRange,
+    },
   }: {
     isFilter: boolean;
     data: {
@@ -35,6 +41,10 @@ const SearchEvents = ({ navigation, route }: any) => {
       addressSelected: {
         address: string;
         position: Position;
+      };
+      priceRange: {
+        lowValue: number;
+        highValue: number;
       };
     };
   } = route.params;
@@ -66,6 +76,7 @@ const SearchEvents = ({ navigation, route }: any) => {
             date: Number(dateCalendar),
             type: dateTimeSelected,
             position: addressSelected && addressSelected.position,
+            priceRange: priceRange,
           },
         },
       })
@@ -86,7 +97,7 @@ const SearchEvents = ({ navigation, route }: any) => {
   }, [searchKey, events]);
 
   useEffect(() => {
-    if (data_events) {
+    if (!isFilter && data_events) {
       setEvents(data_events.events as EventModel[]);
     }
   }, [data_events]);

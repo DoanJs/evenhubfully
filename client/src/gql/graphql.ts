@@ -122,6 +122,7 @@ export type FilterEventsData = {
   condition?: InputMaybe<Scalars['String']['input']>;
   date?: InputMaybe<Scalars['Float']['input']>;
   position?: InputMaybe<PositionInput>;
+  priceRange?: InputMaybe<PriceRangeInput>;
   type?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -242,6 +243,11 @@ export type Position = {
 export type PositionInput = {
   lat?: InputMaybe<Scalars['Float']['input']>;
   lng?: InputMaybe<Scalars['Float']['input']>;
+};
+
+export type PriceRangeInput = {
+  highValue?: InputMaybe<Scalars['Float']['input']>;
+  lowValue?: InputMaybe<Scalars['Float']['input']>;
 };
 
 export type Query = {

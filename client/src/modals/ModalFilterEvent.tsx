@@ -7,14 +7,7 @@ import {
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useNavigation } from "@react-navigation/native";
 import { ArrowRight2, Calendar } from "iconsax-react-native";
-import React, {
-  Fragment,
-  ReactNode,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { Fragment, ReactNode, useEffect, useRef, useState } from "react";
 import { FlatList, TouchableOpacity, View } from "react-native";
 import { Modalize } from "react-native-modalize";
 import { Portal } from "react-native-portalize";
@@ -32,7 +25,7 @@ import { Position } from "../models/AddressModel";
 import { CategoryModel } from "../models/CategoryModel";
 import { globalStyles } from "../styles/gloabalStyles";
 import { DateTime } from "../utils/DateTime";
-import RnRangeSlider from "rn-range-slider";
+import SliderScreen from "../screens/slider";
 
 interface Props {
   visible: boolean;
@@ -55,16 +48,10 @@ const ModalFilterEvent = (props: Props) => {
   const [isVisibleModalDate, setIsVisibleModalDate] = useState(false);
   const [dateCalendar, setDateCalendar] = useState(Date.now());
   const [dateTimeSelected, setDateTimeSelected] = useState("");
-
-  const [low, setLow] = useState(0);
-  const [high, setHigh] = useState(100);
-  const [min, setMin] = useState(0);
-  const [max, setMax] = useState(100);
-
-  const handleValueChange = useCallback((lowValue: any, highValue: any) => {
-    setLow(lowValue);
-    setHigh(highValue);
-  }, []);
+  const [priceRange, setPriceRange] = useState<{
+    lowValue: number;
+    highValue: number;
+  }>();
 
   useEffect(() => {
     if (visible) {
@@ -162,6 +149,7 @@ const ModalFilterEvent = (props: Props) => {
         dateTimeSelected,
         dateCalendar: !dateTimeSelected && dateCalendar,
         addressSelected,
+        priceRange,
       },
     });
   };
@@ -282,33 +270,8 @@ const ModalFilterEvent = (props: Props) => {
 
           <SectionComponent>
             <TextComponent text="Price range" title />
-            <TextComponent text={`${high}`} />
-            <TextComponent text={`${low}`} />
-            <SpaceComponent height={16} />
-            <RnRangeSlider
-              style={{
-                flex: 1,
-                height: 5,
-                backgroundColor: appColor.gray2,
-                borderRadius: 10,
-              }}
-              min={min}
-              max={max}
-              step={5}
-              renderThumb={() => (
-                <View
-                  style={{
-                    width: 20,
-                    height: 20,
-                    borderRadius: 10,
-                    backgroundColor: appColor.primary,
-                  }}
-                />
-              )}
-              renderRail={() => null}
-              renderRailSelected={() => null}
-              onValueChanged={handleValueChange}
-            />
+
+            <SliderScreen onSelected={(val) => setPriceRange(val)} />
           </SectionComponent>
 
           <SectionComponent>
@@ -332,7 +295,8 @@ const ModalFilterEvent = (props: Props) => {
                   dateTimeSelected === "" &&
                   DateTime.GetDate(new Date(dateCalendar)) ===
                     DateTime.GetDate(new Date()) &&
-                  !addressSelected
+                  !addressSelected &&
+                  !priceRange
                 }
                 type="primary"
                 styles={{ width: "50%" }}

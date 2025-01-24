@@ -211,7 +211,7 @@ export class EventsService {
     filterEventsData: FilterEventsData,
   ): Promise<Event[]> {
     let result: any;
-    const { condition, date, type, position } = filterEventsData;
+    const { condition, date, type, position, priceRange } = filterEventsData;
 
     if (condition) {
       result = await this.eventRepository.query(
@@ -261,9 +261,6 @@ export class EventsService {
       this.handleDateTime(new Date(Date.now())) !==
         this.handleDateTime(new Date(date))
     ) {
-      console.log(this.handleDateTime(new Date(Date.now())));
-      console.log(date);
-      console.log(new Date(date));
       result = result.filter(
         (event: Event) =>
           this.handleDateTime(event.startAt) ===
@@ -295,6 +292,14 @@ export class EventsService {
           return eventDistance < 1;
         });
       }
+    }
+
+    if (priceRange) {
+      result = result.filter(
+        (event: Event) =>
+          Number(event.price) >= priceRange.lowValue &&
+          Number(event.price) <= priceRange.highValue,
+      );
     }
 
     return result;
