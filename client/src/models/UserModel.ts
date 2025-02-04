@@ -1,5 +1,7 @@
 import { BillModel } from "./BillModel";
 import { CategoryModel } from "./CategoryModel";
+import { EventModel } from "./EventModel";
+import { ReviewModel } from "./ReviewModel";
 
 export interface UserModel {
   __typename: string;
@@ -15,5 +17,7 @@ export interface UserModel {
   followings?: [UserModel];
   followers?: [UserModel];
   interests?: [CategoryModel];
-  bills?:[BillModel]
+  bills?: [BillModel];
+  author_events?: [EventModel];
+  reReviewers?: [ReviewModel];
 }

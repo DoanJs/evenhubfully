@@ -14,6 +14,7 @@ import EventItem from "./EventItem";
 import InputComponent from "./InputComponent";
 import ListBillComponent from "./ListBillComponent";
 import ListEventComponent from "./ListEventComponent";
+import ListStarComponent from "./ListStarComponent";
 import LoadingComponent from "./LoadingComponent";
 import MakerCustom from "./MakerCustom";
 import RadioButton from "./RadioButton";
@@ -39,15 +40,16 @@ export {
   DropdownPicker,
   EventItem,
   InputComponent,
+  ListBillComponent,
   ListEventComponent,
+  ListStarComponent,
   LoadingComponent,
   MakerCustom,
+  RadioButton,
   RowComponent,
   SectionComponent,
   SpaceComponent,
   TabBarComponent,
   TagComponent,
   TextComponent,
-  ListBillComponent,
-  RadioButton
 };

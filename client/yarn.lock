@@ -3955,7 +3955,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-native-firebase/firestore@npm:^21.6.1":
+"@react-native-firebase/firestore@npm:^21.7.1":
   version: 21.7.1
   resolution: "@react-native-firebase/firestore@npm:21.7.1"
   peerDependencies:
@@ -4588,6 +4588,15 @@ __metadata:
   version: 15.7.14
   resolution: "@types/prop-types@npm:15.7.14"
   checksum: 10c0/1ec775160bfab90b67a782d735952158c7e702ca4502968aa82565bd8e452c2de8601c8dfe349733073c31179116cf7340710160d3836aa8a1ef76d1532893b1
+  languageName: node
+  linkType: hard
+
+"@types/react-native-read-more-text@npm:^1.0.4":
+  version: 1.0.4
+  resolution: "@types/react-native-read-more-text@npm:1.0.4"
+  dependencies:
+    "@types/react": "npm:*"
+  checksum: 10c0/1ffbf5357956d830e6b4d93e58ab29d777f97c2032ac8432995338deb177349336fb81dd0dfc0058955b722c2249101d9965c0ffe634bff69e7b8a9655d9e600
   languageName: node
   linkType: hard
 
@@ -9624,7 +9633,7 @@ __metadata:
     "@react-native-community/datetimepicker": "npm:8.2.0"
     "@react-native-firebase/app": "npm:^21.6.1"
     "@react-native-firebase/auth": "npm:^21.6.1"
-    "@react-native-firebase/firestore": "npm:^21.6.1"
+    "@react-native-firebase/firestore": "npm:^21.7.1"
     "@react-native-firebase/messaging": "npm:^21.6.1"
     "@react-native-firebase/storage": "npm:^21.6.1"
     "@react-native-google-signin/google-signin": "npm:^13.1.0"
@@ -9634,6 +9643,7 @@ __metadata:
     "@react-navigation/native-stack": "npm:^7.1.1"
     "@types/lodash": "npm:^4.17.14"
     "@types/react": "npm:~18.3.12"
+    "@types/react-native-read-more-text": "npm:^1.0.4"
     "@types/react-native-vector-icons": "npm:^6.4.18"
     axios: "npm:^1.7.8"
     expo: "npm:^52.0.23"
@@ -9659,6 +9669,7 @@ __metadata:
     react-native-maps: "npm:1.18.0"
     react-native-modalize: "npm:^2.1.1"
     react-native-portalize: "npm:^0.2.0"
+    react-native-read-more-text: "npm:^1.1.2"
     react-native-reanimated: "npm:^3.16.2"
     react-native-safe-area-context: "npm:^4.14.0"
     react-native-screens: "npm:^4.3.0"
@@ -10715,6 +10726,13 @@ __metadata:
     react: "> 15.0.0"
     react-native: "> 0.50.0"
   checksum: 10c0/b4156537f3ea931963862c6d35ea4e6a5d7394b8228622d64bc185bc40b8663f3534b545eda4a85cc89868b8629f3daabb9cbdab4005e71710d691114d7b0f49
+  languageName: node
+  linkType: hard
+
+"react-native-read-more-text@npm:^1.1.2":
+  version: 1.1.2
+  resolution: "react-native-read-more-text@npm:1.1.2"
+  checksum: 10c0/400be1b4612863f18261b7de51d3f47732254cae860f5db29816439140c47cb6b106629e25cccadf8bef9a85e23fd6bbdad3f47565421787dc52c8b0a8c29b2c
   languageName: node
   linkType: hard
 

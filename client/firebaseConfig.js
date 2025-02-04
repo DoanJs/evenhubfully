@@ -1,4 +1,5 @@
 import { getStorage } from "firebase/storage";
+import { getFirestore } from "firebase/firestore";
 import "react-native-get-random-values";
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
@@ -20,5 +21,6 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const storage = getStorage(app);
+const db = getFirestore(app);
 
-export { getStorage };
+export { getStorage, getFirestore, db };

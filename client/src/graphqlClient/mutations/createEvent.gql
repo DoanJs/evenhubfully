@@ -8,10 +8,5 @@ mutation CreateEvent($eventinput: EventInput!) {
     imageUrl
     price
     category
-    date
-    startAt
-    endAt
-    createAt
-    updateAt
   }
 }

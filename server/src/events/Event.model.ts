@@ -64,7 +64,6 @@ export class Event {
   @Column({
     type: 'date',
     nullable: true,
-    default: new Date().toLocaleDateString(), //check again !
   })
   @Field({ nullable: true })
   createAt: Date;

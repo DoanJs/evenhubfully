@@ -15,16 +15,20 @@ import { appColor } from "../constants/appColor";
 import { followingsVar, userVar } from "../graphqlClient/cache";
 import { LoadingModal } from ".";
 import { UserModel } from "../models/UserModel";
-import { Share } from "react-native";
-import { Alert } from "react-native";
+import { Share, Alert } from "react-native";
+import { collection, addDoc } from "firebase/firestore";
+import { db } from "../../firebaseConfig";
 
 interface Props {
   visible: boolean;
   onClose: () => void;
+  eventId: number;
+  title: string;
 }
 
 const ModalInvite = (props: Props) => {
-  const { visible, onClose } = props;
+  const { visible, onClose, eventId, title } = props;
+  const user = useReactiveVar(userVar);
   const followings = useReactiveVar(followingsVar);
   const modalizeRef = useRef<Modalize>();
   const [isVisible, setIsVisible] = useState(false);
@@ -55,15 +59,38 @@ const ModalInvite = (props: Props) => {
   };
 
   const handleInviteUser = async () => {
-    const userIds = selectedUsers.map((user: UserModel) => user.UserID)
-    console.log(userIds)
-  }
+    const userIds = selectedUsers.map((user: UserModel) => user.UserID);
+    console.log({ userIds, eventId, authorId: user?.UserID, title });
+
+    const data = {
+      from: user?.UserID,
+      createAt: Date.now(),
+      content: `Invite A Virtual Evening of ${title}`,
+      eventId,
+      isRead: false,
+    };
+
+    userIds.forEach(async (id: number) => {
+      console.log(id);
+      try {
+        const docRef = await addDoc(collection(db, "notifications"), {
+          ...data,
+          uid: id,
+        });
+        console.log("Document written with ID: ", docRef.id);
+      } catch (e) {
+        console.error("Error adding document: ", e);
+      }
+    });
+
+    onClose();
+  };
 
   const onShare = async () => {
     try {
       const result = await Share.share({
         message:
-          'React Native | A framework for building native apps using React',
+          "React Native | A framework for building native apps using React",
       });
       if (result.action === Share.sharedAction) {
         if (result.activityType) {

@@ -8,6 +8,7 @@ import { UserInput } from './type/user.input';
 import { User } from './User.model';
 import { UserCategoryInput } from './type/userCategory.input';
 import { Bill } from 'src/bills/Bill.model';
+import { Review } from 'src/reviews/Review.model';
 
 @Injectable()
 export class UsersService {
@@ -157,6 +158,18 @@ export class UsersService {
   async bills(UserID: number): Promise<Bill[]> {
     return this.userRepository.query(
       `select * from Bills where userBuyId = ${UserID}`,
+    );
+  }
+
+  async author_events(UserID: number): Promise<Event[]> {
+    return this.userRepository.query(
+      `select * from Events where authorId = ${UserID}`,
+    );
+  }
+
+  async reReviewers(UserID: number): Promise<Review[]> {
+    return this.userRepository.query(
+      `select * from Reviews where reReviewerId = ${UserID}`,
     );
   }
 }

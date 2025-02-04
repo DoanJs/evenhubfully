@@ -189,6 +189,7 @@ export class EventsService {
     );
     const result = await this.eventRepository.create({
       ...data,
+      createAt: new Date().toLocaleDateString(),
       author: author[0],
     });
     await this.eventRepository.save(result);

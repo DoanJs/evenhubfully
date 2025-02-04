@@ -4,6 +4,7 @@ import React, { ReactNode, useState } from "react";
 import { TouchableOpacity } from "react-native";
 import {
   ButtonComponent,
+  EventItem,
   RowComponent,
   SectionComponent,
   SpaceComponent,
@@ -18,7 +19,10 @@ import {
   userVar,
 } from "../../../graphqlClient/cache";
 import { LoadingModal } from "../../../modals";
+import { EventModel } from "../../../models/EventModel";
 import { UserModel } from "../../../models/UserModel";
+import CommentInput from "./CommentInput";
+import ReviewItem from "./ReviewItem";
 
 interface Props {
   author: UserModel;
@@ -106,11 +110,32 @@ const AboutProfile = (props: Props) => {
         content = <TextComponent text={author.about} />;
         break;
       case "event":
-        content = <TextComponent text="event" />;
+        content =
+          author.author_events && author.author_events.length > 0 ? (
+            author.author_events.map((item: EventModel) => (
+              <EventItem
+                item={item}
+                key={item.EventID}
+                type="list"
+                styles={{ width: undefined, margin: 0 }}
+              />
+            ))
+          ) : (
+            <></>
+          );
         break;
 
       default:
-        content = <TextComponent text="review" />;
+        content =
+          author.reReviewers && author.reReviewers.length > 0 ? (
+            [...author.reReviewers]
+              .reverse()
+              .map((review) => (
+                <ReviewItem review={review} key={review.ReviewID} />
+              ))
+          ) : (
+            <></>
+          );
         break;
     }
     return content;
@@ -169,7 +194,7 @@ const AboutProfile = (props: Props) => {
         </RowComponent>
       </SectionComponent>
 
-      <SectionComponent styles={{paddingBottom: 160}}>
+      <SectionComponent styles={{ paddingBottom: 150 }}>
         <RowComponent justify="space-between">
           {tabs.map((item) => (
             <TouchableOpacity
@@ -194,6 +219,9 @@ const AboutProfile = (props: Props) => {
             </TouchableOpacity>
           ))}
         </RowComponent>
+        {tabSelected === "review" && (
+          <CommentInput author={author} user={user} type="comment" />
+        )}
         {renderTabContent(tabSelected)}
       </SectionComponent>
 

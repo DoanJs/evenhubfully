@@ -5,6 +5,14 @@ query getUserId($userId: Float!) {
     Email
     PhotoUrl
     about
+    author_events {
+      EventID
+      imageUrl
+      locationAddress
+      title
+      startAt
+      endAt
+    }
     followings {
       UserID
       PhotoUrl
@@ -35,6 +43,17 @@ query getUserId($userId: Float!) {
         title
         startAt
         endAt
+      }
+    }
+    reReviewers {
+      ReviewID
+      star
+      text
+      createAt
+      reviewer {
+        UserID
+        Username
+        PhotoUrl
       }
     }
   }

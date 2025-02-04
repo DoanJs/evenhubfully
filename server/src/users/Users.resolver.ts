@@ -14,6 +14,7 @@ import { UserInput } from './type/user.input';
 import { UserCategoryInput } from './type/userCategory.input';
 import { Category } from 'src/categories/Category.model';
 import { Bill } from 'src/bills/Bill.model';
+import { Review } from 'src/reviews/Review.model';
 
 @Resolver(() => User)
 export class UsersResolver {
@@ -89,5 +90,15 @@ export class UsersResolver {
   @ResolveField(() => [Bill])
   bills(@Parent() user: User): Promise<Bill[]> {
     return this.usersService.bills(user.UserID);
+  }
+
+  @ResolveField(() => [Event])
+  author_events(@Parent() user: User): Promise<Event[]> {
+    return this.usersService.author_events(user.UserID);
+  }
+
+  @ResolveField(() => [Review])
+  reReviewers(@Parent() user: User): Promise<Review[]> {
+    return this.usersService.reReviewers(user.UserID);
   }
 }

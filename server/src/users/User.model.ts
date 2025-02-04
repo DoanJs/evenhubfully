@@ -4,6 +4,7 @@ import { Category } from 'src/categories/Category.model';
 import { Event } from 'src/events/Event.model';
 import { FCMToken } from 'src/fcmtokens/FCMToken.model';
 import { Follow } from 'src/follows/Follow.model';
+import { Review } from 'src/reviews/Review.model';
 import {
   Column,
   Entity,
@@ -50,6 +51,7 @@ export class User {
   // relation
   // one-to-many
   @OneToMany(() => Event, (event) => event.author)
+  @Field(() => [Event], { nullable: true })
   author_events: [Event];
 
   @OneToMany(() => FCMToken, (fcmtoken) => fcmtoken.user)
@@ -66,6 +68,12 @@ export class User {
 
   @OneToMany(() => Bill, (bill) => bill.authorEvent)
   billAuthors: [Bill];
+
+  @OneToMany(() => Review, (review) => review.reviewer)
+  reviewers: [Review];
+
+  @OneToMany(() => Review, (review) => review.reReviewer)
+  reReviewers: [Review];
 
   // many-to-many
   @ManyToMany(() => Event, (event) => event.users)

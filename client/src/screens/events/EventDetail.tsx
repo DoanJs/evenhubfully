@@ -515,6 +515,8 @@ const EventDetail = ({ navigation, route }: any) => {
       <LoadingModal visible={isVisible} />
 
       <ModalInvite
+        title={event.title}
+        eventId={event.EventID}
         visible={isVisibleModalInvite}
         onClose={() => setisVisibleModalInvite(false)}
       />

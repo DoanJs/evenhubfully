@@ -4,7 +4,6 @@ import React, { ReactNode, useRef, useState } from "react";
 import { Modal, TouchableOpacity, View } from "react-native";
 import { Modalize } from "react-native-modalize";
 import { Portal } from "react-native-portalize";
-import AntDesign from "react-native-vector-icons/AntDesign";
 import { appColor } from "../constants/appColor";
 import { fontFamilies } from "../constants/fontFamilies";
 import ButtonComponent from "./ButtonComponent";
@@ -12,6 +11,7 @@ import InputComponent from "./InputComponent";
 import RowComponent from "./RowComponent";
 import SpaceComponent from "./SpaceComponent";
 import TextComponent from "./TextComponent";
+import { AntDesign } from "@expo/vector-icons";
 
 interface Props {
   onSelect: (type: "url" | "file", value: any) => void;

@@ -206,11 +206,11 @@ const HomeScreen = () => {
             <CircleComponent
               color="#524ce0"
               size={36}
-              onPress={async () => handlePushNotification()}
+              onPress={() => navigation.navigate("NotificationsScreen")}
             >
               <View>
                 <Notification size={18} color={appColor.white} />
-                <View
+                {/* <View
                   style={{
                     backgroundColor: "#02e9fe",
                     width: 8,
@@ -222,7 +222,7 @@ const HomeScreen = () => {
                     top: 0,
                     right: 0,
                   }}
-                />
+                /> */}
               </View>
             </CircleComponent>
           </RowComponent>
@@ -235,7 +235,7 @@ const HomeScreen = () => {
                   isFilter: false,
                   data: {
                     categorySelected: [],
-                    dateTimeSelected: '',
+                    dateTimeSelected: "",
                     dateCalendar: false,
                   },
                 })

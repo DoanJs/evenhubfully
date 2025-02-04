@@ -12,7 +12,6 @@ export class FollowsResolver {
     return this.followsService.follows();
   }
 
-  // relation
   @Mutation(() => String)
   editFollow(
     @Args('type') type: string,
@@ -23,4 +22,6 @@ export class FollowsResolver {
       followInput,
     });
   }
+
+  // relation
 }

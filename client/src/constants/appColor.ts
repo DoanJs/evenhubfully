@@ -11,12 +11,14 @@ export const appColor = {
     gray3: '#E4DFDF',
     gray5: '#d9d9d9',
     gray6: '#EAEDFF',
+    gray7: '#adafbb',
     dot: '#7887FF',
     skip:'#ABB4FF',
     link: '#5669ff',
     danger:'red',
     danger2: '#f0635a',
     green: 'green',
-    coral:'coral'
+    coral:'coral',
+    yellow: '#FBBE47'
 
 }

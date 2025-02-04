@@ -13,31 +13,37 @@ import SearchEvents from "./events/SearchEvents";
 import HomeScreen from "./home/HomeScreen";
 import MapScreen from "./maps/MapScreen";
 import NotFound from "./NotFound";
+import NotificationsScreen from "./NotificationsScreen";
 import CartScreen from "./profiles/CartScreen";
 import BillItem from "./profiles/components/BillItem";
+import CommentInput from "./profiles/components/CommentInput";
+import ReviewItem from "./profiles/components/ReviewItem";
 import EditProfileScreen from "./profiles/EditProfileScreen";
 import ProfileScreen from "./profiles/ProfileScreen";
 import SplashScreen from "./SplashScreen";
 
 export {
   AddNewScreen,
+  BillItem,
+  CartScreen,
+  CategoryDetail,
+  CommentInput,
   EditProfileScreen,
   EventDetail,
   EventsScreen,
+  ExploreEvents,
   ForgotPassword,
   HomeScreen,
   LoginScreen,
   MapScreen,
   NotFound,
   OnbroadingScreen,
+  PaymentScreen,
   ProfileScreen,
+  ReviewItem,
   SearchEvents,
   SignupScreen,
   SplashScreen,
   Verification,
-  ExploreEvents,
-  CategoryDetail,
-  PaymentScreen,
-  CartScreen,
-  BillItem
+  NotificationsScreen
 };

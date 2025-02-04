@@ -1,8 +1,6 @@
+import { FontAwesome5, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
 import { ImageBackground, View } from "react-native";
-import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
-import Ionicons from "react-native-vector-icons/Ionicons";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 interface Props {
   type: string;

@@ -15,6 +15,7 @@ import { FCMTokenModule } from './fcmtokens/FCMToken.module';
 import { FollowModule } from './follows/Follow.module';
 import { PositionModule } from './positions/Position.module';
 import { UsersModule } from './users/Users.module';
+import { ReviewModule } from './reviews/Review.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { UsersModule } from './users/Users.module';
     CategoryModule,
     DataLoaderModule,
     BillModule,
+    ReviewModule,
   ],
   controllers: [AppController],
   providers: [AppService],
