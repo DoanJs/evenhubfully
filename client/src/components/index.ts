@@ -17,6 +17,7 @@ import ListEventComponent from "./ListEventComponent";
 import ListStarComponent from "./ListStarComponent";
 import LoadingComponent from "./LoadingComponent";
 import MakerCustom from "./MakerCustom";
+import NotificationItem from "./NotificationItem";
 import RadioButton from "./RadioButton";
 import RowComponent from "./RowComponent";
 import SectionComponent from "./SectionComponent";
@@ -52,4 +53,5 @@ export {
   TabBarComponent,
   TagComponent,
   TextComponent,
+  NotificationItem
 };

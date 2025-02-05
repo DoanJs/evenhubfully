@@ -6,6 +6,7 @@ import {
   AvatarComponent,
   ButtonComponent,
   ContainerComponent,
+  NotificationItem,
   RowComponent,
   SectionComponent,
   SpaceComponent,
@@ -16,27 +17,45 @@ import { globalStyles } from "../styles/gloabalStyles";
 import { useReactiveVar } from "@apollo/client";
 import { userVar } from "../graphqlClient/cache";
 import { View } from "react-native";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "../../firebaseConfig";
+import { NotificationModel } from "../models/NotificationModel";
+import { LoadingModal } from "../modals";
 
 const NotificationsScreen = () => {
-  const [notifications, setNotifications] = useState([]);
   const user = useReactiveVar(userVar);
-
-  const notification = {
-    from: 2,
-    to: "",
-    createAt: Date.now(),
-    content: "Hung Js Hung Js Hung Js Hung Js Hung Js Hung Js Hung Js Hung Js ",
-    eventId: "",
-    isRead: false,
-  };
+  const [notifications, setNotifications] = useState<NotificationModel[]>([]);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    const items: any = [];
-    Array.from({ length: 100 }).forEach((item) =>
-      items.push({ ...notification, id: Math.floor(Math.random() * 10000) })
-    );
+    setIsVisible(true);
+    const getQuerySnap = async () => {
+      const q = query(
+        collection(db, "notifications"),
+        // where("isRead", "==", false),
+        where("uid", "==", user?.UserID)
+      );
 
-    setNotifications(items);
+      const querySnapshot = await getDocs(q);
+      if (querySnapshot.empty) {
+        setNotifications([]);
+      } else {
+        const items: any = [];
+        querySnapshot.forEach((doc) => {
+          // console.log(`${doc.id} => ${doc.data()}`);
+          items.push({
+            id: doc.id,
+            ...doc.data(),
+          });
+        });
+
+        setNotifications(items);
+
+        setIsVisible(false);
+      }
+    };
+
+    getQuerySnap();
   }, []);
 
   return (
@@ -55,49 +74,20 @@ const NotificationsScreen = () => {
       {notifications.length > 0 ? (
         <>
           <FlatList
+            style={{ paddingTop: 16 }}
+            showsVerticalScrollIndicator={false}
             data={notifications}
-            renderItem={({ item, index }) => (
-              <RowComponent
+            renderItem={({
+              item,
+              index,
+            }: {
+              item: NotificationModel;
+              index: number;
+            }) => (
+              <NotificationItem
+                notification={item}
                 key={`notification[${index}]`}
-                styles={{
-                  paddingHorizontal: 16,
-                  marginBottom: 20,
-                  alignItems: "flex-start",
-                }}
-              >
-                <AvatarComponent
-                  size={45}
-                  name="ads"
-                  photoURL="https://cckl.bacgiang.gov.vn/uploads/DOI2112-21.jpg"
-                />
-                <View
-                  style={{ flex: 1, paddingHorizontal: 12, paddingRight: 28 }}
-                >
-                  <Text style={[globalStyles.text, { color: "coral" }]}>
-                    {"asds"}
-                    <Text style={[globalStyles.text]}>{item.content}</Text>
-                  </Text>
-                  <SpaceComponent height={16} />
-
-                  <RowComponent justify="center">
-                    <ButtonComponent
-                      text="Reject"
-                      type="primary"
-                      styles={{ width: "50%" }}
-                      color={appColor.white}
-                      textColor={appColor.gray}
-                    />
-                    <SpaceComponent width={16}/>
-                    <ButtonComponent
-                      text="Accept"
-                      type="primary"
-                      styles={{ width: "50%" }}
-                    />
-                  </RowComponent>
-                </View>
-
-                <TextComponent color={appColor.gray} text="20 minutes" />
-              </RowComponent>
+              />
             )}
           />
         </>
@@ -119,6 +109,8 @@ const NotificationsScreen = () => {
           />
         </SectionComponent>
       )}
+
+      <LoadingModal visible={isVisible} />
     </ContainerComponent>
   );
 };

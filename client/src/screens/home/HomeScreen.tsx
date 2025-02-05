@@ -14,6 +14,7 @@ import React, { useEffect, useRef, useState } from "react";
 import {
   FlatList,
   ImageBackground,
+  Linking,
   Platform,
   ScrollView,
   StatusBar,
@@ -23,7 +24,6 @@ import {
 import Toast from "react-native-toast-message";
 import Invite from "../../assets/images/invite.png";
 import {
-  ButtonComponent,
   CategoriesList,
   CircleComponent,
   EventItem,
@@ -42,21 +42,24 @@ import {
   Events_NearbyDocument,
   Events_UpcomingDocument,
 } from "../../gql/graphql";
-import { currentLocationVar } from "../../graphqlClient/cache";
+import { currentLocationVar, userVar } from "../../graphqlClient/cache";
+import { ModalFilterEvent } from "../../modals";
 import { EventModel } from "../../models/EventModel";
 import { globalStyles } from "../../styles/gloabalStyles";
 import { HandleNotification } from "../../utils/handleNotification";
 import { useStatusBar } from "../../utils/useStatusBar";
-import { Linking } from "react-native";
-import { ModalFilterEvent } from "../../modals";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "../../../firebaseConfig";
 
 const HomeScreen = () => {
   useStatusBar("light-content");
   const navigation: any = useNavigation();
   const currentLocation = useReactiveVar(currentLocationVar);
   const [isvisibleModalFilter, setIsvisibleModalFilter] = useState(false);
+  const user = useReactiveVar(userVar);
   const [events, setEvents] = useState<EventModel[]>([]);
   const [events_nearby, setEvents_nearby] = useState<EventModel[]>([]);
+  const [unReadNotifications, setUnReadNotifications] = useState([]);
   const { data: data_events_nearby, loading: loading_events_nearby } = useQuery(
     Events_NearbyDocument,
     {
@@ -79,6 +82,34 @@ const HomeScreen = () => {
 
   const notificationListener = useRef<Notifications.EventSubscription>();
   const responseListener = useRef<Notifications.EventSubscription>();
+
+  useEffect(() => {
+    const getQuerySnap = async () => {
+      const q = query(
+        collection(db, "notifications"),
+        where("isRead", "==", false),
+        where("uid", "==", user?.UserID)
+      );
+
+      const querySnapshot = await getDocs(q);
+      if (querySnapshot.empty) {
+        setUnReadNotifications([]);
+      } else {
+        const items: any = [];
+        querySnapshot.forEach((doc) => {
+          // console.log(`${doc.id} => ${doc.data()}`);
+          items.push({
+            id: doc.id,
+            ...doc.data(),
+          });
+        });
+
+        setUnReadNotifications(items)
+      }
+    };
+
+    getQuerySnap();
+  }, []);
 
   useEffect(() => {
     notificationListener.current =
@@ -210,19 +241,22 @@ const HomeScreen = () => {
             >
               <View>
                 <Notification size={18} color={appColor.white} />
-                {/* <View
-                  style={{
-                    backgroundColor: "#02e9fe",
-                    width: 8,
-                    height: 8,
-                    borderRadius: 100,
-                    borderWidth: 1,
-                    borderColor: "#524ce0",
-                    position: "absolute",
-                    top: 0,
-                    right: 0,
-                  }}
-                /> */}
+
+                {unReadNotifications.length > 0 && (
+                  <View
+                    style={{
+                      backgroundColor: "#02e9fe",
+                      width: 8,
+                      height: 8,
+                      borderRadius: 100,
+                      borderWidth: 1,
+                      borderColor: "#524ce0",
+                      position: "absolute",
+                      top: 0,
+                      right: 0,
+                    }}
+                  />
+                )}
               </View>
             </CircleComponent>
           </RowComponent>
