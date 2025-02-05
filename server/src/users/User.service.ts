@@ -99,6 +99,37 @@ export class UsersService {
     return 'Update interests compelte !';
   }
 
+  async createEventUser({
+    userId,
+    eventId,
+  }: {
+    userId: number;
+    eventId: number;
+  }): Promise<string> {
+    let result: string = '';
+    const eventUser = await this.userRepository.query(
+      `select * from Events_Users where UserID = ${userId} and EventID = ${eventId}`,
+    );
+    const user = await this.getUserId(userId);
+    const event = await this.userRepository.query(
+      `select * from Events where EventID = ${eventId}`,
+    );
+
+    if (user && event[0]) {
+      if (eventUser && eventUser.length > 0) {
+        result = 'Người dùng đã tham gia sự kiện';
+      } else {
+        await this.userRepository.query(
+          `insert into Events_Users (UserID, EventID) values (${userId},  ${eventId})`,
+        );
+        result = 'Tham gia vào sự kiện thành công';
+      }
+    } else {
+      result = 'Kiểm tra lại giá trị đưa vào...';
+    }
+    return result;
+  }
+
   // relation
   async followEvents(UserID: number): Promise<Event[]> {
     return this.userRepository.query(

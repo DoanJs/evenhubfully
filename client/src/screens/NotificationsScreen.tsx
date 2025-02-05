@@ -7,6 +7,7 @@ import {
   where,
   onSnapshot,
   doc,
+  updateDoc,
 } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { FlatList, Image } from "react-native";
@@ -30,6 +31,7 @@ const NotificationsScreen = () => {
   const user = useReactiveVar(userVar);
   const [notifications, setNotifications] = useState<NotificationModel[]>([]);
   const [isVisible, setIsVisible] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
     setIsVisible(true);
@@ -84,6 +86,20 @@ const NotificationsScreen = () => {
     setIsVisible(false);
   }, []);
 
+  const handleCheckToReadAllNotifications = () => {
+    setIsUpdating(true);
+    try {
+      notifications.length > 0 &&
+        notifications.forEach(async (item: NotificationModel) => {
+          const washingtonRef = doc(db, "notifications", item.id);
+          await updateDoc(washingtonRef, { ...item, isRead: true });
+        });
+    } catch (error) {
+      console.log(error);
+    }
+    setIsUpdating(false);
+  };
+
   return (
     <ContainerComponent
       isScroll={notifications.length < 0}
@@ -91,9 +107,8 @@ const NotificationsScreen = () => {
       title="Notifications"
       right={
         <ButtonComponent
-          icon={
-            <Feather name="check-square" size={20} color={appColor.text} />
-          }
+          onPress={handleCheckToReadAllNotifications}
+          icon={<Feather name="check-square" size={20} color={appColor.text} />}
         />
       }
     >
@@ -129,7 +144,7 @@ const NotificationsScreen = () => {
           <SpaceComponent height={16} />
           <TextComponent
             text="Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor"
-            styles={{ width: "80%" }}
+            styles={{ width: "80%", textAlign: "center" }}
             size={16}
             color="#344B67"
           />

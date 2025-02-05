@@ -1,0 +1,11 @@
+mutation PushInviteNotifications(
+  $userIds: [Float!]!
+  $authorId: Float!
+  $eventId: Float!
+) {
+  pushInviteNotifications(
+    userIds: $userIds
+    authorId: $authorId
+    eventId: $eventId
+  )
+}

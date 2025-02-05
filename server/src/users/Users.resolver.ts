@@ -60,6 +60,14 @@ export class UsersResolver {
     return this.usersService.editInterests({ interests, userId });
   }
 
+  @Mutation(() => String)
+  createEventUser(
+    @Args('userId') userId: number,
+    @Args('eventId') eventId: number,
+  ): Promise<string> {
+    return this.usersService.createEventUser({ userId, eventId });
+  }
+
   // relation
 
   @ResolveField(() => [Event])

@@ -50,7 +50,7 @@ const AvatarGroup = (props: Props) => {
           })}
           <SpaceComponent width={12} />
           <TextComponent
-            text={users.length > 3 ? `+${users.length - 3} Going` : ""}
+            text={users.length > 3 ? `+${users.length - 3} Going` : "Going"}
             color={appColor.primary}
             font={fontFamilies.semiBold}
           />

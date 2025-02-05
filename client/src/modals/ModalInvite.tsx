@@ -1,4 +1,4 @@
-import { useReactiveVar } from "@apollo/client";
+import { useMutation, useReactiveVar } from "@apollo/client";
 import { SearchNormal1, TickCircle } from "iconsax-react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { Modalize } from "react-native-modalize";
@@ -18,21 +18,30 @@ import { UserModel } from "../models/UserModel";
 import { Share, Alert } from "react-native";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
+import { PushInviteNotificationsDocument } from "../gql/graphql";
+import { FontAwesome } from "@expo/vector-icons";
 
 interface Props {
   visible: boolean;
   onClose: () => void;
   eventId: number;
   title: string;
+  eventUsers?: UserModel[];
 }
 
 const ModalInvite = (props: Props) => {
-  const { visible, onClose, eventId, title } = props;
+  const { visible, onClose, eventId, title, eventUsers } = props;
   const user = useReactiveVar(userVar);
   const followings = useReactiveVar(followingsVar);
   const modalizeRef = useRef<Modalize>();
   const [isVisible, setIsVisible] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState<UserModel[]>([]);
+  const [pushInviteNotifications] = useMutation(
+    PushInviteNotificationsDocument,
+    {
+      refetchQueries: [],
+    }
+  );
 
   useEffect(() => {
     if (visible) {
@@ -60,6 +69,14 @@ const ModalInvite = (props: Props) => {
 
   const handleInviteUser = async () => {
     const userIds = selectedUsers.map((user: UserModel) => user.UserID);
+
+    // await pushInviteNotifications({
+    //   variables: {
+    //     userIds,
+    //     authorId: user?.UserID as number,
+    //     eventId,
+    //   },
+    // });
 
     const data = {
       from: user?.UserID,
@@ -103,6 +120,13 @@ const ModalInvite = (props: Props) => {
     }
   };
 
+  const isEventUser = (user: UserModel): boolean => {
+    const ind = eventUsers?.findIndex(
+      (item: any) => item.UserID === user.UserID
+    );
+    return ind === -1;
+  };
+
   return (
     <Portal>
       <Modalize
@@ -134,22 +158,30 @@ const ModalInvite = (props: Props) => {
             followings.map((following: any) => (
               <RowComponent key={following.UserID}>
                 <UserComponent
-                  onPress={() => handleSelectedUser(following)}
+                  onPress={
+                    isEventUser(following)
+                      ? () => handleSelectedUser(following)
+                      : () => {}
+                  }
                   type="Invite"
                   userId={following.UserID}
                 />
-                <TickCircle
-                  size={18}
-                  color={
-                    selectedUsers.findIndex(
-                      (selected: UserModel) =>
-                        selected.UserID === following.UserID
-                    ) !== -1
-                      ? appColor.primary
-                      : appColor.gray2
-                  }
-                  variant="Bold"
-                />
+                {isEventUser(following) ? (
+                  <TickCircle
+                    size={18}
+                    color={
+                      selectedUsers.findIndex(
+                        (selected: UserModel) =>
+                          selected.UserID === following.UserID
+                      ) !== -1
+                        ? appColor.primary
+                        : appColor.gray2
+                    }
+                    variant="Bold"
+                  />
+                ) : (
+                  <FontAwesome name="group" color={appColor.primary} />
+                )}
               </RowComponent>
             ))
           ) : (

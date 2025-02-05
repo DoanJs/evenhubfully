@@ -1,0 +1,3 @@
+mutation CreateEventUser($userId: Float!, $eventId: Float!) {
+  createEventUser(userId: $userId, eventId: $eventId)
+}

@@ -94,6 +94,7 @@ const EventDetail = ({ navigation, route }: any) => {
   const [createBill] = useMutation(CreateBillDocument, {
     refetchQueries: [],
   });
+  
 
   useEffect(() => {
     if (data_event) {
@@ -515,6 +516,7 @@ const EventDetail = ({ navigation, route }: any) => {
       <LoadingModal visible={isVisible} />
 
       <ModalInvite
+        eventUsers={event.users}
         title={event.title}
         eventId={event.EventID}
         visible={isVisibleModalInvite}

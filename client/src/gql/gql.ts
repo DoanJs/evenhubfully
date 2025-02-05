@@ -17,6 +17,7 @@ const documents = {
     "mutation CreateBill($billInput: BillInput!) {\n  createBill(billInput: $billInput) {\n    BillID\n    createAt\n    updateAt\n    price\n    status\n    userBuy {\n      UserID\n    }\n    authorEvent {\n      UserID\n    }\n    eventBuy {\n      EventID\n    }\n  }\n}": types.CreateBillDocument,
     "mutation CreateCategory($categoryInput: CategoryInput!) {\n  createCategory(categoryInput: $categoryInput) {\n    CategoryID\n    createAt\n    updateAt\n    title\n    color\n    label\n  }\n}": types.CreateCategoryDocument,
     "mutation CreateEvent($eventinput: EventInput!) {\n  createEvent(eventinput: $eventinput) {\n    EventID\n    title\n    description\n    locationTitle\n    locationAddress\n    imageUrl\n    price\n    category\n  }\n}": types.CreateEventDocument,
+    "mutation CreateEventUser($userId: Float!, $eventId: Float!) {\n  createEventUser(userId: $userId, eventId: $eventId)\n}": types.CreateEventUserDocument,
     "mutation CreateReview($reviewInput: ReviewInput!) {\n  createReview(reviewInput: $reviewInput) {\n    ReviewID\n    star\n    text\n  }\n}": types.CreateReviewDocument,
     "mutation EditBill($billId: Float!, $billInput: BillInput!) {\n  editBill(billId: $billId, billInput: $billInput) {\n    BillID\n    createAt\n    updateAt\n    price\n    status\n  }\n}": types.EditBillDocument,
     "mutation EditFollow($type: String!, $followInput: FollowInput!) {\n  editFollow(type: $type, followInput: $followInput)\n}": types.EditFollowDocument,
@@ -24,6 +25,7 @@ const documents = {
     "mutation EditInterests($userId: Float!, $interests: [UserCategoryInput!]!) {\n  editInterests(userId: $userId, interests: $interests)\n}": types.EditInterestsDocument,
     "mutation EditUser($userId: Float!, $userInput: UserInput!) {\n  editUser(userId: $userId, userInput: $userInput) {\n    UserID\n    Username\n    Email\n    Password\n    PhotoUrl\n    isChangePassword\n  }\n}": types.EditUserDocument,
     "mutation FilterEventsCondition($filterEventsData: FilterEventsData!) {\n  filterEventsCondition(filterEventsData: $filterEventsData) {\n    EventID\n    title\n    description\n    locationTitle\n    locationAddress\n    imageUrl\n    price\n    category\n    date\n    startAt\n    endAt\n    createAt\n    updateAt\n  }\n}": types.FilterEventsConditionDocument,
+    "mutation PushInviteNotifications($userIds: [Float!]!, $authorId: Float!, $eventId: Float!) {\n  pushInviteNotifications(\n    userIds: $userIds\n    authorId: $authorId\n    eventId: $eventId\n  )\n}": types.PushInviteNotificationsDocument,
     "mutation SearchEvent($keySearch: String!) {\n  searchEvent(keySearch: $keySearch) {\n    EventID\n    title\n    description\n    locationTitle\n    locationAddress\n    imageUrl\n    price\n    category\n    date\n    startAt\n    endAt\n    createAt\n    updateAt\n  }\n}": types.SearchEventDocument,
     "query Categories {\n  categories {\n    CategoryID\n    createAt\n    updateAt\n    title\n    color\n    label\n  }\n}": types.CategoriesDocument,
     "query Event($eventId: Float!) {\n  event(eventId: $eventId) {\n    EventID\n    title\n    description\n    locationTitle\n    locationAddress\n    imageUrl\n    price\n    category\n    date\n    startAt\n    endAt\n    position {\n      lat\n      lng\n    }\n    followers {\n      UserID\n    }\n    users {\n      UserID\n      PhotoUrl\n    }\n    author {\n      UserID\n      Email\n      Username\n      PhotoUrl\n      type\n    }\n  }\n}": types.EventDocument,
@@ -66,6 +68,10 @@ export function graphql(source: "mutation CreateEvent($eventinput: EventInput!) 
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function graphql(source: "mutation CreateEventUser($userId: Float!, $eventId: Float!) {\n  createEventUser(userId: $userId, eventId: $eventId)\n}"): (typeof documents)["mutation CreateEventUser($userId: Float!, $eventId: Float!) {\n  createEventUser(userId: $userId, eventId: $eventId)\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function graphql(source: "mutation CreateReview($reviewInput: ReviewInput!) {\n  createReview(reviewInput: $reviewInput) {\n    ReviewID\n    star\n    text\n  }\n}"): (typeof documents)["mutation CreateReview($reviewInput: ReviewInput!) {\n  createReview(reviewInput: $reviewInput) {\n    ReviewID\n    star\n    text\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
@@ -91,6 +97,10 @@ export function graphql(source: "mutation EditUser($userId: Float!, $userInput: 
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "mutation FilterEventsCondition($filterEventsData: FilterEventsData!) {\n  filterEventsCondition(filterEventsData: $filterEventsData) {\n    EventID\n    title\n    description\n    locationTitle\n    locationAddress\n    imageUrl\n    price\n    category\n    date\n    startAt\n    endAt\n    createAt\n    updateAt\n  }\n}"): (typeof documents)["mutation FilterEventsCondition($filterEventsData: FilterEventsData!) {\n  filterEventsCondition(filterEventsData: $filterEventsData) {\n    EventID\n    title\n    description\n    locationTitle\n    locationAddress\n    imageUrl\n    price\n    category\n    date\n    startAt\n    endAt\n    createAt\n    updateAt\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "mutation PushInviteNotifications($userIds: [Float!]!, $authorId: Float!, $eventId: Float!) {\n  pushInviteNotifications(\n    userIds: $userIds\n    authorId: $authorId\n    eventId: $eventId\n  )\n}"): (typeof documents)["mutation PushInviteNotifications($userIds: [Float!]!, $authorId: Float!, $eventId: Float!) {\n  pushInviteNotifications(\n    userIds: $userIds\n    authorId: $authorId\n    eventId: $eventId\n  )\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
