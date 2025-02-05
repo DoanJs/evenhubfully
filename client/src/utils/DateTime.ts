@@ -36,6 +36,7 @@ export class DateTime {
     )}`;
   };
 
+  //cach khac cho momentjs voi moment(num).fromNow()
   static GetDateUpdate = (num: number) => {
     const date = new Date(num).toISOString();
     const today = new Date().toISOString();

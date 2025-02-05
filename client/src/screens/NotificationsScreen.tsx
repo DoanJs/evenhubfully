@@ -1,26 +1,30 @@
+import { useReactiveVar } from "@apollo/client";
 import { Feather } from "@expo/vector-icons";
+import {
+  collection,
+  getDocs,
+  query,
+  where,
+  onSnapshot,
+  doc,
+} from "firebase/firestore";
 import React, { useEffect, useState } from "react";
-import { FlatList, Image, Text } from "react-native";
+import { FlatList, Image } from "react-native";
+import { db } from "../../firebaseConfig";
 import NoNotification from "../assets/images/noNotification.png";
 import {
-  AvatarComponent,
   ButtonComponent,
   ContainerComponent,
   NotificationItem,
-  RowComponent,
   SectionComponent,
   SpaceComponent,
   TextComponent,
 } from "../components";
 import { appColor } from "../constants/appColor";
-import { globalStyles } from "../styles/gloabalStyles";
-import { useReactiveVar } from "@apollo/client";
 import { userVar } from "../graphqlClient/cache";
-import { View } from "react-native";
-import { collection, getDocs, query, where } from "firebase/firestore";
-import { db } from "../../firebaseConfig";
-import { NotificationModel } from "../models/NotificationModel";
 import { LoadingModal } from "../modals";
+import { NotificationModel } from "../models/NotificationModel";
+import { globalStyles } from "../styles/gloabalStyles";
 
 const NotificationsScreen = () => {
   const user = useReactiveVar(userVar);
@@ -29,33 +33,55 @@ const NotificationsScreen = () => {
 
   useEffect(() => {
     setIsVisible(true);
+
     const getQuerySnap = async () => {
       const q = query(
         collection(db, "notifications"),
         // where("isRead", "==", false),
         where("uid", "==", user?.UserID)
       );
-
-      const querySnapshot = await getDocs(q);
-      if (querySnapshot.empty) {
-        setNotifications([]);
-      } else {
-        const items: any = [];
-        querySnapshot.forEach((doc) => {
-          // console.log(`${doc.id} => ${doc.data()}`);
-          items.push({
-            id: doc.id,
-            ...doc.data(),
+      await onSnapshot(q, (doc) => {
+        if (doc.empty) {
+          setNotifications([]);
+        } else {
+          const items: any = [];
+          doc.forEach((res) => {
+            // console.log(`${doc.id} => ${doc.data()}`);
+            items.push({
+              id: res.id,
+              ...res.data(),
+            });
           });
-        });
 
-        setNotifications(items);
+          setNotifications(items);
+        }
+      });
+      // const q = query(
+      //   collection(db, "notifications"),
+      //   // where("isRead", "==", false),
+      //   where("uid", "==", user?.UserID)
+      // );
 
-        setIsVisible(false);
-      }
+      // const querySnapshot = await getDocs(q);
+      // if (querySnapshot.empty) {
+      //   setNotifications([]);
+      // } else {
+      //   const items: any = [];
+      //   querySnapshot.forEach((doc) => {
+      //     // console.log(`${doc.id} => ${doc.data()}`);
+      //     items.push({
+      //       id: doc.id,
+      //       ...doc.data(),
+      //     });
+      //   });
+
+      //   setNotifications(items);
+      // }
     };
 
     getQuerySnap();
+
+    setIsVisible(false);
   }, []);
 
   return (
@@ -66,7 +92,7 @@ const NotificationsScreen = () => {
       right={
         <ButtonComponent
           icon={
-            <Feather name="more-vertical" size={20} color={appColor.text} />
+            <Feather name="check-square" size={20} color={appColor.text} />
           }
         />
       }

@@ -60,7 +60,6 @@ const ModalInvite = (props: Props) => {
 
   const handleInviteUser = async () => {
     const userIds = selectedUsers.map((user: UserModel) => user.UserID);
-    console.log({ userIds, eventId, authorId: user?.UserID, title });
 
     const data = {
       from: user?.UserID,
@@ -71,13 +70,11 @@ const ModalInvite = (props: Props) => {
     };
 
     userIds.forEach(async (id: number) => {
-      console.log(id);
       try {
-        const docRef = await addDoc(collection(db, "notifications"), {
+        await addDoc(collection(db, "notifications"), {
           ...data,
           uid: id,
         });
-        console.log("Document written with ID: ", docRef.id);
       } catch (e) {
         console.error("Error adding document: ", e);
       }

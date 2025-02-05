@@ -1,6 +1,7 @@
-import { View, Text } from "react-native";
+import { useQuery } from "@apollo/client";
+import moment from "moment";
 import React, { useEffect, useState } from "react";
-import { globalStyles } from "../styles/gloabalStyles";
+import { Alert, Text, View } from "react-native";
 import {
   AvatarComponent,
   ButtonComponent,
@@ -8,12 +9,13 @@ import {
   SpaceComponent,
   TextComponent,
 } from ".";
-import { NotificationModel } from "../models/NotificationModel";
 import { appColor } from "../constants/appColor";
-import { useQuery } from "@apollo/client";
 import { GetUserIdDocument } from "../gql/graphql";
+import { NotificationModel } from "../models/NotificationModel";
 import { UserModel } from "../models/UserModel";
-import { DateTime } from "../utils/DateTime";
+import { globalStyles } from "../styles/gloabalStyles";
+import { deleteDoc, doc } from "firebase/firestore";
+import { db } from "../../firebaseConfig";
 
 interface Props {
   notification: NotificationModel;
@@ -33,6 +35,14 @@ const NotificationItem = (props: Props) => {
       setUser(data_user.getUserId as UserModel);
     }
   }, [data_user]);
+
+  const handleRemoveNotification = async () => {
+    try {
+      await deleteDoc(doc(db, "notifications", notification.id));
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <RowComponent
@@ -65,6 +75,23 @@ const NotificationItem = (props: Props) => {
 
         <RowComponent justify="center">
           <ButtonComponent
+            onPress={() =>
+              Alert.alert(
+                "Confirm",
+                "Are yiu sure you want to reject this invite ?",
+                [
+                  {
+                    text: "Cancel",
+                    onPress: () => console.log("Cancel remove"),
+                  },
+                  {
+                    text: "Reject",
+                    style: "destructive",
+                    onPress: () => handleRemoveNotification(),
+                  },
+                ]
+              )
+            }
             text="Reject"
             type="primary"
             styles={{ width: "50%" }}
@@ -80,7 +107,12 @@ const NotificationItem = (props: Props) => {
         </RowComponent>
       </View>
 
-      <TextComponent color={appColor.gray} text={DateTime.GetDateUpdate(notification.createAt)} />
+      <TextComponent
+        color={appColor.gray}
+        styles={{ backgroundColor: "coral", width: "25%" }}
+        numberOfLine={1}
+        text={moment(notification.createAt).fromNow()}
+      />
     </RowComponent>
   );
 };
