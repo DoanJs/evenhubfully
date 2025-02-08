@@ -95,7 +95,7 @@ const EventDetail = ({ navigation, route }: any) => {
     refetchQueries: [],
   });
   
-
+  
   useEffect(() => {
     if (data_event) {
       setEvent(data_event.event as EventModel);

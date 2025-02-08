@@ -14,11 +14,25 @@ import { EventModule } from './events/Event.module';
 import { FCMTokenModule } from './fcmtokens/FCMToken.module';
 import { FollowModule } from './follows/Follow.module';
 import { PositionModule } from './positions/Position.module';
-import { UsersModule } from './users/Users.module';
 import { ReviewModule } from './reviews/Review.module';
+import { UsersModule } from './users/Users.module';
 
 @Module({
   imports: [
+    // TypeOrmModule.forRoot({
+    //   type: 'mssql',
+    //   host: process.env.DB_HOST,
+    //   port: 1433,
+    //   username: process.env.DB_USER,
+    //   password: process.env.DB_PASSWORD,
+    //   database: process.env.DB_NAME,
+    //   autoLoadEntities: true,
+    //   logging: true,
+    //   // synchronize: true, ///not use production env
+    //   options: {
+    //     trustServerCertificate: true,
+    //   },
+    // }),
     TypeOrmModule.forRoot({
       type: 'mssql',
       host: 'localhost',

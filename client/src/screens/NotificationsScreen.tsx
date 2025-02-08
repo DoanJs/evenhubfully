@@ -2,12 +2,11 @@ import { useReactiveVar } from "@apollo/client";
 import { Feather } from "@expo/vector-icons";
 import {
   collection,
-  getDocs,
-  query,
-  where,
-  onSnapshot,
   doc,
+  onSnapshot,
+  query,
   updateDoc,
+  where,
 } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { FlatList, Image } from "react-native";
@@ -31,7 +30,6 @@ const NotificationsScreen = () => {
   const user = useReactiveVar(userVar);
   const [notifications, setNotifications] = useState<NotificationModel[]>([]);
   const [isVisible, setIsVisible] = useState(false);
-  const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
     setIsVisible(true);
@@ -87,7 +85,7 @@ const NotificationsScreen = () => {
   }, []);
 
   const handleCheckToReadAllNotifications = () => {
-    setIsUpdating(true);
+    setIsVisible(true);
     try {
       notifications.length > 0 &&
         notifications.forEach(async (item: NotificationModel) => {
@@ -97,7 +95,7 @@ const NotificationsScreen = () => {
     } catch (error) {
       console.log(error);
     }
-    setIsUpdating(false);
+    setIsVisible(false);
   };
 
   return (

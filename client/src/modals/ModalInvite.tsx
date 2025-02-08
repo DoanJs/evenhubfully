@@ -155,35 +155,36 @@ const ModalInvite = (props: Props) => {
           />
 
           {followings && followings.length > 0 ? (
-            followings.map((following: any) => (
-              <RowComponent key={following.UserID}>
-                <UserComponent
-                  onPress={
-                    isEventUser(following)
-                      ? () => handleSelectedUser(following)
-                      : () => {}
-                  }
-                  type="Invite"
-                  userId={following.UserID}
-                />
-                {isEventUser(following) ? (
-                  <TickCircle
-                    size={18}
-                    color={
-                      selectedUsers.findIndex(
-                        (selected: UserModel) =>
-                          selected.UserID === following.UserID
-                      ) !== -1
-                        ? appColor.primary
-                        : appColor.gray2
-                    }
-                    variant="Bold"
-                  />
-                ) : (
-                  <FontAwesome name="group" color={appColor.primary} />
-                )}
-              </RowComponent>
-            ))
+            followings.map(
+              (following: any) =>
+                isEventUser(following) && (
+                  <RowComponent key={following.UserID}>
+                    <UserComponent
+                      onPress={
+                        isEventUser(following)
+                          ? () => handleSelectedUser(following)
+                          : () => {}
+                      }
+                      type="Invite"
+                      userId={following.UserID}
+                    />
+                    {isEventUser(following) && (
+                      <TickCircle
+                        size={18}
+                        color={
+                          selectedUsers.findIndex(
+                            (selected: UserModel) =>
+                              selected.UserID === following.UserID
+                          ) !== -1
+                            ? appColor.primary
+                            : appColor.gray2
+                        }
+                        variant="Bold"
+                      />
+                    )}
+                  </RowComponent>
+                )
+            )
           ) : (
             <TextComponent text="No Friend" />
           )}

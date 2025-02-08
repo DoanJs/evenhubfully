@@ -4,6 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import * as Location from "expo-location";
 import * as Notifications from "expo-notifications";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
 import {
   HambergerMenu,
   Notification,
@@ -22,6 +23,7 @@ import {
   View,
 } from "react-native";
 import Toast from "react-native-toast-message";
+import { db } from "../../../firebaseConfig";
 import Invite from "../../assets/images/invite.png";
 import {
   CategoriesList,
@@ -48,8 +50,6 @@ import { EventModel } from "../../models/EventModel";
 import { globalStyles } from "../../styles/gloabalStyles";
 import { HandleNotification } from "../../utils/handleNotification";
 import { useStatusBar } from "../../utils/useStatusBar";
-import { collection, getDocs, query, where } from "firebase/firestore";
-import { db } from "../../../firebaseConfig";
 
 const HomeScreen = () => {
   useStatusBar("light-content");
@@ -90,24 +90,24 @@ const HomeScreen = () => {
         where("isRead", "==", false),
         where("uid", "==", user?.UserID)
       );
-
-      const querySnapshot = await getDocs(q);
-      if (querySnapshot.empty) {
-        setUnReadNotifications([]);
-      } else {
-        const items: any = [];
-        querySnapshot.forEach((doc) => {
-          // console.log(`${doc.id} => ${doc.data()}`);
-          items.push({
-            id: doc.id,
-            ...doc.data(),
+      await onSnapshot(q, (doc) => {
+        if (doc.empty) {
+          setUnReadNotifications([]);
+        } else {
+          const items: any = [];
+          doc.forEach((res) => {
+            // console.log(`${doc.id} => ${doc.data()}`);
+            items.push({
+              id: res.id,
+              ...res.data(),
+            });
           });
-        });
 
-        setUnReadNotifications(items)
-      }
+          setUnReadNotifications(items);
+        }
+      });
     };
-
+    
     getQuerySnap();
   }, []);
 
@@ -336,7 +336,7 @@ const HomeScreen = () => {
             <FlatList
               horizontal
               showsHorizontalScrollIndicator={false}
-              data={events}
+              data={[...events].reverse()}
               renderItem={({ item }: { item: EventModel }) => (
                 <EventItem
                   item={item}
