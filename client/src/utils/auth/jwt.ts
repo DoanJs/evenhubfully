@@ -1,7 +1,6 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode, JwtPayload } from "jwt-decode";
 import { userVar } from "../../graphqlClient/cache";
-import { IPADDRESS, PORTSERVER } from "../variables";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import AxiosAPI from "./callapi";
 
 const JWTManager = () => {

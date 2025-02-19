@@ -11,12 +11,13 @@ import {
   SearchNormal1,
   Sort,
 } from "iconsax-react-native";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   FlatList,
   ImageBackground,
   Linking,
   Platform,
+  RefreshControl,
   ScrollView,
   StatusBar,
   TouchableOpacity,
@@ -60,28 +61,31 @@ const HomeScreen = () => {
   const [events, setEvents] = useState<EventModel[]>([]);
   const [events_nearby, setEvents_nearby] = useState<EventModel[]>([]);
   const [unReadNotifications, setUnReadNotifications] = useState([]);
-  const { data: data_events_nearby, loading: loading_events_nearby } = useQuery(
-    Events_NearbyDocument,
-    {
-      variables: {
-        paramsInput: {
-          data: {
-            lat: currentLocation?.position.lat,
-            long: currentLocation?.position.lng,
-            distance: 1,
-          },
+  const {
+    data: data_events_nearby,
+    refetch: refetch_events_nearby,
+    loading: loading_events_nearby,
+  } = useQuery(Events_NearbyDocument, {
+    variables: {
+      paramsInput: {
+        data: {
+          lat: currentLocation?.position.lat,
+          long: currentLocation?.position.lng,
+          distance: 1,
         },
       },
-    }
-  );
+    },
+  });
   const {
     data: data_events_upcoming,
+    refetch: refetch_events_upcoming,
     loading: loading_events_upcoming,
     error,
   } = useQuery(Events_UpcomingDocument);
 
   const notificationListener = useRef<Notifications.EventSubscription>();
   const responseListener = useRef<Notifications.EventSubscription>();
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     const getQuerySnap = async () => {
@@ -107,7 +111,7 @@ const HomeScreen = () => {
         }
       });
     };
-    
+
     getQuerySnap();
   }, []);
 
@@ -194,6 +198,12 @@ const HomeScreen = () => {
     await HandleNotification.schedulePushNotification();
   };
 
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await refetch_events_upcoming();
+    await refetch_events_nearby();
+    setRefreshing(false);
+  }, []);
   return (
     <View style={[globalStyles.container]}>
       <StatusBar barStyle={"light-content"} />
@@ -314,6 +324,9 @@ const HomeScreen = () => {
         </View>
       </View>
       <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
         showsVerticalScrollIndicator={false}
         style={[
           {

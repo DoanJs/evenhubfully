@@ -19,7 +19,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { appColor } from "../constants/appColor";
 import { tokenVar, userVar } from "../graphqlClient/cache";
 import { globalStyles } from "../styles/gloabalStyles";
@@ -27,6 +26,7 @@ import AvatarComponent from "./AvatarComponent";
 import RowComponent from "./RowComponent";
 import SpaceComponent from "./SpaceComponent";
 import TextComponent from "./TextComponent";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 interface ProfileMenu {
   key: string;
@@ -102,6 +102,11 @@ const DrawerCustom = ({ navigation }: any) => {
           params: {
             screen: "ProfileScreen",
           },
+        });
+        break;
+      case "Message":
+        navigation.navigate("MessageScreen", {
+          userId: 1,
         });
         break;
 

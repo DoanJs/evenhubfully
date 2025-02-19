@@ -10,6 +10,7 @@ import { billsVar } from "../../graphqlClient/cache";
 const CartScreen = ({ route }: any) => {
   const bills = useReactiveVar(billsVar);
   const [isLoading, setIsLoading] = useState(false);
+  
 
   return (
     <ContainerComponent back title="View Cart">

@@ -1,5 +1,5 @@
-import React from "react";
-import { FlatList, StyleProp, ViewStyle } from "react-native";
+import React, { useCallback, useState } from "react";
+import { FlatList, RefreshControl, StyleProp, ViewStyle } from "react-native";
 import { EventModel } from "../models/EventModel";
 import EventItem from "./EventItem";
 import SectionComponent from "./SectionComponent";
@@ -12,6 +12,17 @@ interface Props {
 
 const ListEventComponent = (props: Props) => {
   const { items, type, styles } = props;
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      // Simulate fetching new data
+      console.log('reload...')
+      setRefreshing(false)
+    }, 1500);
+  }, []);
+  
   return (
     <SectionComponent
       styles={[
@@ -32,6 +43,9 @@ const ListEventComponent = (props: Props) => {
             styles={{ width: undefined }}
           />
         )}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
       />
     </SectionComponent>
   );

@@ -3,10 +3,11 @@ import { setContext } from "@apollo/client/link/context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import JWTManager from "../utils/auth/jwt";
-import { IPADDRESS, PORTSERVER } from "../utils/variables";
+import { IPADDRESS, PORTSERVER, URL_SERVER } from "../utils/variables";
 import { jwtDecode, JwtPayload } from "jwt-decode";
 
 const httpLink = createHttpLink({
+  // uri: `${URL_SERVER}/graphql`,
   uri: `http://${IPADDRESS}:${PORTSERVER}/graphql`,
   credentials: "include",
 });
@@ -23,7 +24,8 @@ const authLink = setContext(async (_, { headers }) => {
     try {
       const result = await axios({
         method: "get",
-        url: "http://localhost:5000/refresh_token",
+        url: `${URL_SERVER}/refresh_token`,
+        // url: "http://localhost:5000/refresh_token",
         withCredentials: true,
       });
       access_token = result.data.access_token as string;
