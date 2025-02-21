@@ -1,31 +1,31 @@
+import { useQuery } from "@apollo/client";
+import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import { LinearGradient } from "expo-linear-gradient";
+import { SearchNormal1 } from "iconsax-react-native";
 import React, { useEffect, useState } from "react";
-import { FlatList, Image, Platform, Text, View } from "react-native";
-import { useStatusBar } from "../../utils/useStatusBar";
+import { FlatList, Image, Platform, View } from "react-native";
+import {
+  default as arrownRight,
+  default as arrowRight,
+} from "../../assets/images/arrowRight.png";
+import CalendarEmpty from "../../assets/images/calendar.png";
 import {
   ButtonComponent,
   ContainerComponent,
   EventItem,
-  ListEventComponent,
-  LoadingComponent,
   RadioButton,
   RowComponent,
   SectionComponent,
   SpaceComponent,
   TextComponent,
 } from "../../components";
-import { useQuery } from "@apollo/client";
-import { EventsDocument, GetEventConditionsDocument } from "../../gql/graphql";
+import { appColor } from "../../constants/appColor";
+import { GetEventConditionsDocument } from "../../gql/graphql";
+import { LoadingModal } from "../../modals";
 import { EventModel } from "../../models/EventModel";
 import { globalStyles } from "../../styles/gloabalStyles";
-import CalendarEmpty from "../../assets/images/calendar.png";
-import { appColor } from "../../constants/appColor";
-import { SearchNormal1 } from "iconsax-react-native";
-import { MaterialIcons } from "@expo/vector-icons";
-import arrownRight from "../../assets/images/arrowRight.png";
-import { LoadingModal } from "../../modals";
-import arrowRight from "../../assets/images/arrowRight.png";
-import { LinearGradient } from "expo-linear-gradient";
+import { useStatusBar } from "../../utils/useStatusBar";
 
 const EventsScreen = () => {
   useStatusBar("dark-content");

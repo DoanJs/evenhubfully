@@ -12,10 +12,10 @@ import PaymentScreen from "./events/PaymentScreen";
 import SearchEvents from "./events/SearchEvents";
 import HomeScreen from "./home/HomeScreen";
 import MapScreen from "./maps/MapScreen";
-import MessageCircle from "./message/MessageCircle";
 import MessageDetail from "./message/MessageDetail";
 import MessageItem from "./message/MessageItem";
 import MessageScreen from "./message/MessageScreen";
+import MessageSub from "./message/MessageSub";
 import NotFound from "./NotFound";
 import NotificationsScreen from "./NotificationsScreen";
 import CartScreen from "./profiles/CartScreen";
@@ -53,5 +53,5 @@ export {
   MessageScreen,
   MessageItem, 
   MessageDetail,
-  MessageCircle
+  MessageSub
 };

@@ -16,6 +16,7 @@ import { appColor } from "../constants/appColor";
 import RowComponent from "./RowComponent";
 import TextComponent from "./TextComponent";
 import { fontFamilies } from "../constants/fontFamilies";
+import AvatarComponent from "./AvatarComponent";
 
 interface Props {
   isImageBackground?: boolean;
@@ -24,10 +25,21 @@ interface Props {
   children: ReactNode;
   back?: boolean;
   right?: ReactNode;
+  avatar?: ReactNode;
+  statusAction?: ReactNode;
 }
 
 const ContainerComponent = (props: Props) => {
-  const { isImageBackground, isScroll, title, children, back, right } = props;
+  const {
+    isImageBackground,
+    isScroll,
+    title,
+    children,
+    back,
+    right,
+    avatar,
+    statusAction,
+  } = props;
   const navigation = useNavigation();
 
   const headerComponent = () => {
@@ -48,14 +60,14 @@ const ContainerComponent = (props: Props) => {
               </TouchableOpacity>
             )}
 
-            <View style={{ flex: 1 }}>
-              {title && (
-                <TextComponent
-                  text={title}
-                  styles={{ marginLeft: 12 }}
-                  font={fontFamilies.medium}
-                />
-              )}
+            <View style={{ flex: 1, flexDirection: avatar ? "row" : "column" }}>
+              {avatar && avatar}
+              <View style={{ marginLeft: 8 }}>
+                {title && (
+                  <TextComponent text={title} font={fontFamilies.medium} />
+                )}
+                {statusAction && statusAction}
+              </View>
             </View>
             {right && right}
           </RowComponent>

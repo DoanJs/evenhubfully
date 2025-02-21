@@ -106,7 +106,7 @@ const DrawerCustom = ({ navigation }: any) => {
         break;
       case "Message":
         navigation.navigate("MessageScreen", {
-          userId: 1,
+          userId: user?.UserID,
         });
         break;
 

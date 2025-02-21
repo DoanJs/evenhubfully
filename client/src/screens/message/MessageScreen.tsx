@@ -1,4 +1,3 @@
-import { useRoute } from "@react-navigation/native";
 import {
   addDoc,
   collection,
@@ -13,32 +12,22 @@ import React, { useEffect, useState } from "react";
 import { FlatList, TextInput, View } from "react-native";
 import { db } from "../../../firebaseConfig";
 import {
-  AvatarComponent,
   ButtonComponent,
   ContainerComponent,
   RowComponent,
   SectionComponent,
-  TextComponent,
 } from "../../components";
 import { appColor } from "../../constants/appColor";
+import { LoadingModal } from "../../modals";
 import MessageItem from "./MessageItem";
-import MessageCircle from "./MessageCircle";
-import { useQuery, useReactiveVar } from "@apollo/client";
-import { GetUserIdDocument } from "../../gql/graphql";
-import { UserModel } from "../../models/UserModel";
-import { followingsVar } from "../../graphqlClient/cache";
 
-const MessageScreen = ({route}: any) => {
+const MessageScreen = ({ route }: any) => {
   const { userId }: { userId: number } = route.params;
-  const followings = useReactiveVar(followingsVar)
-
   const [searchKey, setSearchKey] = useState("");
   const [isVisible, setIsVisible] = useState(false);
   const [conversations, setConversations] = useState([]);
   const [conversationId, setConversationId] = useState("");
-
-  console.log(followings.length)
-
+  console.log(Date.now());
   const data = {
     title: "conversation1",
     avatar:
@@ -130,30 +119,19 @@ const MessageScreen = ({route}: any) => {
       </SectionComponent>
 
       <SectionComponent>
-        <RowComponent>
-          <MessageCircle />
-          <MessageCircle />
-          <MessageCircle />
-          <MessageCircle />
-          <MessageCircle />
-          <MessageCircle />
-        </RowComponent>
-      </SectionComponent>
-
-      <SectionComponent>
         <RowComponent
           styles={{
             backgroundColor: appColor.gray8,
             paddingHorizontal: 10,
-            paddingVertical: 8,
+            paddingVertical: 6,
             borderRadius: 10,
           }}
         >
-          <SearchNormal1 variant="TwoTone" color={appColor.gray} size={24} />
+          <SearchNormal1 variant="TwoTone" color={appColor.gray} size={28} />
           <View
             style={{
               width: 1,
-              height: 24,
+              height: 28,
               backgroundColor: appColor.gray2,
               marginHorizontal: 10,
             }}
@@ -168,11 +146,27 @@ const MessageScreen = ({route}: any) => {
       </SectionComponent>
 
       <SectionComponent>
+        <RowComponent>
+          <FlatList
+            horizontal={true}
+            data={conversations}
+            renderItem={({ item }) => (
+              <MessageItem type="avatarCircle" conversation={item} />
+            )}
+          />
+        </RowComponent>
+      </SectionComponent>
+
+      <SectionComponent>
         <FlatList
           data={conversations}
-          renderItem={({ item }) => <MessageItem conversation={item} />}
+          renderItem={({ item }) => (
+            <MessageItem type="default" conversation={item} />
+          )}
         />
       </SectionComponent>
+
+      <LoadingModal visible={isVisible} />
     </ContainerComponent>
   );
 };

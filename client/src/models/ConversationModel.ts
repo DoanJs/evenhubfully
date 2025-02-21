@@ -1,4 +1,4 @@
-export interface ConverstationModel {
+export interface ConversationModel {
   avatar: string;
   createAt: number;
   creatorId: number;
