@@ -1,6 +1,7 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Bill } from 'src/bills/Bill.model';
 import { Category } from 'src/categories/Category.model';
+import { Conversation } from 'src/conversations/Conversation.model';
 import { Event } from 'src/events/Event.model';
 import { FCMToken } from 'src/fcmtokens/FCMToken.model';
 import { Follow } from 'src/follows/Follow.model';
@@ -75,6 +76,12 @@ export class User {
   @OneToMany(() => Review, (review) => review.reReviewer)
   reReviewers: [Review];
 
+  @OneToMany(() => Conversation, (conversation) => conversation.creator)
+  conversations: [Conversation];
+
+  @OneToMany(() => Conversation, (conversation) => conversation.msgLastSender)
+  conversationMsgLasts: [Conversation];
+
   // many-to-many
   @ManyToMany(() => Event, (event) => event.users)
   user_events: [Event];
@@ -86,4 +93,7 @@ export class User {
   @ManyToMany(() => Category, (category) => category.users)
   @Field(() => [Category], { nullable: true })
   interests: [Category];
+
+  @ManyToMany(() => Conversation, (conversation) => conversation.participants)
+  user_conversations: [Conversation];
 }

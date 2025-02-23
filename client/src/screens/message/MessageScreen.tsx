@@ -27,7 +27,7 @@ const MessageScreen = ({ route }: any) => {
   const [isVisible, setIsVisible] = useState(false);
   const [conversations, setConversations] = useState([]);
   const [conversationId, setConversationId] = useState("");
-  console.log(Date.now());
+  // console.log(Date.now());
   const data = {
     title: "conversation1",
     avatar:
@@ -60,7 +60,7 @@ const MessageScreen = ({ route }: any) => {
     const getQuerySnap = async () => {
       const q = query(
         collection(db, "conversations"),
-        where("participants", "array-contains", userId)
+        where("participantIds", "array-contains", userId)
       );
       await onSnapshot(q, (doc) => {
         if (doc.empty) {

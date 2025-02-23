@@ -16,6 +16,7 @@ import { FollowModule } from './follows/Follow.module';
 import { PositionModule } from './positions/Position.module';
 import { ReviewModule } from './reviews/Review.module';
 import { UsersModule } from './users/Users.module';
+import { ConversationModule } from './conversations/Conversation.module';
 
 @Module({
   imports: [
@@ -61,6 +62,7 @@ import { UsersModule } from './users/Users.module';
     DataLoaderModule,
     BillModule,
     ReviewModule,
+    ConversationModule,
   ],
   controllers: [AppController],
   providers: [AppService],

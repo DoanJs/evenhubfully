@@ -1,0 +1,13 @@
+query GetConversationByCreators($creatorId: Float!) {
+  getConversationByCreators(creatorId: $creatorId) {
+    ConversationID
+    avatar
+    title
+    isGroup
+    msgLast
+    msgLastTime
+    createAt
+    updateAt
+    deleteAt
+  }
+}

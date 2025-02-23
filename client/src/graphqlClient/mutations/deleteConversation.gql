@@ -1,0 +1,5 @@
+mutation DeleteConversation($conversationId: Float!) {
+  deleteConversation(conversationId: $conversationId) {
+    ConversationID
+  }
+}

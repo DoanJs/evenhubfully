@@ -1,0 +1,10 @@
+mutation CreateConversation($conversationInput: ConversationInput!) {
+  createConversation(conversationInput: $conversationInput) {
+    ConversationID
+    avatar
+    title
+    isGroup
+    msgLast
+    msgLastTime
+  }
+}
