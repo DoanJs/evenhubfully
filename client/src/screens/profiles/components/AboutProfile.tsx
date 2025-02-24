@@ -1,6 +1,6 @@
 import { gql, useMutation, useReactiveVar } from "@apollo/client";
 import { Feather, Ionicons } from "@expo/vector-icons";
-import React, { ReactNode, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import { TouchableOpacity } from "react-native";
 import {
   ButtonComponent,
@@ -12,7 +12,11 @@ import {
 } from "../../../components";
 import { appColor } from "../../../constants/appColor";
 import { fontFamilies } from "../../../constants/fontFamilies";
-import { GetUserIdDocument } from "../../../gql/graphql";
+import {
+  CreateConversationDocument,
+  DeleteConversationDocument,
+  GetUserIdDocument,
+} from "../../../gql/graphql";
 import {
   followersVar,
   followingsVar,
@@ -23,6 +27,19 @@ import { EventModel } from "../../../models/EventModel";
 import { UserModel } from "../../../models/UserModel";
 import CommentInput from "./CommentInput";
 import ReviewItem from "./ReviewItem";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDocs,
+  onSnapshot,
+  query,
+  setDoc,
+  where,
+} from "firebase/firestore";
+import { db } from "../../../../firebaseConfig";
+import { ConversationModel } from "../../../models/ConversationModel";
+import { useNavigation } from "@react-navigation/native";
 
 interface Props {
   author: UserModel;
@@ -44,11 +61,13 @@ const tabs = [
 
 const AboutProfile = (props: Props) => {
   const { author } = props;
+  const navigation: any = useNavigation();
   const user = useReactiveVar(userVar);
   const followings = useReactiveVar(followingsVar);
   const followers = useReactiveVar(followersVar);
   const [isVisible, setIsVisible] = useState(false);
   const [tabSelected, setTabSelected] = useState("about");
+  const [conversations, setConversations] = useState<ConversationModel[]>([]);
   const [editFollow] = useMutation(
     gql`
       mutation EditFollow($type: String!, $followInput: FollowInput!) {
@@ -66,6 +85,37 @@ const AboutProfile = (props: Props) => {
       ],
     }
   );
+  const [createConversation] = useMutation(CreateConversationDocument, {
+    refetchQueries: [],
+  });
+  const [deleteConversation] = useMutation(DeleteConversationDocument, {
+    refetchQueries: [],
+  });
+
+  useEffect(() => {
+    setIsVisible(true);
+    const getQuerySnap = async () => {
+      const q = query(
+        collection(db, "conversations"),
+        where("creatorId", "==", user?.UserID),
+        where("title", "==", author.Username)
+      );
+      await onSnapshot(q, (doc) => {
+        if (doc.empty) {
+          setConversations([]);
+        } else {
+          const items: any = [];
+          doc.forEach((res) => {
+            items.push(res.data());
+          });
+          setConversations(items);
+        }
+      });
+    };
+
+    getQuerySnap();
+    setIsVisible(false);
+  }, []);
 
   const handleFollow = (author: UserModel) => {
     setIsVisible(true);
@@ -141,6 +191,59 @@ const AboutProfile = (props: Props) => {
     return content;
   };
 
+  const handleAddConversation = () => {
+    setIsVisible(true);
+    const conversationInput = {
+      isGroup: 0,
+      avatar: author.PhotoUrl,
+      title: author.Username,
+
+      creatorId: user?.UserID,
+      participantIds: [user?.UserID as number, author.UserID as number],
+    };
+
+    createConversation({
+      variables: {
+        conversationInput,
+      },
+    })
+      .then(async (result: any) => {
+        // can use docSnap.exists() checks if the document exists.
+
+        const { ConversationID, title } = result?.data?.createConversation;
+
+        const index = conversations.findIndex(
+          (item) => item.creatorId === user?.UserID && item.title === title
+        );
+        if (index === -1) {
+          await setDoc(doc(db, "conversations", `${ConversationID}`), {
+            ...conversationInput,
+
+            msgLast: null,
+            msgLastTime: null,
+            msgLastSenderId: null,
+            createAt: Date.now(),
+            updateAt: null,
+            deleteAt: null,
+          });
+        }
+
+        setIsVisible(false);
+        navigation.navigate("MessageDetail", {
+          conversation: {
+            id: `${ConversationID}`,
+            title: author.Username,
+            creatorId: user?.UserID,
+            avatar: author.PhotoUrl
+          },
+        });
+      })
+      .catch((err) => {
+        setIsVisible(false);
+        console.log(err);
+      });
+  };
+
   return (
     <>
       <SectionComponent styles={{ paddingBottom: 0 }}>
@@ -190,6 +293,7 @@ const AboutProfile = (props: Props) => {
               borderWidth: 1,
               borderColor: appColor.primary,
             }}
+            onPress={() => handleAddConversation()}
           />
         </RowComponent>
       </SectionComponent>

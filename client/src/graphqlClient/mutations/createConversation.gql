@@ -4,7 +4,8 @@ mutation CreateConversation($conversationInput: ConversationInput!) {
     avatar
     title
     isGroup
-    msgLast
-    msgLastTime
+    creator {
+      UserID
+    }
   }
 }

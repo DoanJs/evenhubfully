@@ -5,6 +5,7 @@ import { Conversation } from 'src/conversations/Conversation.model';
 import { Event } from 'src/events/Event.model';
 import { FCMToken } from 'src/fcmtokens/FCMToken.model';
 import { Follow } from 'src/follows/Follow.model';
+import { Message } from 'src/messages/Message.model';
 import { Review } from 'src/reviews/Review.model';
 import {
   Column,
@@ -81,6 +82,12 @@ export class User {
 
   @OneToMany(() => Conversation, (conversation) => conversation.msgLastSender)
   conversationMsgLasts: [Conversation];
+
+  @OneToMany(() => Message, (message) => message.sender)
+  msgSenders: [Message];
+
+  @OneToMany(() => Message, (message) => message.receiver)
+  msgReceivers: [Message];
 
   // many-to-many
   @ManyToMany(() => Event, (event) => event.users)

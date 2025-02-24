@@ -17,6 +17,7 @@ import { PositionModule } from './positions/Position.module';
 import { ReviewModule } from './reviews/Review.module';
 import { UsersModule } from './users/Users.module';
 import { ConversationModule } from './conversations/Conversation.module';
+import { MessageModule } from './messages/Message.module';
 
 @Module({
   imports: [
@@ -63,6 +64,7 @@ import { ConversationModule } from './conversations/Conversation.module';
     BillModule,
     ReviewModule,
     ConversationModule,
+    MessageModule
   ],
   controllers: [AppController],
   providers: [AppService],

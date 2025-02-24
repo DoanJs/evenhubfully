@@ -5,6 +5,8 @@ import {
   ScrollView,
   TouchableOpacity,
   StatusBar,
+  StyleProp,
+  ViewStyle,
 } from "react-native";
 import React, { ReactNode } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -27,6 +29,7 @@ interface Props {
   right?: ReactNode;
   avatar?: ReactNode;
   statusAction?: ReactNode;
+  styles?: StyleProp<ViewStyle>;
 }
 
 const ContainerComponent = (props: Props) => {
@@ -44,7 +47,7 @@ const ContainerComponent = (props: Props) => {
 
   const headerComponent = () => {
     return (
-      <View>
+      <View style={{ flex: 1 }}>
         {(back || title || right) && (
           <RowComponent
             styles={{
@@ -80,7 +83,7 @@ const ContainerComponent = (props: Props) => {
   const returnContainer = isScroll ? (
     <ScrollView showsVerticalScrollIndicator={false}>{children}</ScrollView>
   ) : (
-    <View>{children}</View>
+    <View style={{ flex: 1 }}>{children}</View>
   );
 
   return isImageBackground ? (
@@ -94,7 +97,7 @@ const ContainerComponent = (props: Props) => {
   ) : (
     <SafeAreaView style={[globalStyles.container]}>
       <StatusBar barStyle={"dark-content"} />
-      <View>{headerComponent()}</View>
+      <View style={{ flex: 1 }}>{headerComponent()}</View>
     </SafeAreaView>
   );
 };

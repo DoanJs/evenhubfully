@@ -16,9 +16,10 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
 const documents = {
     "mutation CreateBill($billInput: BillInput!) {\n  createBill(billInput: $billInput) {\n    BillID\n    createAt\n    updateAt\n    price\n    status\n    userBuy {\n      UserID\n    }\n    authorEvent {\n      UserID\n    }\n    eventBuy {\n      EventID\n    }\n  }\n}": types.CreateBillDocument,
     "mutation CreateCategory($categoryInput: CategoryInput!) {\n  createCategory(categoryInput: $categoryInput) {\n    CategoryID\n    createAt\n    updateAt\n    title\n    color\n    label\n  }\n}": types.CreateCategoryDocument,
-    "mutation CreateConversation($conversationInput: ConversationInput!) {\n  createConversation(conversationInput: $conversationInput) {\n    ConversationID\n    avatar\n    title\n    isGroup\n    msgLast\n    msgLastTime\n  }\n}": types.CreateConversationDocument,
+    "mutation CreateConversation($conversationInput: ConversationInput!) {\n  createConversation(conversationInput: $conversationInput) {\n    ConversationID\n    avatar\n    title\n    isGroup\n    creator {\n      UserID\n    }\n  }\n}": types.CreateConversationDocument,
     "mutation CreateEvent($eventinput: EventInput!) {\n  createEvent(eventinput: $eventinput) {\n    EventID\n    title\n    description\n    locationTitle\n    locationAddress\n    imageUrl\n    price\n    category\n  }\n}": types.CreateEventDocument,
     "mutation CreateEventUser($userId: Float!, $eventId: Float!) {\n  createEventUser(userId: $userId, eventId: $eventId)\n}": types.CreateEventUserDocument,
+    "mutation CreateMessage($messageInput: MessageInput!) {\n  createMessage(messageInput: $messageInput) {\n    MessageID\n    type\n    message\n  }\n}": types.CreateMessageDocument,
     "mutation CreateReview($reviewInput: ReviewInput!) {\n  createReview(reviewInput: $reviewInput) {\n    ReviewID\n    star\n    text\n  }\n}": types.CreateReviewDocument,
     "mutation DeleteConversation($conversationId: Float!) {\n  deleteConversation(conversationId: $conversationId) {\n    ConversationID\n  }\n}": types.DeleteConversationDocument,
     "mutation EditBill($billId: Float!, $billInput: BillInput!) {\n  editBill(billId: $billId, billInput: $billInput) {\n    BillID\n    createAt\n    updateAt\n    price\n    status\n  }\n}": types.EditBillDocument,
@@ -67,7 +68,7 @@ export function graphql(source: "mutation CreateCategory($categoryInput: Categor
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "mutation CreateConversation($conversationInput: ConversationInput!) {\n  createConversation(conversationInput: $conversationInput) {\n    ConversationID\n    avatar\n    title\n    isGroup\n    msgLast\n    msgLastTime\n  }\n}"): (typeof documents)["mutation CreateConversation($conversationInput: ConversationInput!) {\n  createConversation(conversationInput: $conversationInput) {\n    ConversationID\n    avatar\n    title\n    isGroup\n    msgLast\n    msgLastTime\n  }\n}"];
+export function graphql(source: "mutation CreateConversation($conversationInput: ConversationInput!) {\n  createConversation(conversationInput: $conversationInput) {\n    ConversationID\n    avatar\n    title\n    isGroup\n    creator {\n      UserID\n    }\n  }\n}"): (typeof documents)["mutation CreateConversation($conversationInput: ConversationInput!) {\n  createConversation(conversationInput: $conversationInput) {\n    ConversationID\n    avatar\n    title\n    isGroup\n    creator {\n      UserID\n    }\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -76,6 +77,10 @@ export function graphql(source: "mutation CreateEvent($eventinput: EventInput!) 
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "mutation CreateEventUser($userId: Float!, $eventId: Float!) {\n  createEventUser(userId: $userId, eventId: $eventId)\n}"): (typeof documents)["mutation CreateEventUser($userId: Float!, $eventId: Float!) {\n  createEventUser(userId: $userId, eventId: $eventId)\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "mutation CreateMessage($messageInput: MessageInput!) {\n  createMessage(messageInput: $messageInput) {\n    MessageID\n    type\n    message\n  }\n}"): (typeof documents)["mutation CreateMessage($messageInput: MessageInput!) {\n  createMessage(messageInput: $messageInput) {\n    MessageID\n    type\n    message\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

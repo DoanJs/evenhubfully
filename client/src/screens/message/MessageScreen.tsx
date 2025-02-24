@@ -43,15 +43,16 @@ const MessageScreen = ({ route }: any) => {
     msgTimeLast: "",
   };
   const dataMsg = {
-    mediaUrl: "",
+    type: "text",
     message: "Hello, I am Js",
-    receiverId: 2,
+    mediaUrl: "",
     senderId: userId,
+    receiverId: 2,
+    conversationId: 1,
     status: "send",
     createAt: Date.now(),
     updateAt: Date.now(),
     deleteAt: Date.now(),
-    type: "text",
   };
 
   useEffect(() => {
@@ -69,10 +70,7 @@ const MessageScreen = ({ route }: any) => {
           const items: any = [];
           doc.forEach((res) => {
             // console.log(`${res.id} => ${res.data()}`);
-            items.push({
-              id: res.id,
-              ...res.data(),
-            });
+            items.push({ ...res.data(), id: res.id });
           });
           setConversations(items);
         }
@@ -83,12 +81,6 @@ const MessageScreen = ({ route }: any) => {
 
     setIsVisible(false);
   }, []);
-
-  const handleCreateConversation = async () => {
-    const conversation = await addDoc(collection(db, "conversations"), data);
-
-    setConversationId(conversation.id);
-  };
 
   const handleCreateMsg = async () => {
     await addDoc(
@@ -106,11 +98,6 @@ const MessageScreen = ({ route }: any) => {
   return (
     <ContainerComponent back title="Message">
       <SectionComponent>
-        <ButtonComponent
-          type="primary"
-          text="Create Converstation"
-          onPress={handleCreateConversation}
-        />
         <ButtonComponent
           type="primary"
           text="Create Msg"

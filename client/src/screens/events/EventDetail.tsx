@@ -27,8 +27,6 @@ import { appInfo } from "../../constants/appInfos";
 import { fontFamilies } from "../../constants/fontFamilies";
 import {
   CreateBillDocument,
-  CreateConversationDocument,
-  DeleteConversationDocument,
   EditFollowDocument,
   EditFollowEventDocument,
   EventDocument,
@@ -50,9 +48,6 @@ import { EventModel } from "../../models/EventModel";
 import { UserModel } from "../../models/UserModel";
 import { globalStyles } from "../../styles/gloabalStyles";
 import { DateTime } from "../../utils/DateTime";
-import { addDoc, collection } from "firebase/firestore";
-import { db } from "../../../firebaseConfig";
-import { ConversationModel } from "../../models/ConversationModel";
 
 const EventDetail = ({ navigation, route }: any) => {
   // const navigation: NavigationProp<RootStackParamList> = useNavigation();
@@ -108,12 +103,6 @@ const EventDetail = ({ navigation, route }: any) => {
         },
       },
     ],
-  });
-  const [createConversation] = useMutation(CreateConversationDocument, {
-    refetchQueries: [],
-  });
-  const [deleteConversation] = useMutation(DeleteConversationDocument, {
-    refetchQueries: [],
   });
 
   useEffect(() => {
@@ -189,40 +178,6 @@ const EventDetail = ({ navigation, route }: any) => {
         console.log(err);
         setIsVisible(false);
       });
-
-    if (type === "insert") {
-      createConversation({
-        variables: {
-          conversationInput: {
-            isGroup: 0,
-            creatorId: user?.UserID,
-            participantIds: [
-              user?.UserID as number,
-              event?.author.UserID as number,
-            ],
-          },
-        },
-      })
-        .then(() => {
-          addDoc(collection(db, "conversations"), {
-            avatar: event?.author.PhotoUrl,
-            title: event?.author.Username,
-            isGroup: 0,
-            creatorId: user?.UserID,
-            participantIds: [user?.UserID, event?.author.UserID],
-
-            msgLast: null,
-            msgLastTime: null,
-            msgLastSenderId: null,
-            createAt: Date.now(),
-            updateAt: null,
-            deleteAt: null,
-          });
-        })
-        .catch((err) => console.log(err));
-    }else{
-      deleteConversation({variables:{conversationId: }})
-    }
   };
 
   const handleCreateBillPaymentDetail = async () => {

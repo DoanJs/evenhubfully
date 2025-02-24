@@ -27,44 +27,27 @@ export class ConversationsService {
   async createConversation(
     conversationInput: ConversationInput,
   ): Promise<Conversation> {
-    let participants: User[];
-    let title: string;
-    let avatar: string;
-    let isGroup: number;
-
-    if (conversationInput.participantIds.length > 0) {
-      const resultLoader = conversationInput.participantIds.map(
-        (userId: number) => this.dataloaderService.loaderUser.load(userId),
-      );
-      participants = await Promise.all(resultLoader);
-    }
-
-    const creator = participants.filter(
-      (user: User) => user.UserID === conversationInput.creatorId,
-    )[0];
-
-    if (conversationInput.isGroup === 0) {
-      isGroup = 0;
-      const user = participants.filter(
-        (user: User) => user.UserID !== conversationInput.creatorId,
-      ) as [User];
-
-      title = user[0].Username;
-      avatar = user[0].PhotoUrl;
-    } else {
-      isGroup = 1;
-    }
+    const {isGroup, title, avatar, creatorId, participantIds} = conversationInput
 
     const conversation = await this.conversationRepository.query(
-      `select * from Conversations where title = '${title}' and creatorId = ${conversationInput.creatorId}`,
+      `select * from Conversations where title = '${title}' and creatorId = ${creatorId}`,
     );
 
     if (!conversation || (conversation && conversation.length === 0)) {
+      const resultLoader = participantIds.map(
+        (userId: number) => this.dataloaderService.loaderUser.load(userId),
+      );
+      const participants = await Promise.all(resultLoader) as User[];
+
+      const creator = participants.filter(
+        (user: User) => user.UserID === creatorId,
+      )[0];
+
       const result = await this.conversationRepository.create({
         ...conversationInput,
-        avatar,
-        title,
         isGroup,
+        title,
+        avatar,
         creator,
         participants,
         createAt: new Date().toLocaleDateString(),
@@ -73,7 +56,7 @@ export class ConversationsService {
 
       return result;
     } else {
-      throw new Error('Conversation is exist !');
+      return conversation[0]
     }
   }
 
@@ -88,11 +71,11 @@ export class ConversationsService {
   }
 
   // relation
-  // async creator(conversation: any): Promise<User> {
-  //   if (Conversation.ConversationerId) {
-  //     return this.dataloaderService.loaderUser.load(Conversation.ConversationerId);
-  //   }
-  // }
+  async creator(conversation: any): Promise<User> {
+    if (conversation.creatorId) {
+      return this.dataloaderService.loaderUser.load(conversation.creatorId);
+    }
+  }
 
   // async reConversationer(Conversation: any): Promise<User> {
   //   if (Conversation.reConversationerId) {

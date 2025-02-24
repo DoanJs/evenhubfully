@@ -2,45 +2,52 @@ import React from "react";
 import {
   AvatarComponent,
   RowComponent,
+  SectionComponent,
   SpaceComponent,
   TextComponent,
 } from "../../components";
 import { appColor } from "../../constants/appColor";
 import { ConversationModel } from "../../models/ConversationModel";
+import { MessageModel } from "../../models/MessageModel";
+import { View } from "react-native";
 
 interface Props {
   conversation: ConversationModel;
+  message: MessageModel;
 }
 
 const MessageSub = (props: Props) => {
-  const { conversation } = props;
-  const dataMsg = {
-    mediaUrl: "",
-    message: "Hello, I am Js",
-    receiverId: 2,
-    senderId: 16,
-    status: "send",
-    createAt: Date.now(),
-    updateAt: Date.now(),
-    deleteAt: Date.now(),
-    type: "text",
-  };
+  const { conversation, message } = props;
   return (
-    <RowComponent justify="flex-start" styles={{ alignItems: "flex-end", marginVertical: 1 }}>
-      <AvatarComponent photoURL={conversation.avatar} size={26} name="" />
-      <SpaceComponent width={6} />
-      <TextComponent
+    <View>
+      <RowComponent
+        justify="flex-start"
         styles={{
-          backgroundColor: appColor.gray8,
-          padding: 10,
-          borderRadius: 16,
-          maxWidth: "80%",
+          alignItems: "flex-end",
+          marginVertical: 1,
         }}
-        numberOfLine={5}
-        text="ads xin chao ban nhe ads xin chao ban nhe ads xin chao ban nhe ads xin chao ban nhe ads xin chao ban nhe "
-        // text="ads xin chao ban "
-      />
-    </RowComponent>
+      >
+        <AvatarComponent photoURL={conversation.avatar} size={26} name="" />
+        <SpaceComponent width={6} />
+        <TextComponent
+          styles={{
+            backgroundColor: appColor.gray8,
+            padding: 10,
+            borderRadius: 16,
+            maxWidth: "80%",
+          }}
+          numberOfLine={5}
+          text={message.message}
+        />
+      </RowComponent>
+      {/* <RowComponent justify="flex-end">
+        <AvatarComponent
+          photoURL="https://tainguyenvamoitruong.vn/images/image/ho-37125.jpg"
+          size={16}
+          name=""
+        />
+      </RowComponent> */}
+    </View>
   );
 };
 

@@ -1,4 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
+import { Message } from 'src/messages/Message.model';
 import { User } from 'src/users/User.model';
 import {
   Column,
@@ -7,6 +8,7 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -57,6 +59,8 @@ export class Conversation {
 
   // relation
   // one-to-one
+  @OneToMany(() => Message, (message) => message.conversation)
+  messages: [Message];
   // many-to-one
   @ManyToOne(() => User, (user) => user.conversations, {
     cascade: true,
