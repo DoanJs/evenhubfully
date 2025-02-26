@@ -62,9 +62,15 @@ const MessageSub = (props: Props) => {
                 ? 5
                 : 16,
             borderTopRightRadius:
-              msgCenter && message.senderId === user.UserID ? 5 : 16,
+              (msgCenter && message.senderId === user.UserID) ||
+              (msgBottom && message.senderId === user.UserID)
+                ? 5
+                : 16,
             borderBottomRightRadius:
-              msgCenter && message.senderId === user.UserID ? 5 : 16,
+              (msgCenter && message.senderId === user.UserID) ||
+              (msgTop && message.senderId === user.UserID)
+                ? 5
+                : 16,
             maxWidth: "80%",
           }}
           numberOfLine={5}

@@ -35,6 +35,7 @@ import { MessageModel } from "../../models/MessageModel";
 import { globalStyles } from "../../styles/gloabalStyles";
 import { handleSelectedFromArr } from "../../utils/handleSelected";
 import MessageSub from "./MessageSub";
+import { appInfo } from "../../constants/appInfos";
 
 const MessageDetail = ({ route }: any) => {
   const { conversation }: { conversation: ConversationModel } = route.params;
@@ -49,7 +50,7 @@ const MessageDetail = ({ route }: any) => {
 
   useEffect(() => {
     const keyboardDidShow = Keyboard.addListener("keyboardDidShow", (event) => {
-      setKeyboardHeight(event.endCoordinates.height - 34);
+      setKeyboardHeight(event.endCoordinates.height);
     });
 
     const keyboardDidHide = Keyboard.addListener("keyboardDidHide", () => {
@@ -165,8 +166,9 @@ const MessageDetail = ({ route }: any) => {
       styles={{ flex: 1 }}
     >
       <KeyboardAvoidingView style={{ flex: 1 }}>
-        <SectionComponent>
+        <SectionComponent styles={{height: appInfo.sizes.HEIGHT - 210 - keyboardHeight}}>
           <FlatList
+          showsVerticalScrollIndicator={false}
             data={messages.sort((a: any, b: any) => a.createAt - b.createAt)}
             renderItem={({
               item,
