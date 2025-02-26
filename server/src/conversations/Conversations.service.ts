@@ -27,17 +27,26 @@ export class ConversationsService {
   async createConversation(
     conversationInput: ConversationInput,
   ): Promise<Conversation> {
-    const {isGroup, title, avatar, creatorId, participantIds} = conversationInput
+    const handleSelectItemOtherInArr = (arr: any, id: number) => {
+      const result = arr.filter((item) => item !== id);
+      return result[0];
+    };
+    const { isGroup, creatorId, participantIds } = conversationInput;
 
-    const conversation = await this.conversationRepository.query(
-      `select * from Conversations where title = '${title}' and creatorId = ${creatorId}`,
+    const conversations = await this.conversationRepository.query(
+      `select C.*, CU.UserID from Conversations as C 
+        inner join Conversations_Users as CU 
+        on C.ConversationID = CU.ConversationID 
+        where C.creatorId = ${creatorId} and UserID = ${handleSelectItemOtherInArr(participantIds, creatorId)}`,
     );
 
-    if (!conversation || (conversation && conversation.length === 0)) {
-      const resultLoader = participantIds.map(
-        (userId: number) => this.dataloaderService.loaderUser.load(userId),
+    if (conversations && conversations.length > 0) {
+      return conversations[0];
+    } else {
+      const resultLoader = participantIds.map((userId: number) =>
+        this.dataloaderService.loaderUser.load(userId),
       );
-      const participants = await Promise.all(resultLoader) as User[];
+      const participants = (await Promise.all(resultLoader)) as User[];
 
       const creator = participants.filter(
         (user: User) => user.UserID === creatorId,
@@ -46,8 +55,6 @@ export class ConversationsService {
       const result = await this.conversationRepository.create({
         ...conversationInput,
         isGroup,
-        title,
-        avatar,
         creator,
         participants,
         createAt: new Date().toLocaleDateString(),
@@ -55,8 +62,6 @@ export class ConversationsService {
       await this.conversationRepository.save(result);
 
       return result;
-    } else {
-      return conversation[0]
     }
   }
 
@@ -75,6 +80,12 @@ export class ConversationsService {
     if (conversation.creatorId) {
       return this.dataloaderService.loaderUser.load(conversation.creatorId);
     }
+  }
+
+  async participants(conversationId: number): Promise<User[]> {
+    return this.conversationRepository.query(
+      `select * from Conversations_Users where ConversationID = ${conversationId}`,
+    );
   }
 
   // async reConversationer(Conversation: any): Promise<User> {

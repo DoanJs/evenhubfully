@@ -1,18 +1,9 @@
-import {
-  addDoc,
-  collection,
-  doc,
-  onSnapshot,
-  query,
-  updateDoc,
-  where,
-} from "firebase/firestore";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { SearchNormal1 } from "iconsax-react-native";
 import React, { useEffect, useState } from "react";
 import { FlatList, TextInput, View } from "react-native";
 import { db } from "../../../firebaseConfig";
 import {
-  ButtonComponent,
   ContainerComponent,
   RowComponent,
   SectionComponent,
@@ -26,34 +17,6 @@ const MessageScreen = ({ route }: any) => {
   const [searchKey, setSearchKey] = useState("");
   const [isVisible, setIsVisible] = useState(false);
   const [conversations, setConversations] = useState([]);
-  const [conversationId, setConversationId] = useState("");
-  // console.log(Date.now());
-  const data = {
-    title: "conversation1",
-    avatar:
-      "http://3.bp.blogspot.com/-ic11smjdIiI/U71Kx478QRI/AAAAAAAAjWY/TDhzGrYCxfw/s1600/dong-vat-hoang-da+(1).jpeg",
-    isGroup: false,
-    creatorId: userId,
-    createAt: Date.now(),
-    updateAt: Date.now(),
-    deleteAt: Date.now(),
-    participants: [userId, 2],
-    msgLast: "",
-    msgSenderLast: userId,
-    msgTimeLast: "",
-  };
-  const dataMsg = {
-    type: "text",
-    message: "Hello, I am Js",
-    mediaUrl: "",
-    senderId: userId,
-    receiverId: 2,
-    conversationId: 1,
-    status: "send",
-    createAt: Date.now(),
-    updateAt: Date.now(),
-    deleteAt: Date.now(),
-  };
 
   useEffect(() => {
     setIsVisible(true);
@@ -82,29 +45,8 @@ const MessageScreen = ({ route }: any) => {
     setIsVisible(false);
   }, []);
 
-  const handleCreateMsg = async () => {
-    await addDoc(
-      collection(db, `conversations/${conversationId}/messages`),
-      dataMsg
-    );
-    await updateDoc(doc(db, "conversations", conversationId), {
-      ...data,
-      msgLast: dataMsg.message,
-      msgTimeLast: dataMsg.createAt,
-      msgSenderLast: userId,
-    });
-  };
-
   return (
     <ContainerComponent back title="Message">
-      <SectionComponent>
-        <ButtonComponent
-          type="primary"
-          text="Create Msg"
-          onPress={handleCreateMsg}
-        />
-      </SectionComponent>
-
       <SectionComponent>
         <RowComponent
           styles={{
@@ -136,7 +78,7 @@ const MessageScreen = ({ route }: any) => {
         <RowComponent>
           <FlatList
             horizontal={true}
-            data={conversations}
+            data={conversations.sort((a: any, b: any) => b.msgLastTime - a.msgLastTime)}
             renderItem={({ item }) => (
               <MessageItem type="avatarCircle" conversation={item} />
             )}

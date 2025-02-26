@@ -1,11 +1,6 @@
 mutation CreateConversation($conversationInput: ConversationInput!) {
   createConversation(conversationInput: $conversationInput) {
     ConversationID
-    avatar
-    title
     isGroup
-    creator {
-      UserID
-    }
   }
 }

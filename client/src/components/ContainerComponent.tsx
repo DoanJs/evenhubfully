@@ -1,24 +1,22 @@
-import {
-  View,
-  Text,
-  ImageBackground,
-  ScrollView,
-  TouchableOpacity,
-  StatusBar,
-  StyleProp,
-  ViewStyle,
-} from "react-native";
-import React, { ReactNode } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { globalStyles } from "../styles/gloabalStyles";
-import Splash from "../assets/images/splash-img.png";
 import { useNavigation } from "@react-navigation/native";
 import { ArrowLeft } from "iconsax-react-native";
+import React, { ReactNode } from "react";
+import {
+  ImageBackground,
+  ScrollView,
+  StatusBar,
+  StyleProp,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import Splash from "../assets/images/splash-img.png";
 import { appColor } from "../constants/appColor";
+import { fontFamilies } from "../constants/fontFamilies";
+import { globalStyles } from "../styles/gloabalStyles";
 import RowComponent from "./RowComponent";
 import TextComponent from "./TextComponent";
-import { fontFamilies } from "../constants/fontFamilies";
-import AvatarComponent from "./AvatarComponent";
 
 interface Props {
   isImageBackground?: boolean;
@@ -42,12 +40,13 @@ const ContainerComponent = (props: Props) => {
     right,
     avatar,
     statusAction,
+    styles,
   } = props;
   const navigation = useNavigation();
 
   const headerComponent = () => {
     return (
-      <View style={{ flex: 1 }}>
+      <View style={styles}>
         {(back || title || right) && (
           <RowComponent
             styles={{
@@ -83,7 +82,7 @@ const ContainerComponent = (props: Props) => {
   const returnContainer = isScroll ? (
     <ScrollView showsVerticalScrollIndicator={false}>{children}</ScrollView>
   ) : (
-    <View style={{ flex: 1 }}>{children}</View>
+    <View style={styles}>{children}</View>
   );
 
   return isImageBackground ? (
@@ -97,7 +96,7 @@ const ContainerComponent = (props: Props) => {
   ) : (
     <SafeAreaView style={[globalStyles.container]}>
       <StatusBar barStyle={"dark-content"} />
-      <View style={{ flex: 1 }}>{headerComponent()}</View>
+      <View style={styles}>{headerComponent()}</View>
     </SafeAreaView>
   );
 };

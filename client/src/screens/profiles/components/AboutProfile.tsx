@@ -93,29 +93,32 @@ const AboutProfile = (props: Props) => {
   });
 
   useEffect(() => {
-    setIsVisible(true);
-    const getQuerySnap = async () => {
-      const q = query(
-        collection(db, "conversations"),
-        where("creatorId", "==", user?.UserID),
-        where("title", "==", author.Username)
-      );
-      await onSnapshot(q, (doc) => {
-        if (doc.empty) {
-          setConversations([]);
-        } else {
-          const items: any = [];
-          doc.forEach((res) => {
-            items.push(res.data());
-          });
-          setConversations(items);
-        }
-      });
-    };
-
-    getQuerySnap();
-    setIsVisible(false);
-  }, []);
+      setIsVisible(true);
+  
+      const getQuerySnap = async () => {
+        const q = query(
+          collection(db, "conversations"),
+          where("participantIds", "array-contains", user?.UserID)
+        );
+        await onSnapshot(q, (doc) => {
+          if (doc.empty) {
+            setConversations([]);
+          } else {
+            const items: any = [];
+            doc.forEach((res) => {
+              // console.log(`${res.id} => ${res.data()}`);
+              items.push({ ...res.data(), id: res.id });
+            });
+            setConversations(items);
+            console.log(items[0])
+          }
+        });
+      };
+  
+      getQuerySnap();
+  
+      setIsVisible(false);
+    }, []);
 
   const handleFollow = (author: UserModel) => {
     setIsVisible(true);
@@ -195,9 +198,6 @@ const AboutProfile = (props: Props) => {
     setIsVisible(true);
     const conversationInput = {
       isGroup: 0,
-      avatar: author.PhotoUrl,
-      title: author.Username,
-
       creatorId: user?.UserID,
       participantIds: [user?.UserID as number, author.UserID as number],
     };
@@ -209,16 +209,34 @@ const AboutProfile = (props: Props) => {
     })
       .then(async (result: any) => {
         // can use docSnap.exists() checks if the document exists.
-
-        const { ConversationID, title } = result?.data?.createConversation;
+        const { ConversationID } = result?.data?.createConversation;
 
         const index = conversations.findIndex(
-          (item) => item.creatorId === user?.UserID && item.title === title
+          (item) => Number(item.id) === ConversationID
         );
         if (index === -1) {
           await setDoc(doc(db, "conversations", `${ConversationID}`), {
             ...conversationInput,
-
+            avatar: [
+              {
+                id: user?.UserID,
+                data: user?.PhotoUrl,
+              },
+              {
+                id: author?.UserID,
+                data: author?.PhotoUrl,
+              },
+            ],
+            title: [
+              {
+                id: user?.UserID,
+                data: user?.Username,
+              },
+              {
+                id: author?.UserID,
+                data: author?.Username,
+              },
+            ],
             msgLast: null,
             msgLastTime: null,
             msgLastSenderId: null,
@@ -232,9 +250,27 @@ const AboutProfile = (props: Props) => {
         navigation.navigate("MessageDetail", {
           conversation: {
             id: `${ConversationID}`,
-            title: author.Username,
             creatorId: user?.UserID,
-            avatar: author.PhotoUrl
+            avatar: [
+              {
+                id: user?.UserID,
+                data: user?.PhotoUrl,
+              },
+              {
+                id: author?.UserID,
+                data: author?.PhotoUrl,
+              },
+            ],
+            title: [
+              {
+                id: user?.UserID,
+                data: user?.Username,
+              },
+              {
+                id: author?.UserID,
+                data: author?.Username,
+              },
+            ],
           },
         });
       })
@@ -254,7 +290,7 @@ const AboutProfile = (props: Props) => {
             text={
               followings.findIndex(
                 (following: any) => following.UserID === author.UserID
-              ) !== -1
+              ) !== -1 
                 ? "UnFollow"
                 : "Follow"
             }

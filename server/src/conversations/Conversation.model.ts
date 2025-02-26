@@ -19,28 +19,9 @@ export class Conversation {
   @Field()
   ConversationID: number;
 
-  @Column({ type: 'nvarchar', length: 'max', nullable: true })
-  @Field({ nullable: true })
-  avatar: string;
-
-  @Column({ type: 'nvarchar', length: '100', nullable: true })
-  @Field({ nullable: true })
-  title: string;
-
   @Column({ type: 'float', nullable: true })
   @Field({ nullable: true })
   isGroup: number;
-
-  @Column({ type: 'nvarchar', length: 'max', nullable: true })
-  @Field({ nullable: true })
-  msgLast: string;
-
-  @Column({
-    type: 'date',
-    nullable: true,
-  })
-  @Field({ nullable: true })
-  msgLastTime: Date;
 
   @Column({
     type: 'date',
@@ -72,17 +53,6 @@ export class Conversation {
   })
   @Field(() => User, { nullable: true })
   creator: User;
-
-  @ManyToOne(() => User, (user) => user.conversationMsgLasts, {
-    cascade: true,
-    eager: true,
-  })
-  @JoinColumn({
-    name: 'msgLastSenderId',
-    foreignKeyConstraintName: 'FK_msgLastSenderId_Conversations',
-  })
-  @Field(() => User, { nullable: true })
-  msgLastSender: User;
 
   // many-to-many
   @ManyToMany(() => User, (user) => user.user_conversations, {

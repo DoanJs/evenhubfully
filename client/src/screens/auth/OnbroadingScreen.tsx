@@ -1,21 +1,20 @@
-import { NavigationProp, useNavigation } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import React, { useState } from "react";
+import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 import Swiper from "react-native-swiper";
 import onbroading_1 from "../../assets/images/onboarding-1.png";
 import onbroading_2 from "../../assets/images/onboarding-2.png";
 import onbroading_3 from "../../assets/images/onboarding-3.png";
+import { TextComponent } from "../../components";
 import { appColor } from "../../constants/appColor";
 import { appInfo } from "../../constants/appInfos";
-import { globalStyles } from "../../styles/gloabalStyles";
-import { TextComponent } from "../../components";
 import { fontFamilies } from "../../constants/fontFamilies";
+import { globalStyles } from "../../styles/gloabalStyles";
 
 const OnbroadingScreen = () => {
-  const navigation: NavigationProp<RootStackParamList> = useNavigation();
+  const navigation: any = useNavigation();
   const [index, setIndex] = useState(0);
 
-  
   return (
     <View style={[globalStyles.container]}>
       <Swiper

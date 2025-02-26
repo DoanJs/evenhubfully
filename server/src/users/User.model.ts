@@ -80,9 +80,6 @@ export class User {
   @OneToMany(() => Conversation, (conversation) => conversation.creator)
   conversations: [Conversation];
 
-  @OneToMany(() => Conversation, (conversation) => conversation.msgLastSender)
-  conversationMsgLasts: [Conversation];
-
   @OneToMany(() => Message, (message) => message.sender)
   msgSenders: [Message];
 

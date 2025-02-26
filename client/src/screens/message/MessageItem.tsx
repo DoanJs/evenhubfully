@@ -11,6 +11,7 @@ import { useReactiveVar } from "@apollo/client";
 import { userVar } from "../../graphqlClient/cache";
 import { View } from "react-native";
 import moment from "moment";
+import { handleSelectedFromArr } from "../../utils/handleSelected";
 
 interface Props {
   type: "avatarCircle" | "default";
@@ -21,7 +22,6 @@ const MessageItem = (props: Props) => {
   const { type, conversation } = props;
   const navigation: any = useNavigation();
   const user = useReactiveVar(userVar);
-
   return type === "default" ? (
     <RowComponent
       styles={{ marginVertical: 10 }}
@@ -32,7 +32,11 @@ const MessageItem = (props: Props) => {
       }
     >
       <View>
-        <AvatarComponent size={60} name="" photoURL={conversation.avatar} />
+        <AvatarComponent
+          size={60}
+          name=""
+          photoURL={handleSelectedFromArr(conversation.avatar, user?.UserID as number)}
+        />
         <View
           style={{
             backgroundColor: "#02fe3d",
@@ -48,25 +52,32 @@ const MessageItem = (props: Props) => {
         />
       </View>
       <SectionComponent styles={{ paddingBottom: "auto" }}>
-        <TextComponent title text={conversation.title} />
+        <TextComponent
+          title
+          text={handleSelectedFromArr(conversation.title, user?.UserID as number)}
+        />
         <RowComponent>
-          {conversation.msgSenderLast === user?.UserID && (
+          {conversation.msgLastSenderId === user?.UserID && (
             <TextComponent size={18} text="Bạn: " />
           )}
           <TextComponent
             size={18}
             numberOfLine={1}
-            styles={{ width: "60%" }}
+            styles={{ width: "56%" }}
             text={conversation.msgLast}
           />
-          <TextComponent text={moment(conversation.msgTimeLast).format("LT")} />
+          <TextComponent text={moment(conversation.msgLastTime).format("LT")} />
         </RowComponent>
       </SectionComponent>
     </RowComponent>
   ) : (
     <View style={{ alignItems: "center", marginHorizontal: 8 }}>
       <View>
-        <AvatarComponent size={80} photoURL={conversation.avatar} name="" />
+        <AvatarComponent
+          size={80}
+          photoURL={handleSelectedFromArr(conversation.avatar, user?.UserID as number)}
+          name=""
+        />
         <View
           style={{
             backgroundColor: "#02fe3d",
@@ -82,7 +93,7 @@ const MessageItem = (props: Props) => {
         />
       </View>
 
-      <TextComponent text={conversation.title} />
+      <TextComponent text={handleSelectedFromArr(conversation.title, user?.UserID as number)} />
     </View>
   );
 };

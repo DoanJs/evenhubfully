@@ -1,10 +1,17 @@
 import { UseGuards } from '@nestjs/common';
-import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import {
+  Args,
+  Mutation,
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+} from '@nestjs/graphql';
 import { GraphQLGuard } from 'src/auth/GraphQL.Guard';
+import { User } from 'src/users/User.model';
 import { Conversation } from './Conversation.model';
 import { ConversationsService } from './Conversations.service';
 import { ConversationInput } from './type/conversation.input';
-import { User } from 'src/users/User.model';
 
 @Resolver(() => Conversation)
 @UseGuards(GraphQLGuard)
@@ -37,15 +44,15 @@ export class ConversationsResolver {
     return this.conversationsService.deleteConversation(conversationId);
   }
 
-  // // relation
+  // relation
 
   @ResolveField(() => User)
   creator(@Parent() conversation: Conversation): Promise<User> {
     return this.conversationsService.creator(conversation);
   }
 
-  // @ResolveField(() => User)
-  // reConversationer(@Parent() Conversation: Conversation): Promise<User> {
-  //   return this.ConversationsService.reConversationer(Conversation);
-  // }
+  @ResolveField(() => [User])
+  participants(@Parent() conversation: Conversation): Promise<User[]> {
+    return this.conversationsService.participants(conversation.ConversationID);
+  }
 }
