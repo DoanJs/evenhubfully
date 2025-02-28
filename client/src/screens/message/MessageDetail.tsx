@@ -8,12 +8,13 @@ import {
   setDoc,
   updateDoc,
 } from "firebase/firestore";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
   FlatList,
   Keyboard,
   KeyboardAvoidingView,
+  Platform,
   Pressable,
   TextInput,
 } from "react-native";
@@ -27,6 +28,7 @@ import {
   TextComponent,
 } from "../../components";
 import { appColor } from "../../constants/appColor";
+import { appInfo } from "../../constants/appInfos";
 import { CreateMessageDocument } from "../../gql/graphql";
 import { userVar } from "../../graphqlClient/cache";
 import { LoadingModal } from "../../modals";
@@ -35,10 +37,10 @@ import { MessageModel } from "../../models/MessageModel";
 import { globalStyles } from "../../styles/gloabalStyles";
 import { handleSelectedFromArr } from "../../utils/handleSelected";
 import MessageSub from "./MessageSub";
-import { appInfo } from "../../constants/appInfos";
 
 const MessageDetail = ({ route }: any) => {
-  const { conversation }: { conversation: ConversationModel } = route.params;
+  const { conversation }: { conversation: ConversationModel; status: string } =
+    route.params;
   const user = useReactiveVar(userVar);
   const [isVisible, setIsVisible] = useState(false);
   const [searchKey, setSearchKey] = useState("");
@@ -47,6 +49,7 @@ const MessageDetail = ({ route }: any) => {
   const [createMessage] = useMutation(CreateMessageDocument, {
     refetchQueries: [],
   });
+  const inputRef = useRef(null);
 
   useEffect(() => {
     const keyboardDidShow = Keyboard.addListener("keyboardDidShow", (event) => {
@@ -88,6 +91,14 @@ const MessageDetail = ({ route }: any) => {
     setIsVisible(false);
   }, [conversation.id]);
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      inputRef.current?.focus();
+    }, 100); // Small delay to ensure component is mounted
+
+    return () => clearTimeout(timer);
+  }, []);
+
   const handleSendMsg = () => {
     setIsVisible(true);
 
@@ -120,7 +131,7 @@ const MessageDetail = ({ route }: any) => {
           {
             ...messageInput,
             mediaUrl: "",
-            status: "",
+            status: "sent",
             createAt: Date.now(),
             updateAt: null,
             deleteAt: null,
@@ -134,6 +145,27 @@ const MessageDetail = ({ route }: any) => {
         console.log(err);
         setIsVisible(false);
       });
+  };
+
+  const handleFocusInput = () => {
+    
+    try {
+      messages.length > 0 &&
+        messages.forEach(async (item: MessageModel, index: number) => {
+          if (item.senderId !== user?.UserID) {
+            const washingtonRef = doc(
+              db,
+              `conversations/${conversation.id}/messages`,
+              item.id
+            );
+            index === messages.length - 1
+              ? await updateDoc(washingtonRef, { ...item, status: "seen" })
+              : await updateDoc(washingtonRef, { ...item, status: "" });
+          }
+        });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -163,12 +195,19 @@ const MessageDetail = ({ route }: any) => {
           <FontAwesome5 name="video" size={20} color={appColor.primary} />
         </RowComponent>
       }
-      styles={{ flex: 1 }}
+      styles={{ flex: 1}}
     >
       <KeyboardAvoidingView style={{ flex: 1 }}>
-        <SectionComponent styles={{height: appInfo.sizes.HEIGHT - 210 - keyboardHeight}}>
+        <SectionComponent
+          styles={{
+            height:
+              appInfo.sizes.HEIGHT -
+              (Platform.OS === "ios" ? 210 : 140) -
+              keyboardHeight,
+          }}
+        >
           <FlatList
-          showsVerticalScrollIndicator={false}
+            showsVerticalScrollIndicator={false}
             data={messages.sort((a: any, b: any) => a.createAt - b.createAt)}
             renderItem={({
               item,
@@ -181,6 +220,8 @@ const MessageDetail = ({ route }: any) => {
               let msgCenter = false;
               let msgTop = false;
               let msgBottom = false;
+              let msgLast = false;
+              let msgFinal = false;
               if (
                 messages[index - 1] &&
                 messages[index + 1] &&
@@ -208,6 +249,16 @@ const MessageDetail = ({ route }: any) => {
               ) {
                 grMsg = true;
               }
+              if (
+                !messages[index + 1] ||
+                (messages[index + 1] &&
+                  messages[index + 1].senderId !== item.senderId)
+              ) {
+                msgLast = true;
+              }
+              if (!messages[index + 1]) {
+                msgFinal = true;
+              }
               return (
                 <MessageSub
                   message={item}
@@ -215,6 +266,8 @@ const MessageDetail = ({ route }: any) => {
                   msgTop={msgTop}
                   msgBottom={msgBottom}
                   msgCenter={msgCenter}
+                  msgLast={msgLast}
+                  msgFinal={msgFinal}
                   conversation={conversation}
                   user={user}
                 />
@@ -244,6 +297,7 @@ const MessageDetail = ({ route }: any) => {
               }}
             >
               <TextInput
+                ref={inputRef}
                 value={searchKey}
                 style={[
                   globalStyles.inputContainer,
@@ -251,6 +305,7 @@ const MessageDetail = ({ route }: any) => {
                 ]}
                 onChangeText={(val) => setSearchKey(val)}
                 placeholder="Aa..."
+                onFocus={handleFocusInput}
               />
               <SpaceComponent width={10} />
               <FontAwesome

@@ -1,3 +1,4 @@
+import { FontAwesome6 } from "@expo/vector-icons";
 import React from "react";
 import { View } from "react-native";
 import {
@@ -19,11 +20,32 @@ interface Props {
   msgCenter: boolean;
   msgTop: boolean;
   msgBottom: boolean;
+  msgLast: boolean;
+  msgFinal: boolean;
 }
 
 const MessageSub = (props: Props) => {
-  const { conversation, message, user, grMsg, msgCenter, msgTop, msgBottom } =
-    props;
+  const {
+    conversation,
+    message,
+    user,
+    grMsg,
+    msgCenter,
+    msgTop,
+    msgBottom,
+    msgLast,
+    msgFinal,
+  } = props;
+
+  const handleIconSeen = () => {
+    let url = "";
+    conversation.avatar.map((item: any) => {
+      if (item.id !== user.UserID) {
+        url = item.data;
+      }
+    });
+    return url;
+  };
   return (
     <View>
       <RowComponent
@@ -77,13 +99,17 @@ const MessageSub = (props: Props) => {
           text={message.message}
         />
       </RowComponent>
-      {/* <RowComponent justify="flex-end">
-        <AvatarComponent
-          photoURL="https://tainguyenvamoitruong.vn/images/image/ho-37125.jpg"
-          size={16}
-          name=""
-        />
-      </RowComponent> */}
+      {((message.senderId === user.UserID && msgLast) || msgFinal) && (
+        <RowComponent justify="flex-end">
+          {message.status === "seen" ? (
+            <AvatarComponent photoURL={handleIconSeen()} size={16} name="" />
+          ) : message.status === "sent" && message.senderId === user.UserID ? (
+            <FontAwesome6 name="check-double" size={10} color="black" />
+          ) : (
+            <></>
+          )}
+        </RowComponent>
+      )}
     </View>
   );
 };

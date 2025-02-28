@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   AvatarComponent,
   RowComponent,
@@ -22,20 +22,32 @@ const MessageItem = (props: Props) => {
   const { type, conversation } = props;
   const navigation: any = useNavigation();
   const user = useReactiveVar(userVar);
+  const [isNewMsg, setIsNewMsg] = useState(false);
+
+  useEffect(() => {
+    if (conversation) {
+      setIsNewMsg(true);
+    }
+  }, [conversation.msgLastTime]);
+
   return type === "default" ? (
     <RowComponent
       styles={{ marginVertical: 10 }}
-      onPress={() =>
+      onPress={() => {
+        setIsNewMsg(false)
         navigation.navigate("MessageDetail", {
           conversation,
-        })
-      }
+        });
+      }}
     >
       <View>
         <AvatarComponent
           size={60}
           name=""
-          photoURL={handleSelectedFromArr(conversation.avatar, user?.UserID as number)}
+          photoURL={handleSelectedFromArr(
+            conversation.avatar,
+            user?.UserID as number
+          )}
         />
         <View
           style={{
@@ -54,7 +66,10 @@ const MessageItem = (props: Props) => {
       <SectionComponent styles={{ paddingBottom: "auto" }}>
         <TextComponent
           title
-          text={handleSelectedFromArr(conversation.title, user?.UserID as number)}
+          text={handleSelectedFromArr(
+            conversation.title,
+            user?.UserID as number
+          )}
         />
         <RowComponent>
           {conversation.msgLastSenderId === user?.UserID && (
@@ -63,7 +78,13 @@ const MessageItem = (props: Props) => {
           <TextComponent
             size={18}
             numberOfLine={1}
-            styles={{ width: "56%" }}
+            styles={{
+              width: "56%",
+              fontWeight:
+                conversation.msgLastSenderId !== user?.UserID && isNewMsg
+                  ? "bold"
+                  : "normal",
+            }}
             text={conversation.msgLast}
           />
           <TextComponent text={moment(conversation.msgLastTime).format("LT")} />
@@ -75,7 +96,10 @@ const MessageItem = (props: Props) => {
       <View>
         <AvatarComponent
           size={80}
-          photoURL={handleSelectedFromArr(conversation.avatar, user?.UserID as number)}
+          photoURL={handleSelectedFromArr(
+            conversation.avatar,
+            user?.UserID as number
+          )}
           name=""
         />
         <View
@@ -93,7 +117,9 @@ const MessageItem = (props: Props) => {
         />
       </View>
 
-      <TextComponent text={handleSelectedFromArr(conversation.title, user?.UserID as number)} />
+      <TextComponent
+        text={handleSelectedFromArr(conversation.title, user?.UserID as number)}
+      />
     </View>
   );
 };
